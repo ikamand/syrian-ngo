@@ -1,0 +1,101 @@
+Create a full-stack JavaScript web application prototype for a Syrian government NGO platform.
+
+IMPORTANT:
+This project must use a TEMPORARY DUMMY AUTHENTICATION system.
+Auth should be implemented in a way that can be easily replaced later by Auth0, Clerk, or any external auth provider.
+
+TECH STACK:
+- Next.js (JavaScript, NOT TypeScript)
+- Tailwind CSS
+- Node.js API routes
+- Workiom as database (via REST API)
+- Cookie-based or JWT-based dummy auth
+- RTL Arabic layout
+
+GENERAL DESCRIPTION:
+An official Syrian government NGO platform where organizations can register and manage their NGO information, and admins can review and approve entries.
+
+PAGES REQUIRED:
+
+1) PUBLIC LANDING PAGE
+- Arabic language
+- RTL layout
+- Green government theme
+- Header navigation:
+  - الرئيسية
+  - عن المنصة
+  - المنظمات
+  - تسجيل الدخول
+- Clean, official government layout
+
+2) LOGIN / SIGNUP PAGE (DUMMY AUTH)
+- Username
+- Password
+- No third-party auth
+- Users stored in Workiom or local mock data
+- On login:
+  - Create a session token or JWT
+  - Store role (user / admin)
+
+3) USER DASHBOARD (Protected)
+- Accessible only when logged in
+- User can:
+  - Add a new NGO
+  - View list of NGOs they created
+  - Edit existing NGOs
+- NGO fields:
+  - NGO Name
+  - City
+  - President Name
+  - Contact Email
+  - Contact Phone
+  - Description
+  - Status (Pending / Approved / Rejected – read only for users)
+
+4) ADMIN PANEL (Protected, Admin Only)
+- Separate route
+- View all NGOs
+- Filter by status
+- Approve or reject NGOs
+- Edit NGO information
+- Admin role should be controlled via dummy role flag
+
+DATABASE (Workiom):
+- NGOs table:
+  - id
+  - name
+  - city
+  - presidentName
+  - email
+  - phone
+  - description
+  - status
+  - createdBy
+- Users table (for dummy auth):
+  - id
+  - username
+  - password (plain text for prototype only)
+  - role
+
+STYLE REQUIREMENTS:
+- Match Syrian government website style:
+  - Green primary color
+  - White background
+- RTL everywhere
+- Formal Arabic tone
+- Layout similar to official ministry websites
+
+TECHNICAL REQUIREMENTS:
+- Use Axios for Workiom API calls
+- Use middleware to protect routes
+- Separate auth logic into:
+  /lib/auth.js
+- Use reusable auth guards so real auth can replace dummy auth later
+- Use environment variables for Workiom keys
+
+DELIVERABLES:
+- Functional UI
+- Working dummy authentication
+- CRUD operations for NGOs
+- Admin review workflow
+- Clear comments explaining where to replace auth later
