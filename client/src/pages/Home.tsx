@@ -127,8 +127,8 @@ export default function Home() {
               <h3 className="text-white font-bold mb-4">تواصل معنا</h3>
               <ul className="space-y-2 text-sm">
                 <li>دمشق، الجمهورية العربية السورية</li>
-                <li>هاتف: 1234 567 11 963+</li>
-                <li>البريد: info@ngo.gov.sy</li>
+                <li>هاتف: 0112314151 / 0112325221</li>
+                <li>البريد: info@mosal.gov.sy</li>
               </ul>
             </div>
           </div>
