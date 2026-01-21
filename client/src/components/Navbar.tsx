@@ -25,8 +25,8 @@ export function Navbar() {
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
               {/* Syrian Coat of Arms */}
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/5 rounded-full flex items-center justify-center border border-primary/10 overflow-hidden">
-                <img src={logoUrl} alt="Emblem of Syria" className="h-8 w-8 object-contain" />
+              <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center overflow-hidden">
+                <img src={logoUrl} alt="Emblem of Syria" className="h-full w-full object-contain" />
               </div>
               <div className="hidden md:flex flex-col">
                 <span className="text-sm font-bold text-primary">الجمهورية العربية السورية</span>
