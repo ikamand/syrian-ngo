@@ -77,10 +77,11 @@ export function useAuth() {
       }
       return api.auth.register.responses[201].parse(await res.json());
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+       queryClient.setQueryData([api.auth.me.path], data);
        toast({
-        title: "تم إنشاء الحساب",
-        description: "يمكنك الآن تسجيل الدخول",
+        title: "تم إنشاء الحساب بنجاح",
+        description: `مرحباً بك، ${data.username}`,
       });
     }
   });
