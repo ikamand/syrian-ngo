@@ -87,7 +87,7 @@ export default function Home() {
               <div className="text-primary-foreground/80 font-medium">منظمة مسجلة</div>
             </div>
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-secondary">12</div>
+              <div className="text-4xl font-bold text-secondary">14</div>
               <div className="text-primary-foreground/80 font-medium">محافظة</div>
             </div>
             <div className="space-y-2">
