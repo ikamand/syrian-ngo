@@ -21,6 +21,10 @@ export default function CreateNgo() {
     resolver: zodResolver(api.ngos.create.input),
     defaultValues: {
       name: "",
+      arabicName: "",
+      englishName: "",
+      legalForm: "",
+      scope: "",
       city: "",
       presidentName: "",
       email: "",
@@ -71,9 +75,65 @@ export default function CreateNgo() {
                     name="name"
                     render={({ field }) => (
                       <FormItem className="col-span-2">
-                        <FormLabel>اسم المنظمة الرسمي</FormLabel>
+                        <FormLabel>الاسم التعريفي</FormLabel>
                         <FormControl>
                           <Input placeholder="مثال: جمعية الأمل الخيرية" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="arabicName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>الاسم باللغة العربية</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="englishName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>الاسم باللغة الإنكليزية</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="legalForm"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>الشكل القانوني</FormLabel>
+                        <FormControl>
+                          <Input placeholder="مثال: جمعية أهلية" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="scope"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>نطاق عمل المنظمة</FormLabel>
+                        <FormControl>
+                          <Input placeholder="مثال: محافظة دمشق" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -85,7 +145,7 @@ export default function CreateNgo() {
                     name="city"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>المدينة / المحافظة</FormLabel>
+                        <FormLabel>المدينة / المحافظة (المركز الرئيسي)</FormLabel>
                         <FormControl>
                           <Input placeholder="مثال: دمشق" {...field} />
                         </FormControl>

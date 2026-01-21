@@ -59,7 +59,11 @@ export class MemStorage implements IStorage {
       ...insertNgo, 
       id, 
       status: "Pending", 
-      createdAt: new Date() 
+      createdAt: new Date(),
+      arabicName: insertNgo.arabicName,
+      englishName: insertNgo.englishName,
+      legalForm: insertNgo.legalForm,
+      scope: insertNgo.scope
     };
     this.ngos.set(id, ngo);
     return ngo;

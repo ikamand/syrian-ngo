@@ -12,13 +12,17 @@ export const users = pgTable("users", {
 export const ngos = pgTable("ngos", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  arabicName: text("arabic_name").notNull(),
+  englishName: text("english_name").notNull(),
+  legalForm: text("legal_form").notNull(),
+  scope: text("scope").notNull(),
   city: text("city").notNull(),
   presidentName: text("president_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   description: text("description").notNull(),
   status: text("status", { enum: ["Pending", "Approved", "Rejected"] }).default("Pending").notNull(),
-  createdBy: integer("created_by").notNull(), // References user.id
+  createdBy: integer("created_by").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

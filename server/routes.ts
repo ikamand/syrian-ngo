@@ -164,6 +164,10 @@ export async function registerRoutes(
     
     await storage.createNgo({
       name: "Syrian Hope Foundation",
+      arabicName: "مؤسسة الأمل السورية",
+      englishName: "Syrian Hope Foundation",
+      legalForm: "جمعية أهلية",
+      scope: "نطاق محلي",
       city: "Damascus",
       presidentName: "Ahmed Al-Sayed",
       email: "info@syrianhope.org",
@@ -175,6 +179,10 @@ export async function registerRoutes(
     
     await storage.createNgo({
       name: "Aleppo Reconstruction Initiative",
+      arabicName: "مبادرة إعادة إعمار حلب",
+      englishName: "Aleppo Reconstruction Initiative",
+      legalForm: "مؤسسة تنموية",
+      scope: "نطاق محافظات",
       city: "Aleppo",
       presidentName: "Fatima Khalid",
       email: "contact@alepporebuild.sy",
