@@ -156,6 +156,24 @@ export default function CreateNgo() {
                   )}
                 />
 
+                <div className="pt-8 border-t space-y-4">
+                  <h3 className="text-lg font-bold text-red-600">البيانات المطلوب استكمالها (حسب وثيقة منصة تشارك)</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-red-500">
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>معلومات التأسيس (الاسم، المعرف، الشكل القانوني)</li>
+                      <li>معلومات الإشهار ونطاق العمل</li>
+                      <li>وثائق المنظمة (النظام الداخلي، قرار الإشهار)</li>
+                      <li>التصنيفات والخدمات</li>
+                    </ul>
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>المراكز الخدمية والفروع</li>
+                      <li>العلاقة مع الوزارة (البيانات المالية)</li>
+                      <li>معلومات التواصل والحسابات البنكية</li>
+                      <li>البرامج والخطط السنوية</li>
+                    </ul>
+                  </div>
+                </div>
+
                 <div className="pt-4 border-t flex justify-end gap-4">
                   <Link href="/dashboard">
                     <Button variant="outline" type="button">إلغاء</Button>
