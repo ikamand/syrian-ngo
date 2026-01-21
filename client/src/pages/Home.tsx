@@ -50,6 +50,18 @@ export default function Home() {
         </div>
       </section>
 
+      {/* About Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <h2 className="text-3xl font-bold text-primary">عن منصة تشارك</h2>
+            <p className="text-xl text-muted-foreground leading-relaxed">
+              المنصة الوطنية الإلكترونية للمنظمات غير الحكومية التي هي صلة الوصل المباشرة والشفافة بين الجهات المانحة والمتبرعين من داخل وخارج سوريا من جهة وبين المؤسسات والجمعيات المعنية بإيصال المساعدات وتنفيذ البرامج التنموية من جهة آخرى وهي الطريقة المعاصرة التي تؤمن كل المعلومات اللازمة لكل متبرع وتسهل عملية التبرع من وقت وجهد وكل شخص قادر على إختيار الطريقة الأنسب للتبرع إما عن طريق المنصة أو بشكل مباشر .
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-20 bg-pattern">
         <div className="container mx-auto px-4">
