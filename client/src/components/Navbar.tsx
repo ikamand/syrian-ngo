@@ -1,3 +1,4 @@
+import logoUrl from "@assets/emblem-of-syria-seeklogo_1769035838735.png";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -23,9 +24,9 @@ export function Navbar() {
         <div className="flex items-center gap-2 md:gap-4">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
-              {/* Syrian Coat of Arms Placeholder - using Building icon for now if image fails */}
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-full flex items-center justify-center border-2 border-primary text-primary">
-                <Building2 className="h-6 w-6" />
+              {/* Syrian Coat of Arms */}
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/5 rounded-full flex items-center justify-center border border-primary/10 overflow-hidden">
+                <img src={logoUrl} alt="Emblem of Syria" className="h-8 w-8 object-contain" />
               </div>
               <div className="hidden md:flex flex-col">
                 <span className="text-sm font-bold text-primary">الجمهورية العربية السورية</span>
