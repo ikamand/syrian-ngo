@@ -247,6 +247,44 @@ export default function AssociationLaw() {
                   </div>
                 </CollapsibleSection>
 
+                <CollapsibleSection title="الباب الثاني - الجمعيات ذات النفع العام">
+                  <div className="space-y-4">
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 41-</span> يجوز اعتبار الجمعيات التي تحقق غرضاً من أغراض النفع العام جمعيات ذات نفع عام بقرار من وزارة الشؤون الاجتماعية والعمل بناءً على طلبها.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 42-</span> تتمتع الجمعيات ذات النفع العام بامتيازات منها عدم جواز الحجز على أموالها كلها أو بعضها، وجواز نزع الملكية للمنفعة العامة لصالحها.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 43-</span> للجهة الإدارية المختصة أن تندب من تراه للرقابة على أعمال الجمعية ذات النفع العام والتأكد من مطابقتها للقوانين.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 44-</span> يجوز إدماج جمعيتين أو أكثر من الجمعيات ذات النفع العام أو تعديل غرضها بقرار من الوزير المختص.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 45-</span> تلغى صفة النفع العام بقرار من الوزير إذا فقدت الجمعية أحد شروطها أو خالفت نظامها الأساسي.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 46-</span> تؤول أموال الجمعية التي تلغى عنها صفة النفع العام إلى الجهة التي يحددها قرار الإلغاء.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 47-</span> يجوز للجمعيات ذات النفع العام أن تطلب من الحكومة إعفاءها من بعض الضرائب والرسوم.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 48-</span> تخضع الجمعيات ذات النفع العام لرقابة الجهاز المركزي للرقابة المالية فيما يتعلق بالمنح والإعانات الحكومية.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 49-</span> يجب على الجمعية ذات النفع العام تقديم تقرير سنوي مفصل عن أعمالها وميزانيتها للوزارة.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 50-</span> يجوز للوزارة أن تضع نظاماً نموذجياً للجمعيات ذات النفع العام.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 51-</span> لا يجوز للجمعية ذات النفع العام تغيير اسمها أو مركزها إلا بموافقة الوزارة.</p>
+                    </div>
+                  </div>
+                </CollapsibleSection>
+
                 <CollapsibleSection title="الباب الخامس - العقوبات">
                   <div className="space-y-4">
                     <div className="bg-primary/5 p-4 rounded-lg">
