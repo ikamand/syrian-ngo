@@ -99,7 +99,14 @@ export class MemStorage implements IStorage {
   async updateNgo(id: number, updates: Partial<InsertNgo>): Promise<Ngo | undefined> {
     const ngo = this.ngos.get(id);
     if (!ngo) return undefined;
-    const updatedNgo = { ...ngo, ...updates };
+    
+    // If a non-admin is updating, or if we want to enforce the re-approval flow
+    // We set status back to Pending
+    const updatedNgo = { 
+      ...ngo, 
+      ...updates,
+      status: "Pending" as const 
+    };
     this.ngos.set(id, updatedNgo);
     return updatedNgo;
   }

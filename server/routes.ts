@@ -156,12 +156,27 @@ export async function registerRoutes(
     }
   });
 
-  app.put(api.ngos.update.path, requireAdmin, async (req, res) => {
+  app.put(api.ngos.update.path, requireAuth, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      const ngo = await storage.getNgo(id);
+      
+      if (!ngo) return res.status(404).json({ message: "NGO not found" });
+      
+      // Ensure user owns the NGO or is admin
+      if (req.user!.role !== "admin" && ngo.createdBy !== req.user!.id) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
       const input = api.ngos.update.input.parse(req.body);
+      
+      // If admin is updating, we might want to preserve status unless they explicitly change it
+      // But based on user request "after the request is done it'll need to be approved by the admin"
+      // we default to Pending in storage.updateNgo for everyone or handle here.
+      // Let's handle status reset specifically for non-admins if needed, 
+      // but storage.updateNgo already does it.
+      
       const updated = await storage.updateNgo(id, input);
-      if (!updated) return res.status(404).json({ message: "NGO not found" });
       res.json(updated);
     } catch (err) {
       res.status(400).json({ message: "Invalid request" });
