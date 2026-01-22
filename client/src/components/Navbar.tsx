@@ -2,7 +2,7 @@ import logoUrl from "@assets/emblem-of-syria-seeklogo_1769035838735.png";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, LogOut, User } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
