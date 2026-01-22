@@ -111,10 +111,10 @@
 }
 
 .bg-geometric {
-  background-color: #002b16; /* Deep dark green as seen in the image */
+  background-color: #003d1f; /* Lightened from #002b16 */
   background-image: 
-    linear-gradient(rgba(0, 122, 61, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 122, 61, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(0, 122, 61, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 122, 61, 0.1) 1px, transparent 1px);
   background-size: 40px 40px;
   position: relative;
 }
@@ -124,7 +124,7 @@
   position: absolute;
   inset: 0;
   background-image: url("https://www.transparenttextures.com/patterns/dark-geometric.png");
-  opacity: 0.4;
+  opacity: 0.6; /* Increased opacity for better pattern visibility */
   pointer-events: none;
 }
 
