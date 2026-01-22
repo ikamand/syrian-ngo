@@ -30,7 +30,7 @@ export function Navbar() {
               </div>
               <div className="hidden md:flex flex-col">
                 <span className="text-sm font-bold text-primary">الجمهورية العربية السورية</span>
-                <span className="text-xs text-muted-foreground font-medium">بوابة المنظمات غير الحكومية</span>
+                <span className="text-xs text-muted-foreground font-medium">وزارة الشؤون الإجتماعية والعمل</span>
               </div>
             </div>
           </Link>
