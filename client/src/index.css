@@ -56,22 +56,20 @@
   --border: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
   --ring: 142 70% 50%;
-  .popover-content {
-    @apply bg-popover text-popover-foreground shadow-md outline-none;
-    background-color: hsl(var(--popover)) !important;
-    opacity: 1 !important;
+  /* Ensure popovers and dropdowns are fully opaque */
+  [data-radix-popper-content-wrapper] {
+    z-index: 50 !important;
   }
 
-  .dropdown-menu-content {
-    @apply bg-popover text-popover-foreground shadow-md;
-    background-color: hsl(var(--popover)) !important;
+  .popover-content,
+  .dropdown-menu-content,
+  .select-content,
+  [role="listbox"],
+  [role="dialog"] {
+    background-color: hsl(var(--background)) !important;
     opacity: 1 !important;
-  }
-
-  .select-content {
-    @apply bg-popover text-popover-foreground shadow-md;
-    background-color: hsl(var(--popover)) !important;
-    opacity: 1 !important;
+    border: 1px solid hsl(var(--border)) !important;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
   }
 }
 
