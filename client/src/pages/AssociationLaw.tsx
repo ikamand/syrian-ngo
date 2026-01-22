@@ -174,6 +174,48 @@ export default function AssociationLaw() {
                   </div>
                 </section>
 
+                <section>
+                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الفصل الثالث - الهيئة العامة</h3>
+                  <div className="space-y-4">
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 31-</span> تتكون الهيئة العامة من جميع الأعضاء العاملين الذين وفوا التزاماتهم المفروضة عليهم وفقاً لنظام الجمعية ومضى على عضويتهم مدة سنة على الأقل، وتتخذ قرارات الهيئة العامة بالأغلبية النسبية للأعضاء الحاضرين.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 32-</span> تجب دعوة الهيئة العامة مرة كل سنة خلال الثلاثة أشهر التالية لانتهاء السنة المالية للجمعية للنظر في الميزانية والحساب الختامي وتقرير مجلس الإدارة عن أعمال السنة.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 33-</span> لا يجوز لعضو الجمعية الاشتراك في التصويت إذا كان موضوع القرار المعروض إبرام اتفاق معه أو رفع دعوى عليه أو إنهاء دعوى بينه وبين الجمعية.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 34-</span> كل قرار من الهيئة العامة أو مجلس الإدارة أو المدير يصدر مخالفاً للقانون أو نظام الجمعية يجوز إبطاله بحكم من محكمة البداية المدنية.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 35-</span> للجهة الإدارية المختصة في حالة الاستعجال وقف العمل بأي قرار يصدر من مجلس إدارة الجمعية أو جمعيتها العمومية إذا رأت أنه مخالف للقانون أو للنظام أو للآداب.</p>
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الفصل الرابع - في حل الجمعية</h3>
+                  <div className="space-y-4">
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 36-</span> يجوز بقرار مسبب من وزير الشؤون الاجتماعية والعمل حل الجمعية في حالات منها خروجها عن أهدافها أو ممارسة نشاط سياسي أو طائفي يمس بسلامة الدولة.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 37-</span> يحظر على أعضاء الجمعية المنحلة والمسؤولين عنها مواصلة نشاطها.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 38-</span> إذا حلت الجمعية عين لها مصفٍ واحد أو أكثر من قبل الجهة التي أصدرت قرار الحل.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 39-</span> بعد إتمام التصفية يقوم المصفي بتوزيع الأموال الباقية وفقاً للأحكام المقررة في نظام الجمعية.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 40-</span> تكون المحكمة الابتدائية المدنية التي يقع في دائرتها مركز الجمعية مختصة بالفصل في كل دعوى مدنية ترفع من المصفي أو عليه.</p>
+                    </div>
+                  </div>
+                </section>
+
                 <div className="mt-8 p-4 bg-amber-50 border-r-4 border-amber-500 rounded text-amber-900 text-sm italic">
                   ملاحظة: هذا المحتوى مستخرج من النسخة الرسمية لقانون الجمعيات والمؤسسات الخاصة رقم 93 لعام 1958.
                 </div>
