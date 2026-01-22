@@ -221,6 +221,32 @@ export default function AssociationLaw() {
                   </div>
                 </CollapsibleSection>
 
+                <CollapsibleSection title="الفصل الرابع - حل الجمعيات">
+                  <div className="space-y-4">
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 36-</span> يجوز حل الجمعية بقرار من وزارة الشؤون الاجتماعية والعمل في الحالات الآتية:</p>
+                      <ul className="list-decimal list-inside mt-2 space-y-2 pr-4 text-sm">
+                        <li>إذا نقص عدد أعضائها عن العدد المنصوص عليه في القانون.</li>
+                        <li>إذا خالفت أحكام هذا القانون أو نظامها الأساسي.</li>
+                        <li>إذا عجزت عن تحقيق أغراضها.</li>
+                        <li>إذا تصرفت في أموالها في غير الأغراض المخصصة لها.</li>
+                      </ul>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 37-</span> يجب أن يتضمن قرار الحل تعيين مصفٍ أو أكثر وتحديد مدة التصفية وأتعاب المصفين.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 38-</span> يحظر على أعضاء الجمعية المنحلة وموظفيها مواصلة نشاطها أو التصرف في أموالها بمجرد صدور قرار الحل.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 39-</span> للمصفين القيام بجميع أعمال التصفية بما في ذلك الوفاء بما للجمعية من حقوق وما عليها من التزامات.</p>
+                    </div>
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 40-</span> تؤول أموال الجمعية المنحلة بعد تمام التصفية إلى الجهة المنصوص عليها في نظامها، فإذا لم توجد تؤول إلى وزارة الشؤون الاجتماعية والعمل.</p>
+                    </div>
+                  </div>
+                </CollapsibleSection>
+
                 <CollapsibleSection title="الباب الخامس - العقوبات">
                   <div className="space-y-4">
                     <div className="bg-primary/5 p-4 rounded-lg">
