@@ -12,6 +12,14 @@ import { api, type InsertNgo } from "@shared/routes";
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Loader2 } from "lucide-react";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 export default function CreateNgo() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { mutate: createNgo, isPending } = useCreateNgo();
@@ -118,9 +126,18 @@ export default function CreateNgo() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>الشكل القانوني</FormLabel>
-                        <FormControl>
-                          <Input placeholder="مثال: جمعية أهلية" {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="اختر الشكل القانوني" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="جمعية أهلية">جمعية أهلية</SelectItem>
+                            <SelectItem value="مؤسسة تنموية">مؤسسة تنموية</SelectItem>
+                            <SelectItem value="فرع منظمة دولية">فرع منظمة دولية</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -132,9 +149,18 @@ export default function CreateNgo() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>نطاق عمل المنظمة</FormLabel>
-                        <FormControl>
-                          <Input placeholder="مثال: محافظة دمشق" {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="اختر نطاق العمل" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="نطاق محلي">نطاق محلي</SelectItem>
+                            <SelectItem value="نطاق محافظات">نطاق محافظات</SelectItem>
+                            <SelectItem value="نطاق وطني">نطاق وطني</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -146,9 +172,18 @@ export default function CreateNgo() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>المدينة / المحافظة (المركز الرئيسي)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="مثال: دمشق" {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="اختر المحافظة" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {["Damascus", "Aleppo", "Homs", "Hama", "Latakia", "Tartus", "Idlib", "Raqqa", "Deir ez-Zor", "Al-Hasakah", "Daraa", "As-Suwayda", "Quneitra", "Rif Dimashq"].map(city => (
+                              <SelectItem key={city} value={city}>{city}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
