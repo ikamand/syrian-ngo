@@ -41,22 +41,28 @@ export default function Auth() {
       {/* Decorative Side */}
       <div className="hidden lg:flex flex-col items-center justify-center bg-primary text-white p-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1576402187878-974f70c890a5?w=1600&auto=format&fit=crop')] opacity-20 bg-cover bg-center mix-blend-multiply" />
-        <div className="relative z-10 text-center space-y-8 max-w-lg">
-          <div className="w-24 h-24 bg-white/10 backdrop-blur rounded-full flex items-center justify-center mx-auto border-2 border-white/20">
-            <Building2 className="w-12 h-12 text-secondary" />
+          <div className="relative z-10 text-center space-y-8 max-w-lg">
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Coats_of_arms_of_Syria.svg/1200px-Coats_of_arms_of_Syria.svg.png" 
+              alt="Syrian National Emblem"
+              className="w-32 h-auto mx-auto drop-shadow-2xl"
+            />
+            <h1 className="text-4xl font-bold">بوابة المنظمات</h1>
+            <p className="text-lg text-white/80 leading-relaxed">
+              المنصة الرسمية الموحدة لتسجيل ومتابعة المنظمات غير الحكومية. سجّل دخولك للوصول إلى لوحة التحكم ومتابعة طلباتك.
+            </p>
           </div>
-          <h1 className="text-4xl font-bold">بوابة المنظمات</h1>
-          <p className="text-lg text-white/80 leading-relaxed">
-            المنصة الرسمية الموحدة لتسجيل ومتابعة المنظمات غير الحكومية. سجّل دخولك للوصول إلى لوحة التحكم ومتابعة طلباتك.
-          </p>
-        </div>
       </div>
 
       {/* Form Side */}
       <div className="flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-md space-y-8">
-          <div className="text-center lg:hidden">
-            <Building2 className="w-12 h-12 text-primary mx-auto mb-4" />
+          <div className="text-center">
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Coats_of_arms_of_Syria.svg/1200px-Coats_of_arms_of_Syria.svg.png" 
+              alt="Syrian National Emblem"
+              className="w-32 h-auto mx-auto drop-shadow-xl mb-6"
+            />
             <h1 className="text-2xl font-bold text-primary">بوابة المنظمات</h1>
           </div>
 
