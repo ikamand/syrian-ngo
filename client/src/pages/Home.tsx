@@ -162,13 +162,13 @@ export default function Home() {
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
     <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-      <CardHeader className="space-y-4">
+      <CardHeader className="space-y-4 flex flex-col items-center text-center">
         <div className="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-2">
           {icon}
         </div>
         <CardTitle className="text-xl">{title}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="text-center">
         <p className="text-muted-foreground leading-relaxed">
           {description}
         </p>
