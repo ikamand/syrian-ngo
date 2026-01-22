@@ -41,11 +41,6 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-geometric p-6 relative overflow-hidden">
       <div className="relative z-10 w-full max-w-md space-y-8 bg-background/95 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-white/10">
         <div className="text-center space-y-6">
-          <img 
-            src={emblemUrl} 
-            alt="Syrian National Emblem" 
-            className="w-40 h-auto mx-auto drop-shadow-xl"
-          />
           <div className="space-y-4">
             <h1 className="text-3xl font-bold text-primary">بوابة المنظمات</h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
