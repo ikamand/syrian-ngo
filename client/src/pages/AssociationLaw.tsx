@@ -76,6 +76,18 @@ export default function AssociationLaw() {
                     <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 10-</span> تقوم الجهة الإدارية المختصة بإجراء الشهر خلال ستين يوماً من تاريخ طلبه فإذا مضت الستين يوماً دون إتمامه اعتبر الشهر واقعاً بحكم القانون، وعلى الجهة المذكورة بناءً على طلب ذوي الشأن إجراء القيد في السجل والنشر في الجريدة الرسمية.</p>
                     </div>
+
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 11-</span> لذوي الشأن التظلم لدى الجهة الإدارية المختصة من القرار الصادر برفض إجراء الشهر خلال ستين يوماً من تاريخ إبلاغهم قرار الرفض، ويجب أن يكون البت في هذا التظلم بقرار مسبب خلال ستين يوماً من تاريخ وصوله إلى الجهة الإدارية المختصة، وإلا اعتبر قرار الرفض كأن لم يكن.</p>
+                    </div>
+
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 12-</span> لكل شخص حق الاطلاع على سجلات الجمعية ومستنداتها التي تقدم للشهر، والحصول على صور منها مصدق عليها بمطابقتها للأصل بعد أداء الرسم المقرر.</p>
+                    </div>
+
+                    <div className="bg-primary/5 p-4 rounded-lg">
+                      <p><span className="font-bold text-primary">مادة 13-</span> تسري الأحكام المتقدمة على كل تعديل في نظام الجمعية ويعتبر التعديل كأنه لم يكن ما لم يشهر.</p>
+                    </div>
                   </div>
                 </section>
 
