@@ -156,6 +156,25 @@ export async function registerRoutes(
     }
   });
 
+  app.put(api.ngos.update.path, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const input = api.ngos.update.input.parse(req.body);
+      const updated = await storage.updateNgo(id, input);
+      if (!updated) return res.status(404).json({ message: "NGO not found" });
+      res.json(updated);
+    } catch (err) {
+      res.status(400).json({ message: "Invalid request" });
+    }
+  });
+
+  app.delete(api.ngos.delete.path, requireAdmin, async (req, res) => {
+    const id = parseInt(req.params.id);
+    const success = await storage.deleteNgo(id);
+    if (!success) return res.status(404).json({ message: "NGO not found" });
+    res.json({ success: true });
+  });
+
   // Seeding
   if ((await storage.getNgos()).length === 0) {
     console.log("Seeding database...");

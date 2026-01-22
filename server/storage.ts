@@ -14,6 +14,8 @@ export interface IStorage {
   getNgos(): Promise<Ngo[]>;
   getNgosByUserId(userId: number): Promise<Ngo[]>;
   updateNgoStatus(id: number, status: string): Promise<Ngo | undefined>;
+  updateNgo(id: number, updates: Partial<InsertNgo>): Promise<Ngo | undefined>;
+  deleteNgo(id: number): Promise<boolean>;
 
   sessionStore: session.Store;
 }
@@ -92,6 +94,18 @@ export class MemStorage implements IStorage {
     const updatedNgo = { ...ngo, status: status as "Pending" | "Approved" | "Rejected" };
     this.ngos.set(id, updatedNgo);
     return updatedNgo;
+  }
+
+  async updateNgo(id: number, updates: Partial<InsertNgo>): Promise<Ngo | undefined> {
+    const ngo = this.ngos.get(id);
+    if (!ngo) return undefined;
+    const updatedNgo = { ...ngo, ...updates };
+    this.ngos.set(id, updatedNgo);
+    return updatedNgo;
+  }
+
+  async deleteNgo(id: number): Promise<boolean> {
+    return this.ngos.delete(id);
   }
 }
 

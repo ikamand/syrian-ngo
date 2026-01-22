@@ -92,6 +92,25 @@ export const api = {
         401: errorSchemas.unauthorized,
       },
     },
+    update: {
+      method: 'PUT' as const,
+      path: '/api/ngos/:id',
+      input: insertNgoSchema.partial(),
+      responses: {
+        200: z.custom<typeof ngos.$inferSelect>(),
+        404: errorSchemas.notFound,
+        401: errorSchemas.unauthorized,
+      },
+    },
+    delete: {
+      method: 'DELETE' as const,
+      path: '/api/ngos/:id',
+      responses: {
+        200: z.object({ success: z.boolean() }),
+        404: errorSchemas.notFound,
+        401: errorSchemas.unauthorized,
+      },
+    },
   },
 };
 
