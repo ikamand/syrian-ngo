@@ -122,7 +122,11 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8 border-b border-slate-800 pb-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <Building2 className="h-8 w-8 text-secondary" />
+                <img 
+                  src={emblemUrl} 
+                  alt="Syrian National Emblem" 
+                  className="h-12 w-auto drop-shadow-lg"
+                />
                 <span className="text-lg font-bold text-white">بوابة المنظمات</span>
               </div>
               <p className="text-sm leading-relaxed max-w-xs text-slate-400">
@@ -147,7 +151,7 @@ export default function Home() {
             </div>
           </div>
           <div className="text-center text-sm text-slate-500">
-            © 2024 بوابة المنظمات غير الحكومية - جميع الحقوق محفوظة
+            © 2026 بوابة المنظمات غير الحكومية - جميع الحقوق محفوظة
           </div>
         </div>
       </footer>
