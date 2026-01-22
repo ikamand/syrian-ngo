@@ -56,7 +56,7 @@
   --border: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
   --ring: 142 70% 50%;
-  /* Ensure popovers and dropdowns are fully opaque */
+  /* Translucent green background for popovers and dropdowns */
   [data-radix-popper-content-wrapper] {
     z-index: 50 !important;
   }
@@ -66,10 +66,23 @@
   .select-content,
   [role="listbox"],
   [role="dialog"] {
-    background-color: hsl(var(--background)) !important;
-    opacity: 1 !important;
-    border: 1px solid hsl(var(--border)) !important;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+    background-color: rgba(20, 83, 45, 0.95) !important; /* Green 900 with 95% opacity */
+    backdrop-filter: blur(8px) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3) !important;
+  }
+
+  /* Style select items for better contrast on green background */
+  [role="option"], 
+  .dropdown-menu-item {
+    color: white !important;
+  }
+
+  [role="option"][data-highlighted],
+  [role="option"]:hover,
+  .dropdown-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
   }
 }
 
