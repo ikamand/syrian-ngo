@@ -1,6 +1,35 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText } from "lucide-react";
+import { FileText, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+
+interface CollapsibleSectionProps {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}
+
+function CollapsibleSection({ title, children, defaultOpen = false }: CollapsibleSectionProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div className="border rounded-lg overflow-hidden mb-6">
+      <Button
+        variant="ghost"
+        className="w-full flex items-center justify-between p-4 bg-primary/5 hover:bg-primary/10 rounded-none h-auto"
+        onClick={() => setIsOpen(!isOpen)}
+        data-testid={`button-toggle-${title}`}
+      >
+        <span className="text-xl font-bold text-primary border-r-4 border-primary pr-4 text-right">{title}</span>
+        {isOpen ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5 text-primary" />}
+      </Button>
+      <div className={`${isOpen ? "block" : "hidden"} p-6 space-y-4 text-right`} dir="rtl">
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function AssociationLaw() {
   return (
@@ -19,9 +48,8 @@ export default function AssociationLaw() {
                 <FileText className="w-8 h-8" />
                 <h2 className="text-xl font-bold">قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)</h2>
               </div>
-              <div className="prose prose-slate max-w-none space-y-8">
-                <section>
-                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الباب الأول – الجمعيات عموماً</h3>
+              <div className="prose prose-slate max-w-none space-y-8 mt-6">
+                <CollapsibleSection title="الباب الأول – الجمعيات عموماً" defaultOpen={true}>
                   <h4 className="text-lg font-bold mb-3">الفصل الأول – أحكام عامة</h4>
                   
                   <div className="space-y-4">
@@ -145,10 +173,9 @@ export default function AssociationLaw() {
                       <p><span className="font-bold text-primary">مادة 25-</span> للجمعية أن تكون فروعاً لها، ويجوز شهر هذه الفروع ويكون لها حينئذ شخصية اعتبارية مستقلة على أن لا يكون للفرع تعديل نظامه الداخلي فيما يتعلق بالالتحامات قبل الجمعية الأصلية وكذلك فيما يتعلق بالسياسة العامة والتوجيه إلا بموافقة الجمعية الأصلية.</p>
                     </div>
                   </div>
-                </section>
+                </CollapsibleSection>
 
-                <section>
-                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الفصل الثاني - مجلس الإدارة</h3>
+                <CollapsibleSection title="الفصل الثاني - مجلس الإدارة">
                   <div className="space-y-4">
                     <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 26-</span> 1- يدير الجمعية مجلس إدارة تنتخبه الهيئة العامة من بين أعضائها ويبين نظام الجمعية اختصاص المجلس ومدته وإجراءات انتخاب أعضائه وكيفية انتهاء عضويتهم.</p>
@@ -172,10 +199,9 @@ export default function AssociationLaw() {
                       <p><span className="font-bold text-primary">مادة 30-</span> يكون للمدير القيام بالأعمال التنفيذية الداخلية للجمعية كما يقترح تعيين الموظفين وتوقيع الجزاءات التأديبية عليهم واعتماد أذونات الصرف والإشراف على تنفيذ قرارات الهيئة العامة ومجلس الإدارة ما لم يرد نص في نظام الجمعية بخلاف ذلك.</p>
                     </div>
                   </div>
-                </section>
+                </CollapsibleSection>
 
-                <section>
-                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الفصل الثالث - الهيئة العامة</h3>
+                <CollapsibleSection title="الفصل الثالث - الهيئة العامة">
                   <div className="space-y-4">
                     <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 31-</span> تتكون الهيئة العامة من جميع الأعضاء العاملين الذين وفوا التزاماتهم المفروضة عليهم وفقاً لنظام الجمعية ومضى على عضويتهم مدة سنة على الأقل، ويستثنى من شرط مضي السنة أعضاء جمعية الطلبة في معاهد التعليم، ومع ذلك لا تكون قرارات الهيئة العامة صحيحة إلا إذا صدرت في المسائل المبينة في جدول الأعمال الذي يجب إرفاقه بإعلان الدعوة، وتتخذ قرارات الهيئة العامة بالأغلبية النسبية للأعضاء الحاضرين وذلك ما لم يرد في نظام الجمعية نص يخالف هذا الحكم، وتصدر القرارات بالأغلبية المطلقة لأعضاء الجمعية فيما يختص بتعديل النظام وبأغلبية ثلثي أعضاء الجمعية فيما يختص بتقرير حل الجمعية أو بإدخال تعديل في نظامها يتعلق بغرض الجمعية أو عزل أعضاء مجلس الإدارة وكذلك فيما يتعلق باتحاد الجمعية بغيرها أو إدماجها فيها وهذا ما لم يرد في النظام نص يشترط أغلبية أكثر من ذلك ويجوز للعضو أن ينيب عنه كتابة عضو آخر يمثله في حضور الجمعية. <span className="underline decoration-primary/30 underline-offset-4">(استبدلت عبارة الجمعية العمومية بعبارة الهيئة العامة أينما وردت في هذا القانون بالمرسوم التشريعي رقم /224/ تاريخ 1969/9/21)</span>.</p>
@@ -187,162 +213,15 @@ export default function AssociationLaw() {
                       <p><span className="font-bold text-primary">مادة 33-</span> لا يجوز لعضو الجمعية الاشتراك في التصويت إذا كان موضوع القرار المعروض إبرام اتفاق معه أو رفع دعوى عليه أو إنهاء دعوى بينه وبين الجمعية، وكذلك كلما كانت له مصلحة شخصية في القرار المطروح فيما عدا انتخاب هيئات الجمعية.</p>
                     </div>
                     <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 34-</span> كل قرار من الهيئة العامة أو مجلس الإدارة أو المدير يصدر مخالفاً للقانون أو نظام الجمعية يجوز إبطاله بحكم من محكمة البداية المدنية التي يقع في دائرتها مركز الجمعية ويشترط أن ترفع دعوى البطلان من أحد الأعضاء أو من شخص آخر ذي مصلحة ومن النيابة العامة خلال ستة أشهر من تاريخ صدور القرار، ولا يجوز توجيه دعوى البطلان قبل الغير حسني النية الذين يكونون قد كسبوا حقوقاً على أساس القرار المذكور.</p>
+                      <p><span className="font-bold text-primary">مادة 34-</span> يجوز لكل عضو وللجهة الإدارية المختصة ولكل شخص آخر ذي مصلحة الطعن ببطلان أي قرار يصدر من الهيئة العامة مخالفاً للقانون أو لنظام الجمعية، وذلك أمام المحكمة المدنية المختصة التي يقع في دائرتها مركز إدارة الجمعية، ويجب أن يرفع طلب البطالن من العضو أو أي شخص آخر ذي مصلحة ومن النيابة العامة خلال ستة أشهر من تاريخ صدور القرار، ولا يجوز توجيه دعوى البطلان قبل الغير حسني النية الذين يكونون قد كسبوا حقوقاً على أساس القرار المذكور.</p>
                     </div>
                     <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 35-</span> للجهة الإدارية المختصة في حالة الاستعجال وقف العمل بأي قرار يصدر من مجلس إدارة الجمعية أو جمعيتها العمومية أو من مديرها إذا رأت أنه مخالف للقانون أو للنظام أو للآداب. ويعتبر قرار الوقف كأن لم يكن إذا لم ترفع دعوى البطلان خلال الثلاثين يوماً التالية لصدور القرار ممن تقدم ذكرهم في المادة السابقة أو من الجهة الإدارية المختصة التي أصدرت قرار الوقف.</p>
+                      <p><span className="font-bold text-primary">مادة 35-</span> <span className="underline decoration-primary/30 underline-offset-4">تعتبر قرارات الهيئة العامة ومجلس الإدارة باطلة إذا كانت تتضمن مخالفة للقانون أو للنظام العام أو للآداب، أو تتضمن المساس بسلامة الدولة أو بشكل الحكومة أو كانت تخرج عن أغراض الجمعية أو تخل بأي حكم من أحكام هذا القانون أو اللائحة التنفيذية أو القرارات الصادرة بمقتضاها، وللوزارة إيقاف تنفيذها ومراجعة القضاء لإبطالها.</span></p>
                     </div>
                   </div>
-                </section>
+                </CollapsibleSection>
 
-                <section>
-                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الفصل الرابع - في حل الجمعية</h3>
-                  <div className="space-y-4">
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 36-</span> أ- يجوز بقرار مسبب من وزير الشؤون الاجتماعية والعمل حل الجمعية في إحدى الحالات التالية:</p>
-                      <ul className="list-decimal list-inside mt-2 space-y-1 text-sm">
-                        <li>خروج الجمعية عن أهدافها المبينة في نظامها.</li>
-                        <li>إذا لم يجتمع مجلس إدارتها خلال ستة أشهر أو لم تجتمع هيئتها العامة خلال سنتين متتاليتين.</li>
-                        <li>ممارسة الجمعية نشاطاً طائفياً أو عنصرياً أو سياسياً يمس بسلامة الدولة.</li>
-                        <li>ممارسة الجمعية نشاطاً يمس الأخلاق والآداب العامة.</li>
-                        <li>إذا كررت الجمعية المخالفات رغم إنذارها من الوزارة.</li>
-                        <li>عجز الجمعية عن تحقيق أغراضها والوفاء بتعهداتها أو تخصيص أموالها لأغراض غير التي نشئت من أجلها.</li>
-                        <li>إذا رأت الوزارة عدم الحاجة إلى خدمات الجمعية.</li>
-                      </ul>
-                      <p className="mt-2 text-sm">ولا يجوز حل الجمعيات في الحالات /1-2-5-6/ إلا بعد إنذارها من الوزارة وانقضاء فترة الإنذار دون أن تستجيب الجمعية له على أن لا تقل فترة الإنذار عن خمسة عشر يوماً. <span className="underline decoration-primary/30 underline-offset-4">ب- يعتبر قرار حل الجمعية قطعياً لا يقبل أي طريق من طرق المراجعة. ج- في جميع الحالات يجب أن يستند قرار الحل إلى تحقيقات رسمية تجريها الدوائر المختصة في وزارة الشؤون الاجتماعية والعمل. (عدلت هذه المادة بالمرسوم رقم 224 تاريخ 1969/9/21).</span></p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 37-</span> <span className="underline decoration-primary/30 underline-offset-4">يحظر على أعضاء الجمعية المنحلة كما يحظر على القائمين بإدارتها، وعلى موظفيها مواصلة نشاطها كما يحظر على كل شخص علم بالحل أن يشترك في مواصلة نشاطها.</span></p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 38-</span> إذا حلت الجمعية عين لها مصفٍ واحد أو أكثر من قبل الجهة التي أصدرت قرار الحل.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 39-</span> <span className="underline decoration-primary/30 underline-offset-4">بعد إتمام التصفية يقوم المصفي بتوزيع الأموال الباقية وفقاً للأحكام المقررة في نظام الجمعية. فإذا لم يوجد في نظام الجمعية نص على ذلك أو وجد ولكن أصبحت طريقة التوزيع المنصوص عليها غير ممكنة وجب على الجهة التي أصدرت قرار الحل متى صار نهائياً أن تقرر توجيه أموال الجمعية المنحلة إلى الجمعية أو المؤسسة التي يكون غرضها هو الأقرب إلى غرض الجمعية.</span></p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 40-</span> تكون المحكمة الابتدائية المدنية التي يقع في دائرتها مركز الجمعية مختصة بالفصل في كل دعوى مدنية ترفع من المصفي أو عليه.</p>
-                    </div>
-                  </div>
-                </section>
-
-                <section>
-                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الباب الثاني - في الجمعيات ذات النفع العام</h3>
-                  <div className="space-y-4">
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 41-</span> تعتبر جمعية ذات نفع عام كل جمعية يقصد بها تحقيق مصلحة عامة <span className="underline decoration-primary/30 underline-offset-4">(يصدر قرار من رئيس الجمهورية باعتبارها كذلك)</span> وكما يجوز بقرار من رئيس الجمهورية سحب صفة النفع العام من الجمعية.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 42-</span> تستثنى الجمعية ذات النفع العام من قيود الأهلية المتعلقة بتملك الأموال والعقارات.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 43-</span> يعين بقرار من رئيس الجمهورية ما تتمتع به الجمعية ذات النفع العام من اختصاصات السلطة العامة كعدم جواز الحجز على أموالها كلها أو بعضها وكذلك عدم جواز تملك هذه الأموال بمضي المدة وجواز قيام الجهة الإدارية المختصة بنزع الملكية للمنفعة العامة التي تقوم بها الجمعية.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 44-</span> تخضع الجمعيات ذات النفع العام لرقابة الجهة الإدارية المختصة، وتتناول هذه الرقابة فحص أعمال الجمعية والتحقق من مطابقتها للقوانين ونظام الجمعية وقرارات الهيئة العامة، ويتولى هذه الرقابة مفتشون يعينهم الوزير المختص وترفع تقاريرهم إلى الجهة الإدارية المختصة.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 45-</span> للجهة الإدارية المختصة أن تنشأ في أي منطقة اتحاداً يقوم بتنسيق نشاط الجمعيات ذات النفع العام إذا كانت أغراضها متماثلة أو متقاربة في تلك المنطقة كما يقوم بتوحيد مصادر تلك الأموال وتوزيعها على وجه النشاط ويتألف الاتحاد من ممثلي الجمعيات في المنطقة وممثلي فروع الجهات الإدارية المختصة الموجودة فيها وغيرهم من الأشخاص الذين يصدر بتحديدهم قرار وزاري.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 46-</span> للجهة الإدارية المختصة أن تقرر إدماج أكثر من جمعية ذات نفع عام يرى أنها تسعى لتحقيق غرض مشترك أو توحيد إدارتها أو تعديل أغراضها تبعاً لاحتياجات البيئة لتحقيق التناسق بين الخدمات التي تؤديها ولغير ذلك من الأسباب التي تراها كفيلة بحسن تحقيق الغرض الذي نشئت من أجله ويراعى بقدر الإمكان رغبات المؤسسين وغرض الجمعية ونوع ما تؤديه من خدمات. ويصدر بقرار الاندماج قرار مسبب يبين فيه كيفية الاندماج وعلى ممثلي الجمعية المندمجة أن يسلموا الجمعية الدامجة جميع الأموال والمستندات الخاصة بها.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 47-</span> للجهة الإدارية المختصة أن تستبعد في الجمعيات ذات النفع العام من ترى استبعاده من المرشحين لانتخاب هيئاتها التنفيذية، كما يجوز لها أن تندب من يحضر الانتخابات للتحقق من أنه يجري طبقاً لنظام الجمعية ولها إلغاء الانتخاب بقرار مسبب وذلك خلال خمسة عشر يوماً من إجرائه إذا تبين أنه وقع مخالفاً لذلك النظام والقانون وإذا كانت العضوية في مجلس الإدارة تتم بالتعيين وجب إبلاغ جهة الإدارة المذكورة قبل ثلاثين يوماً بأسماء المرشحين للعضوية ولهذه الجهة استبعاد من ترى استبعاده منهم.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 48-</span> للجهة الإدارية المختصة أن تعين بقرار مسبب مديراً أو مجلس إدارة مؤقتاً للجمعية ذات النفع العام يتولى الاختصاصات المخولة في نظامها لمجلس إدارتها وذلك إذا ارتكبت من المخالفات ما يستوجب هذا الإجراء ولم تر الجهة الإدارية حلها، أو إذا أصبح عدد أعضاء مجلس الإدارة لا يكفي لانعقاده انعقاداً صحيحاً، وإذا تعذر انعقاد الهيئة العامة بسبب عدم تكامل الأعضاء مرتين متواليتين بدون عذر تقبله الجهة الإدارية المختصة وذلك كله بعد إنذار الجمعية بإزالة أسباب المخالفة وانقضاء خمسة عشر يوماً من تاريخ الإنذار دون إزالتها. <span className="underline decoration-primary/30 underline-offset-4">(وينشر القرار الصادر بهذا الشأن في الجريدة الرسمية)</span>. وللمحكمة الابتدائية المختصة أن تصدر حكماً بهذا الإجراء بناء على طلب أي عضو من أعضاء الجمعية أو أي شخص ذي مصلحة.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 49-</span> على أعضاء مجلس إدارة الجمعية والموظفين القائمين بالعمل فيها أن يبادروا إلى تسليم المجلس المؤقت بمجرد تشكيله جميع أموال الجمعية وسجلاتها ودفاترها ومستنداتها ولا يخل هذا التسليم بما يترتب في ذمتهم من مسؤولية طبقاً لأحكام القانون.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 50-</span> على المدير أو مجلس الإدارة المؤقت أن يدعو الهيئة العامة خلال المدة التي يحددها قرار تعيينه وأن يعرض عليها تقريراً مفصلاً عن حالتها وتنتخب الهيئة العامة مجلس إدارتها الجديدة في الجلسة ذاتها بعد اتخاذ الإجراءات الخاصة بترشيح أعضاء مجلس الإدارة وفقاً لأحكام هذا القانون، وتكون قرارات المدير أو المجلس المؤقت خلال المدة المعينة في قرار تشكيله ملزمة للجمعية في الحدود المبينة بهذا القرار أو في الحدود المقررة في نظام الجمعية.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 51-</span> للجهة الإدارية المختصة أن تقرر حرمان من تثبت مسؤوليتهم من أعضاء مجلس الإدارة القديم عن وقوع المخالفات التي أدت إلى تعيين مدير أو مجلس إدارة مؤقت من ترشيح نفسهم لعضوية مجلس الإدارة الجديد لمدة أقصاها ثلاث سنوات.</p>
-                    </div>
-                  </div>
-                </section>
-
-                <section>
-                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الباب الثالث - في أحكام خاصة ببعض الجمعيات</h3>
-                  <div className="space-y-4">
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 52-</span> تعد جمعية خيرية كل جمعية تتكون لتحقيق غرض أو أكثر من أغراض البر والرعاية الاجتماعية قصر نفعها على أعضائها أو لم يقصر عليهم، وإذا باشرت جمعية غير خيرية غرضاً من أغراض البر والرعاية عن طريق هيئات داخلية فيها خضعت هذه الهيئات لأحكام الجمعيات الخيرية. ولا يجوز الجمع بين عضوية مجلس الإدارة والعمل للجمعية بأجر.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 53-</span> على مجلس إدارة الجمعية الخيرية أن يضع تقريراً سنوياً عن أعماله ونشاطه وأن يوافي الجهة الإدارية المختصة بميزانية الجمعية وحسابها الختامي مع المستندات المؤيدة لها متى طلب تقديمها وعليه أيضاً تقديم أية معلومات أو بيانات أخرى تطلبها الجهة المذكورة.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 54-</span> تعتبر جمعية ثقافية كل جمعية يكون الغرض من تكوينها النهوض بالعلوم والفنون والآداب.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 55-</span> على مجلس إدارة الجمعية الثقافية موافاة الجهة الإدارية المختصة سنوياً بتقرير عن نشاطها فضلاً عن المستندات والبيانات المنصوص عليها بالنسبة إلى سائر الجمعيات.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 56-</span> يجب أن يراعى عند انتخاب مجالس إدارة الأندية التي يشارك في عضويتها أشخاص من جنسية الجمهورية العربية السورية وأجانب أن تكون نسبة عدد الأعضاء الذين يحملون جنسية الجمهورية العربية السورية في مجالس الإدارة مماثلة على الأقل لنسبتهم إلى مجموع الأعضاء المشتركين.</p>
-                    </div>
-                  </div>
-                </section>
-
-                <section>
-                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الباب الرابع - في المؤسسات الخاصة</h3>
-                  <div className="space-y-4">
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 57-</span> تنشأ المؤسسة بتخصيص مال لمدة غير معينة لعمل ذي صفة إنسانية أو دينية أو علمية أو فنية أو أي عمل آخر من أعمال البر والرعاية الاجتماعية أو النفع العام دون صفة إلى ربح مادي.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 58-</span> يكون إنشاء المؤسسة بسند رسمي أو بوصية ويعتبر السند أو الوصية دستوراً للمؤسسة ويجب أن يشمل البيانات الآتية:</p>
-                      <ul className="list-disc list-inside mt-2 space-y-1 pr-4">
-                        <li>اسم المؤسسة ومركزها على أن يكون هذا المركز في الجمهورية العربية السورية.</li>
-                        <li>الغرض الذي نشئت المؤسسة لتحقيقه.</li>
-                        <li>بيان دقيق للأموال المخصصة لهذا العمل.</li>
-                        <li>تنظيم إدارة المؤسسة بما في ذلك اسم مديرها.</li>
-                      </ul>
-                      <p className="mt-2">كما يجب أن يشتمل على البيانات الأخرى التي يصدر بتعيينها قرار من الجهة الإدارية المختصة.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 59-</span> يعتبر إنشاء المؤسسة بالنسبة لدائني المنشئ وورثته بمثابة هبة أو وصية، فإذا كانت المؤسسة قد نشأت إضراراً بحقوقهم جاز لهم مباشرة الدعاوى التي يقررها القانون في مثل هذه الحالة بالنسبة إلى الهبات والوصايا.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 60-</span> متى كان إنشاء المؤسسة بسند رسمي جاز لمن أنشأها أن يعدل عنها بسند رسمي آخر إلى أن يتم شهرها.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 61-</span> لا تثبت الشخصية الاعتبارية للمؤسسة إلا إذا شهر نظامها طبقاً لأحكام هذا القانون.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 62-</span> يتم شهر المؤسسة بناء على طلب منشئها أو أول مدير لها أو الجهة الإدارية المختصة بالإشراف على المؤسسة طبقاً للأحكام المقررة لشهر الجمعيات.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 63-</span> للجهة الإدارية المختصة الاعتراض على إنشاء المؤسسات والرقابة عليها وتعديل نظمها بما يحقق الغرض من إنشائها. وتنظم اللائحة التنفيذية أحوال الاعتراض وأحكام الرقابة.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 64-</span> يتولى مدير المؤسسة إدارتها ويمثلها فيما لها من حقوق وما عليها من واجبات.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 65-</span> على مدير المؤسسة موافاة الجهة الإدارية المختصة بميزانية المؤسسة وحسابها السنوي مع المستندات المؤيدة لهما وعليه أيضاً تقديم أية معلومات أو بيانات أو مستندات أخرى تطلبها هذه الجهة.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 66-</span> لا يجوز للمؤسسة قبول الوصايا والهبات إلا بإذن من الجهة الإدارية المختصة.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 67-</span> للجهة الإدارية المختصة عزل المديرين الذين يثبت إهمالهم في إدارتها أو عدم تنفيذ ما فرض عليهم القانون أو سند المؤسسة والذين يستعملون أموال المؤسسة فيما لا يتفق مع أغراضها أو صفة منشئها والذين يرتكبون خطأ جسيماً آخر، أو لاعتبارات قومية وتعيين من يحل محلهم في إدارتها. ولها كذلك أن تخفف أو تلغي كل أو بعض الالتزامات والشروط المقررة في سند إنشائها إذا كان ذلك لازماً للمحافظة على أموال المؤسسة لتحقيق الغرض من إنشائها.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 68-</span> للجهة الإدارية المختصة إبطال التصرفات التي قام بها مدير المؤسسة مخالفاً للقانون أو النظام العام، أو مجاوزاً حدود اختصاصه المنصوص عليه في نظام المؤسسة. ويجب أن يكون الإبطال خلال سنتين من تاريخ العمل المراد إبطاله ولا يترتب عليه إضرار بالغير حسني النية الذين كسبوا حقوقاً على أساس تلك التصرفات.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 69-</span> يسري على المؤسسات بأنواعها من حيث إدماجها وتقسيمها وإنشاء فروع لها وتعيين مدير مؤقت لإدارتها أو حلها أو تصفيتها أو جواز تحويلها إلى مؤسسة ذات نفع عام ما يسري على الجمعيات في هذا الشأن من أحكام كما يسري عليها الحظر المنصوص عليه في المادة /21/ من هذا القانون بالنسبة للجمعيات.</p>
-                    </div>
-                    <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 70-</span> لا تسري الأحكام الخاصة بالمؤسسات الواردة في هذا القانون على ما أنشئ منها بطريق الوقف.</p>
-                    </div>
-                  </div>
-                </section>
-
-                <section>
-                  <h3 className="text-xl font-bold text-primary mb-4 border-r-4 border-primary pr-4">الباب الخامس - العقوبات</h3>
+                <CollapsibleSection title="الباب الخامس - العقوبات">
                   <div className="space-y-4">
                     <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 71-</span> يعاقب بالحبس مدة لا تزيد عن ثلاثة أشهر وبغرامة لا تزيد عن ألف ليرة سورية أو بإحدى هاتين العقوبتين:</p>
@@ -370,7 +249,7 @@ export default function AssociationLaw() {
                       <p>2- ال يخل تطبيق الأحكام المتقدمة بتوقيع أية عقوبات أشد ينص عليها قانون العقوبات أو أي قانون آخر.</p>
                     </div>
                   </div>
-                </section>
+                </CollapsibleSection>
               </div>
             </CardContent>
           </Card>

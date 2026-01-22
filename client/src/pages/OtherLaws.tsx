@@ -1,6 +1,35 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
-import { Scale } from "lucide-react";
+import { Scale, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+
+interface CollapsibleSectionProps {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}
+
+function CollapsibleSection({ title, children, defaultOpen = false }: CollapsibleSectionProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div className="border rounded-lg overflow-hidden mb-6">
+      <Button
+        variant="ghost"
+        className="w-full flex items-center justify-between p-4 bg-primary/5 hover:bg-primary/10 rounded-none h-auto"
+        onClick={() => setIsOpen(!isOpen)}
+        data-testid={`button-toggle-${title}`}
+      >
+        <span className="text-xl font-bold text-primary border-r-4 border-primary pr-4 text-right">{title}</span>
+        {isOpen ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5 text-primary" />}
+      </Button>
+      <div className={`${isOpen ? "block" : "hidden"} p-6 space-y-4 text-right`} dir="rtl">
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function OtherLaws() {
   return (
@@ -19,15 +48,17 @@ export default function OtherLaws() {
                 <Scale className="w-8 h-8" />
                 <h2 className="text-xl font-bold">التشريعات والمراسيم ذات الصلة</h2>
               </div>
-              <div className="prose prose-slate max-w-none">
-                <p>بالإضافة إلى القانون الأساسي، هناك مجموعة من المراسيم والقرارات التي تنظم جوانب محددة من عمل المنظمات غير الحكومية، خاصة فيما يتعلق بالتعاون الدولي، والإعفاءات الضريبية، والعمل الإغاثي.</p>
-                <h3 className="text-lg font-bold mt-6 mb-2">أهم المراسيم:</h3>
-                <ul className="list-disc list-inside space-y-2">
-                  <li>المراسيم المتعلقة بالعمل التطوعي.</li>
-                  <li>القرارات الناظمة لتلقي التمويل والمنح.</li>
-                  <li>الاتفاقيات النموذجية للتعاون مع المنظمات الدولية.</li>
-                  <li>الأنظمة المالية المحاسبية الموحدة.</li>
-                </ul>
+              <div className="prose prose-slate max-w-none mt-6">
+                <p className="mb-8">بالإضافة إلى القانون الأساسي، هناك مجموعة من المراسيم والقرارات التي تنظم جوانب محددة من عمل المنظمات غير الحكومية، خاصة فيما يتعلق بالتعاون الدولي، والإعفاءات الضريبية، والعمل الإغاثي.</p>
+                
+                <CollapsibleSection title="أهم المراسيم والقرارات" defaultOpen={true}>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>المراسيم المتعلقة بالعمل التطوعي.</li>
+                    <li>القرارات الناظمة لتلقي التمويل والمنح.</li>
+                    <li>الاتفاقيات النموذجية للتعاون مع المنظمات الدولية.</li>
+                    <li>الأنظمة المالية المحاسبية الموحدة.</li>
+                  </ul>
+                </CollapsibleSection>
               </div>
             </CardContent>
           </Card>
