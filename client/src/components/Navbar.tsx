@@ -37,17 +37,14 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-          <Link href="/" className={`flex items-center gap-2 transition-colors hover:text-primary ${isActive("/") ? "text-primary font-bold" : "text-foreground/80"}`}>
-            <Home className="h-4 w-4" />
+          <Link href="/" className={`transition-colors hover:text-primary ${isActive("/") ? "text-primary font-bold" : "text-foreground/80"}`}>
             الرئيسية
           </Link>
-          <Link href="/ngos" className={`flex items-center gap-2 transition-colors hover:text-primary ${isActive("/ngos") ? "text-primary font-bold" : "text-foreground/80"}`}>
-            <Building2 className="h-4 w-4" />
+          <Link href="/ngos" className={`transition-colors hover:text-primary ${isActive("/ngos") ? "text-primary font-bold" : "text-foreground/80"}`}>
             دليل المنظمات
           </Link>
           {user && (
-            <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className={`flex items-center gap-2 transition-colors hover:text-primary ${isActive("/dashboard") || isActive("/admin") ? "text-primary font-bold" : "text-foreground/80"}`}>
-              <LayoutDashboard className="h-4 w-4" />
+            <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className={`transition-colors hover:text-primary ${isActive("/dashboard") || isActive("/admin") ? "text-primary font-bold" : "text-foreground/80"}`}>
               لوحة التحكم
             </Link>
           )}
