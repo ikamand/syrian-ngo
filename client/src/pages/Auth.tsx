@@ -43,9 +43,13 @@ export default function Auth() {
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1576402187878-974f70c890a5?w=1600&auto=format&fit=crop')] opacity-20 bg-cover bg-center mix-blend-multiply" />
           <div className="relative z-10 text-center space-y-8 max-w-lg">
             <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Coats_of_arms_of_Syria.svg/1200px-Coats_of_arms_of_Syria.svg.png" 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Coats_of_arms_of_Syria.svg/300px-Coats_of_arms_of_Syria.svg.png" 
               alt="Syrian National Emblem"
               className="w-32 h-auto mx-auto drop-shadow-2xl"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "https://www.mosal.gov.sy/images/logo.png"; // Fallback to official ministry logo if wiki fails
+              }}
             />
             <h1 className="text-4xl font-bold">بوابة المنظمات</h1>
             <p className="text-lg text-white/80 leading-relaxed">
@@ -59,9 +63,13 @@ export default function Auth() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Coats_of_arms_of_Syria.svg/1200px-Coats_of_arms_of_Syria.svg.png" 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Coats_of_arms_of_Syria.svg/300px-Coats_of_arms_of_Syria.svg.png" 
               alt="Syrian National Emblem"
               className="w-32 h-auto mx-auto drop-shadow-xl mb-6"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "https://www.mosal.gov.sy/images/logo.png"; // Fallback to official ministry logo if wiki fails
+              }}
             />
             <h1 className="text-2xl font-bold text-primary">بوابة المنظمات</h1>
           </div>
