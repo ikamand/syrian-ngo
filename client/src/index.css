@@ -56,6 +56,23 @@
   --border: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
   --ring: 142 70% 50%;
+  .popover-content {
+    @apply bg-popover text-popover-foreground shadow-md outline-none;
+    background-color: hsl(var(--popover)) !important;
+    opacity: 1 !important;
+  }
+
+  .dropdown-menu-content {
+    @apply bg-popover text-popover-foreground shadow-md;
+    background-color: hsl(var(--popover)) !important;
+    opacity: 1 !important;
+  }
+
+  .select-content {
+    @apply bg-popover text-popover-foreground shadow-md;
+    background-color: hsl(var(--popover)) !important;
+    opacity: 1 !important;
+  }
 }
 
 @layer base {
