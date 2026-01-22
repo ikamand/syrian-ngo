@@ -38,8 +38,8 @@ export default function Auth() {
   if (user) return null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-geometric p-6 relative overflow-hidden">
+      <div className="relative z-10 w-full max-w-md space-y-8 bg-background/95 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-white/10">
         <div className="text-center space-y-6">
           <img 
             src={emblemUrl} 
