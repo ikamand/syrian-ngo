@@ -202,36 +202,120 @@ export default function AdminDashboard() {
 
       {/* Edit Dialog */}
       <Dialog open={!!editingNgo} onOpenChange={(open) => !open && setEditingNgo(null)}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>تعديل بيانات المنظمة</DialogTitle>
           </DialogHeader>
           {editingNgo && (
             <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">اسم المنظمة</label>
-                <Input 
-                  value={editingNgo.name} 
-                  onChange={(e) => setEditingNgo({...editingNgo, name: e.target.value})}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">اسم المنظمة (بالعربي)</label>
+                  <Input 
+                    value={editingNgo.arabicName || ""} 
+                    onChange={(e) => setEditingNgo({...editingNgo, arabicName: e.target.value, name: e.target.value})}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">اسم المنظمة (بالإنكليزي)</label>
+                  <Input 
+                    value={editingNgo.englishName || ""} 
+                    onChange={(e) => setEditingNgo({...editingNgo, englishName: e.target.value})}
+                  />
+                </div>
               </div>
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">المدينة</label>
-                <Input 
-                  value={editingNgo.city} 
-                  onChange={(e) => setEditingNgo({...editingNgo, city: e.target.value})}
-                />
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">الشكل القانوني</label>
+                  <Select 
+                    value={editingNgo.legalForm || ""} 
+                    onValueChange={(val) => setEditingNgo({...editingNgo, legalForm: val})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر الشكل القانوني" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="جمعية أهلية">جمعية أهلية</SelectItem>
+                      <SelectItem value="مؤسسة تنموية">مؤسسة تنموية</SelectItem>
+                      <SelectItem value="فرع منظمة دولية">فرع منظمة دولية</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">نطاق العمل</label>
+                  <Select 
+                    value={editingNgo.scope || ""} 
+                    onValueChange={(val) => setEditingNgo({...editingNgo, scope: val})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر نطاق العمل" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="نطاق محلي">نطاق محلي</SelectItem>
+                      <SelectItem value="نطاق محافظات">نطاق محافظات</SelectItem>
+                      <SelectItem value="نطاق وطني">نطاق وطني</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">المحافظة (المقر الرئيسي)</label>
+                  <Select 
+                    value={editingNgo.city || ""} 
+                    onValueChange={(val) => setEditingNgo({...editingNgo, city: val})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر المحافظة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["Damascus", "Aleppo", "Homs", "Hama", "Latakia", "Tartus", "Idlib", "Raqqa", "Deir ez-Zor", "Al-Hasakah", "Daraa", "As-Suwayda", "Quneitra", "Rif Dimashq"].map(city => (
+                        <SelectItem key={city} value={city}>{city}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">اسم رئيس مجلس الإدارة</label>
+                  <Input 
+                    value={editingNgo.presidentName || ""} 
+                    onChange={(e) => setEditingNgo({...editingNgo, presidentName: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">البريد الإلكتروني</label>
+                  <Input 
+                    type="email"
+                    value={editingNgo.email || ""} 
+                    onChange={(e) => setEditingNgo({...editingNgo, email: e.target.value})}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">رقم التواصل</label>
+                  <Input 
+                    value={editingNgo.phone || ""} 
+                    onChange={(e) => setEditingNgo({...editingNgo, phone: e.target.value})}
+                  />
+                </div>
+              </div>
+
               <div className="grid gap-2">
-                <label className="text-sm font-medium">رئيس المنظمة</label>
-                <Input 
-                  value={editingNgo.presidentName} 
-                  onChange={(e) => setEditingNgo({...editingNgo, presidentName: e.target.value})}
+                <label className="text-sm font-medium">وصف أهداف المنظمة</label>
+                <textarea 
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={editingNgo.description || ""} 
+                  onChange={(e) => setEditingNgo({...editingNgo, description: e.target.value})}
                 />
               </div>
             </div>
           )}
           <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingNgo(null)}>إلغاء</Button>
             <Button type="submit" onClick={handleEditSave}>حفظ التغييرات</Button>
           </DialogFooter>
         </DialogContent>
