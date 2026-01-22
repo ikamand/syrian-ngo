@@ -66,8 +66,8 @@
   .select-content,
   [role="listbox"],
   [role="dialog"] {
-    background-color: rgba(20, 83, 45, 0.95) !important; /* Green 900 with 95% opacity */
-    backdrop-filter: blur(8px) !important;
+    background-color: rgba(20, 83, 45, 0.8) !important; /* Green 900 with 80% opacity matching header translucent effect */
+    backdrop-filter: blur(12px) !important; /* Increased blur for glass effect */
     color: white !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3) !important;
@@ -77,12 +77,19 @@
   [role="option"], 
   .dropdown-menu-item {
     color: white !important;
+    background-color: transparent !important;
   }
 
   [role="option"][data-highlighted],
   [role="option"]:hover,
+  [data-state="checked"],
   .dropdown-menu-item:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  /* Ensure text inside select triggers remains readable if they use these styles */
+  .select-trigger {
+    background-color: transparent !important;
   }
 }
 
