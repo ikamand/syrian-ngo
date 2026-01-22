@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Building2, FileCheck, ShieldCheck, Users } from "lucide-react";
 
+import emblemUrl from "@assets/emblem-of-syria-seeklogo_1769042472182.png";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background font-sans">
@@ -15,29 +17,38 @@ export default function Home() {
         {/* Damascus city skyline or abstract architectural pattern for official feel */}
         
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
-              <ShieldCheck className="w-4 h-4 text-secondary" />
-              <span>البوابة الرسمية لتسجيل المنظمات</span>
+          <div className="flex flex-col md:flex-row items-start gap-8">
+            <div className="flex-shrink-0">
+              <img 
+                src={emblemUrl} 
+                alt="Syrian National Emblem" 
+                className="w-48 h-auto drop-shadow-2xl"
+              />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-              منصة إدارة <span className="text-secondary">المنظمات غير الحكومية</span>
-            </h1>
-            <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl">
-              النظام الموحد لتسجيل ومتابعة المنظمات والجمعيات الأهلية في الجمهورية العربية السورية.
-              نسعى لتعزيز العمل الأهلي بشفافية ومصداقية.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-4">
-              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 text-lg h-14 px-8 shadow-xl shadow-black/10">
-                <Link href="/login?tab=register">
-                  تسجيل منظمة جديدة
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 text-lg h-14 px-8">
-                <Link href="/ngos">
-                  دليل المنظمات
-                </Link>
-              </Button>
+            <div className="max-w-3xl space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
+                <ShieldCheck className="w-4 h-4 text-secondary" />
+                <span>البوابة الرسمية لتسجيل المنظمات</span>
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                منصة إدارة <span className="text-secondary">المنظمات غير الحكومية</span>
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl">
+                النظام الموحد لتسجيل ومتابعة المنظمات والجمعيات الأهلية في الجمهورية العربية السورية.
+                نسعى لتعزيز العمل الأهلي بشفافية ومصداقية.
+              </p>
+              <div className="flex flex-wrap gap-4 pt-4">
+                <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 text-lg h-14 px-8 shadow-xl shadow-black/10">
+                  <Link href="/login?tab=register">
+                    تسجيل منظمة جديدة
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 text-lg h-14 px-8">
+                  <Link href="/ngos">
+                    دليل المنظمات
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
