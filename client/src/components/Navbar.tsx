@@ -2,7 +2,7 @@ import logoUrl from "@assets/emblem-of-syria-seeklogo_1769035838735.png";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Building2, Home, LayoutDashboard, LogOut, Shield, User } from "lucide-react";
+import { ChevronDown, LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,6 +43,26 @@ export function Navbar() {
           <Link href="/ngos" className={`transition-colors hover:text-primary ${isActive("/ngos") ? "text-primary font-bold" : "text-foreground/80"}`}>
             دليل المنظمات
           </Link>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger className={`flex items-center gap-1 transition-colors hover:text-primary outline-none ${location.startsWith("/legal") ? "text-primary font-bold" : "text-foreground/80"}`}>
+              المرجعيات القانونية
+              <ChevronDown className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-80">
+              <DropdownMenuItem asChild>
+                <Link href="/legal/association-law" className="cursor-pointer text-right w-full justify-end">
+                  قانون الجمعيات والمؤسسات الخاصة و لائحته التنفيدية
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/legal/other-laws" className="cursor-pointer text-right w-full justify-end">
+                  القوانين والمراسيم المرتبطة بعمل المنظمات غير الحكومية
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           {user && (
             <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className={`transition-colors hover:text-primary ${isActive("/dashboard") || isActive("/admin") ? "text-primary font-bold" : "text-foreground/80"}`}>
               لوحة التحكم

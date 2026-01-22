@@ -10,6 +10,8 @@ import Dashboard from "@/pages/Dashboard";
 import CreateNgo from "@/pages/CreateNgo";
 import NgoList from "@/pages/NgoList";
 import AdminDashboard from "@/pages/AdminDashboard";
+import AssociationLaw from "@/pages/AssociationLaw";
+import OtherLaws from "@/pages/OtherLaws";
 
 function Router() {
   return (
@@ -20,6 +22,8 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/ngos/new" component={CreateNgo} />
       <Route path="/ngos" component={NgoList} />
+      <Route path="/legal/association-law" component={AssociationLaw} />
+      <Route path="/legal/other-laws" component={OtherLaws} />
       <Route component={NotFound} />
     </Switch>
   );
