@@ -26,9 +26,11 @@ Preferred communication style: Simple, everyday language.
 
 ### Data Layer
 - **ORM**: Drizzle ORM with PostgreSQL dialect
-- **Schema**: Defined in `shared/schema.ts` with two main tables:
+- **Schema**: Defined in `shared/schema.ts` with four main tables:
   - `users`: User accounts with username, password, and role
   - `ngos`: NGO registrations with approval workflow (Pending/Approved/Rejected status)
+  - `announcements`: News and announcements with title, content, published status, and author tracking
+  - `siteContent`: Editable website content with key-based lookup for page elements (homepage title, descriptions, etc.)
 - **Validation**: Drizzle-Zod integration for type-safe schema validation
 
 ### Project Structure
