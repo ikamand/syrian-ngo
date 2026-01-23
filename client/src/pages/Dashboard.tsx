@@ -3,11 +3,13 @@ import { useAuth } from "@/hooks/use-auth";
 import { useNgos, useUpdateNgo } from "@/hooks/use-ngos";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Search, Edit2 } from "lucide-react";
+import { Plus, Search, Edit2, Eye } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
+import type { Ngo } from "@shared/schema";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +32,7 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [editingNgo, setEditingNgo] = useState<any>(null);
+  const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
 
   if (isAuthLoading) return null;
 
@@ -153,7 +156,16 @@ export default function Dashboard() {
                       <Edit2 className="w-4 h-4" />
                       تعديل
                     </Button>
-                    <Button variant="ghost" size="sm">التفاصيل</Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="gap-2"
+                      onClick={() => setViewingNgo(ngo)}
+                      data-testid={`button-details-${ngo.id}`}
+                    >
+                      <Eye className="w-4 h-4" />
+                      التفاصيل
+                    </Button>
                   </div>
                 </div>
               ))
@@ -287,6 +299,13 @@ export default function Dashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Details Dialog */}
+      <NgoDetailsDialog 
+        ngo={viewingNgo} 
+        open={!!viewingNgo} 
+        onOpenChange={(open) => !open && setViewingNgo(null)} 
+      />
     </div>
   );
 }

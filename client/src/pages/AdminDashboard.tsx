@@ -5,7 +5,7 @@ import { useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement, useDele
 import { useAllSiteContent, useUpsertSiteContent } from "@/hooks/use-site-content";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Check, X, Search, Filter, Trash2, Edit2, Save, Plus, Megaphone, Building2, FileEdit } from "lucide-react";
+import { Check, X, Search, Filter, Trash2, Edit2, Save, Plus, Megaphone, Building2, FileEdit, Eye } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,6 +40,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
+import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
+import type { Ngo } from "@shared/schema";
 
 export default function AdminDashboard() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -51,6 +53,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [editingNgo, setEditingNgo] = useState<any>(null);
+  const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
   const { toast } = useToast();
 
   const { data: announcements, isLoading: isAnnouncementsLoading } = useAnnouncements();
@@ -318,6 +321,15 @@ export default function AdminDashboard() {
                                   </Button>
                                 </>
                               )}
+                              <Button 
+                                size="icon" 
+                                variant="ghost"
+                                onClick={() => setViewingNgo(ngo)}
+                                title="التفاصيل"
+                                data-testid={`button-details-ngo-${ngo.id}`}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
                               <Button 
                                 size="icon" 
                                 variant="outline"
@@ -681,6 +693,13 @@ export default function AdminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* NGO Details Dialog */}
+      <NgoDetailsDialog 
+        ngo={viewingNgo} 
+        open={!!viewingNgo} 
+        onOpenChange={(open) => !open && setViewingNgo(null)} 
+      />
     </div>
   );
 }
