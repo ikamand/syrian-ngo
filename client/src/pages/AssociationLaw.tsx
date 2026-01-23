@@ -280,11 +280,15 @@ export default function AssociationLaw() {
                 <CollapsibleSection title="الباب الثالث - المؤسسات الخاصة">
                   <div className="space-y-4">
                     <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 49-</span> المؤسسة الخاصة هي شخص اعتباري ينشأ بتخصيص مال لمدة معينة أو غير معينة لغرض غير الحصول على ربح مادي.</p>
+                      <p><span className="font-bold text-primary">مادة 52-</span> 
+                      تعة جمعية خيرية كل جمعية تتكون لتحقيق ردرض و كثدر مدن ردراض البدر و الرعايدة
+                      االجتماعية صر نفعها على عضائها و لم يقصر عليهم و وإذا باشرت جمعية رير خيرية ررضدا مدن
+                       رراض البر و الرعاية عن طريق هيئات ةاخلية فيها خضعت هذه الهيئات حكام الجمعيات الخيريدة.
+                      وال يجوع الجمع بين عضوية مجلس ا ةار والعمل للجمعية بأجر</p>
                     </div>
 
                     <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 50-</span> تنشأ المؤسسة الخاصة بسند رسمي أو بوصية، ويعتبر السند أو الوصية نظاماً للمؤسسة ويجب أن يشتمل على البيانات الآتية:</p>
+                      <p><span className="font-bold text-primary">مادة 53-</span> تنشأ المؤسسة الخاصة بسند رسمي أو بوصية، ويعتبر السند أو الوصية نظاماً للمؤسسة ويجب أن يشتمل على البيانات الآتية:</p>
                       <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
                         <li>اسم المؤسسة ومركز إدارتها.</li>
                         <li>الغرض الذي أنشئت من أجله.</li>
@@ -294,11 +298,11 @@ export default function AssociationLaw() {
                     </div>
 
                     <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 51-</span> تثبت الشخصية الاعتبارية للمؤسسة الخاصة بشهر نظامها وفقاً لأحكام هذا القانون.</p>
+                      <p><span className="font-bold text-primary">مادة 54-</span> تثبت الشخصية الاعتبارية للمؤسسة الخاصة بشهر نظامها وفقاً لأحكام هذا القانون.</p>
                     </div>
 
                     <div className="bg-primary/5 p-4 rounded-lg">
-                      <p><span className="font-bold text-primary">مادة 52-</span> يدير المؤسسة الخاصة مدير أو مجلس إدارة وفقاً لنظامها، ويمثل المدير أو رئيس مجلس الإدارة المؤسسة أمام القضاء وفي مواجهة الغير.</p>
+                      <p><span className="font-bold text-primary">مادة 55-</span> يدير المؤسسة الخاصة مدير أو مجلس إدارة وفقاً لنظامها، ويمثل المدير أو رئيس مجلس الإدارة المؤسسة أمام القضاء وفي مواجهة الغير.</p>
                     </div>
 
                     <div className="bg-primary/5 p-4 rounded-lg">
