@@ -4,13 +4,13 @@ import type { SiteContent, InsertSiteContent } from "@shared/schema";
 
 export function useAllSiteContent() {
   return useQuery<SiteContent[]>({
-    queryKey: ["/api/site-content"],
+    queryKey: ["/api/content"],
   });
 }
 
 export function useSiteContent(key: string) {
   return useQuery<SiteContent>({
-    queryKey: ["/api/site-content", key],
+    queryKey: ["/api/content", key],
     enabled: !!key,
   });
 }
@@ -18,12 +18,12 @@ export function useSiteContent(key: string) {
 export function useUpsertSiteContent() {
   return useMutation({
     mutationFn: async (data: InsertSiteContent) => {
-      const res = await apiRequest("PUT", "/api/site-content", data);
+      const res = await apiRequest("PUT", `/api/content/${data.key}`, data);
       return res.json();
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/site-content"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/site-content", variables.key] });
+      queryClient.invalidateQueries({ queryKey: ["/api/content"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/content", variables.key] });
     },
   });
 }
