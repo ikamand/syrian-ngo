@@ -18,12 +18,12 @@ function CollapsibleSection({ title, children, defaultOpen = false }: Collapsibl
     <div className="border rounded-lg overflow-hidden mb-6">
       <Button
         variant="ghost"
-        className="w-full flex items-center justify-between p-4 bg-primary/5 hover:bg-primary/10 rounded-none h-auto"
+        className="w-full flex items-center justify-between p-3 md:p-4 bg-primary/5 hover:bg-primary/10 rounded-none h-auto"
         onClick={() => setIsOpen(!isOpen)}
         data-testid={`button-toggle-${title}`}
       >
-        <span className="text-xl font-bold text-primary border-r-4 border-primary pr-4 text-right">{title}</span>
-        {isOpen ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5 text-primary" />}
+        <span className="text-sm md:text-lg font-bold text-primary border-r-4 border-primary pr-3 md:pr-4 text-right leading-relaxed">{title}</span>
+        {isOpen ? <ChevronUp className="w-5 h-5 text-primary shrink-0 mr-2" /> : <ChevronDown className="w-5 h-5 text-primary shrink-0 mr-2" />}
       </Button>
       <div className={`${isOpen ? "block" : "hidden"} p-6 space-y-4 text-right`} dir="rtl">
         {children}
@@ -38,22 +38,22 @@ export default function AssociationLaw() {
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center space-y-4">
-            <h1 className="text-3xl font-bold text-primary">قانون الجمعيات والمؤسسات الخاصة ولائحته التنفيذية</h1>
-            <p className="text-muted-foreground">الإطار القانوني الناظم لعمل الجمعيات والمؤسسات الخاصة في الجمهورية العربية السورية</p>
+          <div className="text-center space-y-3">
+            <h1 className="text-xl md:text-3xl font-bold text-primary leading-relaxed">قانون الجمعيات والمؤسسات الخاصة ولائحته التنفيذية</h1>
+            <p className="text-sm md:text-base text-muted-foreground">الإطار القانوني الناظم لعمل الجمعيات والمؤسسات الخاصة في الجمهورية العربية السورية</p>
           </div>
 
           <Card className="border-none shadow-lg">
-            <CardContent className="p-8 space-y-6 text-right" dir="rtl">
-              <div className="flex items-center justify-between border-b pb-4">
-                <div className="flex items-center gap-4 text-primary">
-                  <FileText className="w-8 h-8" />
-                  <h2 className="text-xl font-bold">قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)</h2>
+            <CardContent className="p-4 md:p-8 space-y-6 text-right" dir="rtl">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
+                <div className="flex items-center gap-3 text-primary">
+                  <FileText className="w-6 h-6 md:w-8 md:h-8 shrink-0" />
+                  <h2 className="text-base md:text-xl font-bold leading-relaxed">قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)</h2>
                 </div>
-                <Button asChild variant="outline" size="sm" className="gap-2" data-testid="button-download-pdf">
+                <Button asChild variant="outline" size="sm" className="gap-2 shrink-0 self-start sm:self-auto" data-testid="button-download-pdf">
                   <a href={lawPdfUrl} download="قانون_الجمعيات_93_لعام_1958.pdf">
                     <Download className="w-4 h-4" />
-                    <span className="hidden sm:inline">تحميل PDF</span>
+                    <span>تحميل PDF</span>
                   </a>
                 </Button>
               </div>
