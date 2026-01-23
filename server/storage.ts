@@ -1,6 +1,8 @@
-import { users, ngos, type User, type InsertUser, type Ngo, type InsertNgo } from "@shared/schema";
+import { users, ngos, announcements, siteContent, type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 const MemoryStore = createMemoryStore(session);
 
@@ -17,103 +19,142 @@ export interface IStorage {
   updateNgo(id: number, updates: Partial<InsertNgo>): Promise<Ngo | undefined>;
   deleteNgo(id: number): Promise<boolean>;
 
+  createAnnouncement(announcement: InsertAnnouncement & { createdBy: number }): Promise<Announcement>;
+  getAnnouncement(id: number): Promise<Announcement | undefined>;
+  getAnnouncements(): Promise<Announcement[]>;
+  getPublishedAnnouncements(): Promise<Announcement[]>;
+  updateAnnouncement(id: number, updates: Partial<InsertAnnouncement>): Promise<Announcement | undefined>;
+  deleteAnnouncement(id: number): Promise<boolean>;
+
+  getSiteContent(key: string): Promise<SiteContent | undefined>;
+  getAllSiteContent(): Promise<SiteContent[]>;
+  upsertSiteContent(key: string, content: Omit<InsertSiteContent, 'key'> & { updatedBy: number }): Promise<SiteContent>;
+
   sessionStore: session.Store;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private ngos: Map<number, Ngo>;
-  private userId: number;
-  private ngoId: number;
+export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
 
   constructor() {
-    this.users = new Map();
-    this.ngos = new Map();
-    this.userId = 1;
-    this.ngoId = 1;
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
     });
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.userId++;
-    // Default role logic if needed, but schema handles default "user"
-    const user: User = { ...insertUser, id, role: insertUser.role || "user" };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   async createNgo(insertNgo: InsertNgo & { createdBy: number }): Promise<Ngo> {
-    const id = this.ngoId++;
-    const ngo: Ngo = { 
-      ...insertNgo, 
-      id, 
-      status: "Pending", 
-      createdAt: new Date(),
-      arabicName: insertNgo.arabicName,
-      englishName: insertNgo.englishName,
-      legalForm: insertNgo.legalForm,
-      scope: insertNgo.scope
-    };
-    this.ngos.set(id, ngo);
+    const [ngo] = await db.insert(ngos).values({
+      ...insertNgo,
+      status: "Pending",
+    }).returning();
     return ngo;
   }
 
   async getNgo(id: number): Promise<Ngo | undefined> {
-    return this.ngos.get(id);
+    const [ngo] = await db.select().from(ngos).where(eq(ngos.id, id));
+    return ngo;
   }
 
   async getNgos(): Promise<Ngo[]> {
-    return Array.from(this.ngos.values());
+    return db.select().from(ngos).orderBy(desc(ngos.createdAt));
   }
 
   async getNgosByUserId(userId: number): Promise<Ngo[]> {
-    return Array.from(this.ngos.values()).filter(
-      (ngo) => ngo.createdBy === userId
-    );
+    return db.select().from(ngos).where(eq(ngos.createdBy, userId)).orderBy(desc(ngos.createdAt));
   }
 
   async updateNgoStatus(id: number, status: string): Promise<Ngo | undefined> {
-    const ngo = this.ngos.get(id);
-    if (!ngo) return undefined;
-    
-    // Validate status against schema enum if strictness is needed, 
-    // but schema enforcement happens at route level usually.
-    const updatedNgo = { ...ngo, status: status as "Pending" | "Approved" | "Rejected" };
-    this.ngos.set(id, updatedNgo);
-    return updatedNgo;
+    const [updated] = await db.update(ngos)
+      .set({ status: status as "Pending" | "Approved" | "Rejected" })
+      .where(eq(ngos.id, id))
+      .returning();
+    return updated;
   }
 
   async updateNgo(id: number, updates: Partial<InsertNgo>): Promise<Ngo | undefined> {
-    const ngo = this.ngos.get(id);
-    if (!ngo) return undefined;
-    
-    // If a non-admin is updating, or if we want to enforce the re-approval flow
-    // We set status back to Pending
-    const updatedNgo = { 
-      ...ngo, 
-      ...updates,
-      status: "Pending" as const 
-    };
-    this.ngos.set(id, updatedNgo);
-    return updatedNgo;
+    const [updated] = await db.update(ngos)
+      .set({ ...updates, status: "Pending" })
+      .where(eq(ngos.id, id))
+      .returning();
+    return updated;
   }
 
   async deleteNgo(id: number): Promise<boolean> {
-    return this.ngos.delete(id);
+    const result = await db.delete(ngos).where(eq(ngos.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async createAnnouncement(insertAnnouncement: InsertAnnouncement & { createdBy: number }): Promise<Announcement> {
+    const [announcement] = await db.insert(announcements).values(insertAnnouncement).returning();
+    return announcement;
+  }
+
+  async getAnnouncement(id: number): Promise<Announcement | undefined> {
+    const [announcement] = await db.select().from(announcements).where(eq(announcements.id, id));
+    return announcement;
+  }
+
+  async getAnnouncements(): Promise<Announcement[]> {
+    return db.select().from(announcements).orderBy(desc(announcements.createdAt));
+  }
+
+  async getPublishedAnnouncements(): Promise<Announcement[]> {
+    return db.select().from(announcements).where(eq(announcements.published, true)).orderBy(desc(announcements.createdAt));
+  }
+
+  async updateAnnouncement(id: number, updates: Partial<InsertAnnouncement>): Promise<Announcement | undefined> {
+    const [updated] = await db.update(announcements)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(announcements.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteAnnouncement(id: number): Promise<boolean> {
+    const result = await db.delete(announcements).where(eq(announcements.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getSiteContent(key: string): Promise<SiteContent | undefined> {
+    const [content] = await db.select().from(siteContent).where(eq(siteContent.key, key));
+    return content;
+  }
+
+  async getAllSiteContent(): Promise<SiteContent[]> {
+    return db.select().from(siteContent);
+  }
+
+  async upsertSiteContent(key: string, content: Omit<InsertSiteContent, 'key'> & { updatedBy: number }): Promise<SiteContent> {
+    const existing = await this.getSiteContent(key);
+    
+    if (existing) {
+      const [updated] = await db.update(siteContent)
+        .set({ ...content, updatedAt: new Date() })
+        .where(eq(siteContent.key, key))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(siteContent)
+        .values({ key, ...content })
+        .returning();
+      return created;
+    }
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

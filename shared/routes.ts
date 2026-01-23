@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertNgoSchema, insertUserSchema, ngos, users } from './schema';
+import { insertNgoSchema, insertUserSchema, insertAnnouncementSchema, insertSiteContentSchema, ngos, users, announcements, siteContent } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -108,6 +108,85 @@ export const api = {
       responses: {
         200: z.object({ success: z.boolean() }),
         404: errorSchemas.notFound,
+        401: errorSchemas.unauthorized,
+      },
+    },
+  },
+  announcements: {
+    list: {
+      method: 'GET' as const,
+      path: '/api/announcements',
+      responses: {
+        200: z.array(z.custom<typeof announcements.$inferSelect>()),
+      },
+    },
+    listPublished: {
+      method: 'GET' as const,
+      path: '/api/announcements/published',
+      responses: {
+        200: z.array(z.custom<typeof announcements.$inferSelect>()),
+      },
+    },
+    get: {
+      method: 'GET' as const,
+      path: '/api/announcements/:id',
+      responses: {
+        200: z.custom<typeof announcements.$inferSelect>(),
+        404: errorSchemas.notFound,
+      },
+    },
+    create: {
+      method: 'POST' as const,
+      path: '/api/announcements',
+      input: insertAnnouncementSchema,
+      responses: {
+        201: z.custom<typeof announcements.$inferSelect>(),
+        400: errorSchemas.validation,
+        401: errorSchemas.unauthorized,
+      },
+    },
+    update: {
+      method: 'PUT' as const,
+      path: '/api/announcements/:id',
+      input: insertAnnouncementSchema.partial(),
+      responses: {
+        200: z.custom<typeof announcements.$inferSelect>(),
+        404: errorSchemas.notFound,
+        401: errorSchemas.unauthorized,
+      },
+    },
+    delete: {
+      method: 'DELETE' as const,
+      path: '/api/announcements/:id',
+      responses: {
+        200: z.object({ success: z.boolean() }),
+        404: errorSchemas.notFound,
+        401: errorSchemas.unauthorized,
+      },
+    },
+  },
+  siteContent: {
+    list: {
+      method: 'GET' as const,
+      path: '/api/content',
+      responses: {
+        200: z.array(z.custom<typeof siteContent.$inferSelect>()),
+      },
+    },
+    get: {
+      method: 'GET' as const,
+      path: '/api/content/:key',
+      responses: {
+        200: z.custom<typeof siteContent.$inferSelect>(),
+        404: errorSchemas.notFound,
+      },
+    },
+    upsert: {
+      method: 'PUT' as const,
+      path: '/api/content/:key',
+      input: insertSiteContentSchema.omit({ key: true }),
+      responses: {
+        200: z.custom<typeof siteContent.$inferSelect>(),
         401: errorSchemas.unauthorized,
       },
     },

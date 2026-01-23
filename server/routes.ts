@@ -1,9 +1,26 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import session from "express-session";
+import type { User } from "@shared/schema";
+
+// Extend express-session types
+declare module "express-session" {
+  interface SessionData {
+    userId: number;
+  }
+}
+
+// Extend Express Request to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: User;
+    }
+  }
+}
 
 export async function registerRoutes(
   httpServer: Server,
@@ -105,7 +122,7 @@ export async function registerRoutes(
   // Requirement says: "Admin Panel: View all NGOs", "User Dashboard: View list of NGOs they created"
   // Let's implement /api/ngos to return based on role or context
   app.get(api.ngos.list.path, requireAuth, async (req, res) => {
-    const user = await storage.getUser(req.session.userId);
+    const user = await storage.getUser(req.session.userId!);
     if (!user) return res.status(401).send();
 
     let ngos;
@@ -118,21 +135,16 @@ export async function registerRoutes(
   });
 
   app.get(api.ngos.get.path, requireAuth, async (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     const ngo = await storage.getNgo(id);
     if (!ngo) return res.status(404).json({ message: "NGO not found" });
-    
-    // Check ownership if not admin? 
-    // For now, let's allow viewing if logged in (public transparency?) or strict?
-    // User dashboard requirement says "Edit existing NGOs", implying ownership check.
-    // Let's keep it simple: if you can get it, you can see it.
     res.json(ngo);
   });
 
   app.post(api.ngos.create.path, requireAuth, async (req, res) => {
     try {
       const input = api.ngos.create.input.parse(req.body);
-      const ngo = await storage.createNgo({ ...input, createdBy: req.session.userId });
+      const ngo = await storage.createNgo({ ...input, createdBy: req.session.userId! });
       res.status(201).json(ngo);
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -144,7 +156,7 @@ export async function registerRoutes(
 
   app.patch(api.ngos.updateStatus.path, requireAdmin, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const { status } = api.ngos.updateStatus.input.parse(req.body);
       
       const updated = await storage.updateNgoStatus(id, status);
@@ -158,24 +170,20 @@ export async function registerRoutes(
 
   app.put(api.ngos.update.path, requireAuth, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const ngo = await storage.getNgo(id);
       
       if (!ngo) return res.status(404).json({ message: "NGO not found" });
       
+      const user = await storage.getUser(req.session.userId!);
+      if (!user) return res.status(401).json({ message: "Unauthorized" });
+      
       // Ensure user owns the NGO or is admin
-      if (req.user!.role !== "admin" && ngo.createdBy !== req.user!.id) {
+      if (user.role !== "admin" && ngo.createdBy !== user.id) {
         return res.status(403).json({ message: "Forbidden" });
       }
 
       const input = api.ngos.update.input.parse(req.body);
-      
-      // If admin is updating, we might want to preserve status unless they explicitly change it
-      // But based on user request "after the request is done it'll need to be approved by the admin"
-      // we default to Pending in storage.updateNgo for everyone or handle here.
-      // Let's handle status reset specifically for non-admins if needed, 
-      // but storage.updateNgo already does it.
-      
       const updated = await storage.updateNgo(id, input);
       res.json(updated);
     } catch (err) {
@@ -184,10 +192,98 @@ export async function registerRoutes(
   });
 
   app.delete(api.ngos.delete.path, requireAdmin, async (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     const success = await storage.deleteNgo(id);
     if (!success) return res.status(404).json({ message: "NGO not found" });
     res.json({ success: true });
+  });
+
+  // --- Announcements Routes ---
+
+  // Get all announcements (admin only)
+  app.get(api.announcements.list.path, requireAdmin, async (req, res) => {
+    const allAnnouncements = await storage.getAnnouncements();
+    res.json(allAnnouncements);
+  });
+
+  // Get published announcements (public)
+  app.get(api.announcements.listPublished.path, async (req, res) => {
+    const published = await storage.getPublishedAnnouncements();
+    res.json(published);
+  });
+
+  // Get single announcement
+  app.get(api.announcements.get.path, async (req, res) => {
+    const id = parseInt(req.params.id as string);
+    const announcement = await storage.getAnnouncement(id);
+    if (!announcement) return res.status(404).json({ message: "Announcement not found" });
+    res.json(announcement);
+  });
+
+  // Create announcement (admin only)
+  app.post(api.announcements.create.path, requireAdmin, async (req, res) => {
+    try {
+      const input = api.announcements.create.input.parse(req.body);
+      const announcement = await storage.createAnnouncement({ ...input, createdBy: req.session.userId! });
+      res.status(201).json(announcement);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: err.errors[0].message });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Update announcement (admin only)
+  app.put(api.announcements.update.path, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id as string);
+      const input = api.announcements.update.input.parse(req.body);
+      const updated = await storage.updateAnnouncement(id, input);
+      if (!updated) return res.status(404).json({ message: "Announcement not found" });
+      res.json(updated);
+    } catch (err) {
+      res.status(400).json({ message: "Invalid request" });
+    }
+  });
+
+  // Delete announcement (admin only)
+  app.delete(api.announcements.delete.path, requireAdmin, async (req, res) => {
+    const id = parseInt(req.params.id as string);
+    const success = await storage.deleteAnnouncement(id);
+    if (!success) return res.status(404).json({ message: "Announcement not found" });
+    res.json({ success: true });
+  });
+
+  // --- Site Content Routes ---
+
+  // Get all site content (admin only)
+  app.get(api.siteContent.list.path, requireAdmin, async (req, res) => {
+    const content = await storage.getAllSiteContent();
+    res.json(content);
+  });
+
+  // Get site content by key (public)
+  app.get(api.siteContent.get.path, async (req, res) => {
+    const key = req.params.key as string;
+    const content = await storage.getSiteContent(key);
+    if (!content) return res.status(404).json({ message: "Content not found" });
+    res.json(content);
+  });
+
+  // Upsert site content (admin only)
+  app.put(api.siteContent.upsert.path, requireAdmin, async (req, res) => {
+    try {
+      const key = req.params.key as string;
+      const input = api.siteContent.upsert.input.parse(req.body);
+      const content = await storage.upsertSiteContent(key, { ...input, updatedBy: req.session.userId! });
+      res.json(content);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: err.errors[0].message });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
 
   // Seeding
@@ -196,7 +292,7 @@ export async function registerRoutes(
     const admin = await storage.createUser({ username: "admin", password: "admin123", role: "admin" });
     const user = await storage.createUser({ username: "user", password: "user123", role: "user" });
     
-    await storage.createNgo({
+    const ngo1 = await storage.createNgo({
       name: "Syrian Hope Foundation",
       arabicName: "مؤسسة الأمل السورية",
       englishName: "Syrian Hope Foundation",
@@ -207,9 +303,9 @@ export async function registerRoutes(
       email: "info@syrianhope.org",
       phone: "+96311223344",
       description: "Dedicated to providing educational resources.",
-      status: "Approved",
       createdBy: user.id
     });
+    await storage.updateNgoStatus(ngo1.id, "Approved");
     
     await storage.createNgo({
       name: "Aleppo Reconstruction Initiative",
@@ -222,8 +318,15 @@ export async function registerRoutes(
       email: "contact@alepporebuild.sy",
       phone: "+96321998877",
       description: "Focusing on infrastructure rehabilitation.",
-      status: "Pending",
       createdBy: user.id
+    });
+
+    // Seed initial announcement
+    await storage.createAnnouncement({
+      title: "مرحباً بكم في بوابة المنظمات غير الحكومية",
+      content: "نرحب بكم في بوابة تسجيل وإدارة المنظمات غير الحكومية التابعة لوزارة الشؤون الاجتماعية والعمل. نسعى لتوفير خدمات متميزة لجميع المنظمات المسجلة.",
+      published: true,
+      createdBy: admin.id
     });
   }
 
