@@ -10,16 +10,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export function Navbar() {
   const { user, logout } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [legalMenuOpen, setLegalMenuOpen] = useState(false);
 
   const isActive = (path: string) => location === path;
 
@@ -194,16 +197,17 @@ export function Navbar() {
                 </Link>
               </DropdownMenuItem>
 
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="cursor-pointer">
+              <Collapsible open={legalMenuOpen} onOpenChange={setLegalMenuOpen}>
+                <CollapsibleTrigger className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded-sm hover:bg-accent cursor-pointer">
                   <div className="flex items-center gap-3">
                     <Scale className="h-4 w-4" />
                     <span>المرجعيات القانونية</span>
                   </div>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="w-72">
+                  <ChevronDown className={`h-4 w-4 transition-transform ${legalMenuOpen ? 'rotate-180' : ''}`} />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pr-6 space-y-1 mt-1">
                   <DropdownMenuItem asChild>
-                    <Link href="/legal/association-law" className="cursor-pointer text-right w-full" onClick={() => setMobileMenuOpen(false)}>
+                    <Link href="/legal/association-law" className="cursor-pointer text-right w-full" onClick={() => { setMobileMenuOpen(false); setLegalMenuOpen(false); }}>
                       <div className="flex items-center gap-3 w-full">
                         <FileText className="h-4 w-4 shrink-0" />
                         <span className="text-sm">قانون الجمعيات والمؤسسات الخاصة</span>
@@ -211,15 +215,15 @@ export function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/legal/other-laws" className="cursor-pointer text-right w-full" onClick={() => setMobileMenuOpen(false)}>
+                    <Link href="/legal/other-laws" className="cursor-pointer text-right w-full" onClick={() => { setMobileMenuOpen(false); setLegalMenuOpen(false); }}>
                       <div className="flex items-center gap-3 w-full">
                         <FileText className="h-4 w-4 shrink-0" />
                         <span className="text-sm">القوانين والمراسيم الأخرى</span>
                       </div>
                     </Link>
                   </DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
+                </CollapsibleContent>
+              </Collapsible>
 
               {user && (
                 <DropdownMenuItem asChild>
