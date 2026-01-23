@@ -2,7 +2,7 @@ import logoUrl from "@assets/emblem-of-syria-seeklogo_1769035838735.png";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, LayoutDashboard, LogOut, User, Menu, FileText, Home, Building2, Scale } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, User, Menu, FileText, Home, Building2, Scale, Megaphone } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,6 +47,9 @@ export function Navbar() {
           </Link>
           <Link href="/ngos" className={`transition-colors hover:text-primary ${isActive("/ngos") ? "text-primary font-bold" : "text-foreground/80"}`}>
             دليل المنظمات
+          </Link>
+          <Link href="/announcements" className={`transition-colors hover:text-primary ${isActive("/announcements") ? "text-primary font-bold" : "text-foreground/80"}`}>
+            الأخبار
           </Link>
           
           <DropdownMenu>
@@ -178,6 +181,15 @@ export function Navbar() {
                   <div className="flex items-center gap-3 w-full">
                     <Building2 className="h-4 w-4" />
                     <span>دليل المنظمات</span>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link href="/announcements" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
+                  <div className="flex items-center gap-3 w-full">
+                    <Megaphone className="h-4 w-4" />
+                    <span>الأخبار</span>
                   </div>
                 </Link>
               </DropdownMenuItem>
