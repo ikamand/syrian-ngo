@@ -1,8 +1,9 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText, ChevronDown, ChevronUp } from "lucide-react";
+import { FileText, ChevronDown, ChevronUp, Download } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import lawPdfUrl from "@assets/Law_No_93_of_1958_on_Private_Associations_and_Institutions_and_1769115081775.pdf";
 
 interface CollapsibleSectionProps {
   title: string;
@@ -44,9 +45,17 @@ export default function AssociationLaw() {
 
           <Card className="border-none shadow-lg">
             <CardContent className="p-8 space-y-6 text-right" dir="rtl">
-              <div className="flex items-center gap-4 text-primary border-b pb-4">
-                <FileText className="w-8 h-8" />
-                <h2 className="text-xl font-bold">قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)</h2>
+              <div className="flex items-center justify-between border-b pb-4">
+                <div className="flex items-center gap-4 text-primary">
+                  <FileText className="w-8 h-8" />
+                  <h2 className="text-xl font-bold">قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)</h2>
+                </div>
+                <Button asChild variant="outline" size="sm" className="gap-2" data-testid="button-download-pdf">
+                  <a href={lawPdfUrl} download="قانون_الجمعيات_93_لعام_1958.pdf">
+                    <Download className="w-4 h-4" />
+                    <span className="hidden sm:inline">تحميل PDF</span>
+                  </a>
+                </Button>
               </div>
               <div className="prose prose-slate max-w-none space-y-8 mt-6">
                 <CollapsibleSection title="الباب الأول – الفصل الأول - الجمعيات عموماً" defaultOpen={true}>
