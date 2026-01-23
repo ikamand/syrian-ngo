@@ -328,6 +328,37 @@ export async function registerRoutes(
       published: true,
       createdBy: admin.id
     });
+
+    // Seed default site content
+    await storage.upsertSiteContent("homepage_hero_title", {
+      title: "عنوان الصفحة الرئيسية",
+      content: "بوابة تشارك - المنظمات غير الحكومية",
+      updatedBy: admin.id
+    });
+
+    await storage.upsertSiteContent("homepage_hero_description", {
+      title: "وصف الصفحة الرئيسية",
+      content: "النظام الموحد لتسجيل ومتابعة المنظمات والجمعيات الأهلية في الجمهورية العربية السورية. نسعى لتعزيز العمل الأهلي بشفافية ومصداقية.",
+      updatedBy: admin.id
+    });
+
+    await storage.upsertSiteContent("homepage_about", {
+      title: "نص قسم حول",
+      content: "تهدف هذه البوابة إلى تسهيل عملية تسجيل وإدارة المنظمات غير الحكومية والجمعيات الأهلية في سوريا، وتوفير قاعدة بيانات شاملة ومحدثة لجميع المنظمات المسجلة رسمياً.",
+      updatedBy: admin.id
+    });
+
+    await storage.upsertSiteContent("footer_contact", {
+      title: "معلومات التواصل",
+      content: "وزارة الشؤون الاجتماعية والعمل - دمشق، الجمهورية العربية السورية | هاتف: +963-11-000-0000 | البريد الإلكتروني: info@molsa.gov.sy",
+      updatedBy: admin.id
+    });
+
+    await storage.upsertSiteContent("registration_instructions", {
+      title: "تعليمات التسجيل",
+      content: "يرجى ملء جميع الحقول المطلوبة بدقة. تأكد من صحة المعلومات قبل الإرسال. سيتم مراجعة طلبك من قبل الجهات المختصة وإعلامك بالنتيجة.",
+      updatedBy: admin.id
+    });
   }
 
   return httpServer;
