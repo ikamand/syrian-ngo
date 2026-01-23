@@ -64,13 +64,7 @@ export default function AssociationLaw() {
                   <div className="space-y-4">
                     <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 1-</span> تعتبر جمعية في تطبيق هذا القانون كل جماعة ذات تنظيم مستمر لمدة معينة أو غير معينة تتألف من أشخاص طبيعية أو اعتبارية لغرض غير الحصول على ربح مادي.</p>
-                    </div>
-
-                    <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 2-</span> كل جمعية تنشأ لسبب أو لغرض غير مشروع أو مخالفة للقوانين أو للآداب أو يكون الغرض منها المساس بسلامة الجمهورية أو بشكل الحكومة الجمهوري تكون باطلة لا أثر لها.</p>
-                    </div>
-
-                    <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 3-</span> يشترط في إنشاء الجمعية أن يوضع لها نظام مكتوب وموقع من المؤسسين ويجب أن لا يشترك في تأسيسها أو ينضم إلى عضويتها أي من الأشخاص المحرومين من ممارسة الحقوق السياسية.</p>
                       <p className="mt-2 font-bold text-sm">ويجب أن يشتمل النظام على البيانات الآتية:</p>
                       <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
@@ -84,31 +78,15 @@ export default function AssociationLaw() {
                         <li>قواعد حل الجمعية والجهة التي تؤول إليها أموالها.</li>
                       </ul>
                       <p className="mt-2 text-xs italic underline decoration-primary/30 underline-offset-4">"وتتضمن اللائحة التنفيذية نظاماً نموذجياً يجوز للجمعيات اتباعه في تحضير نظمها"</p>
-                    </div>
-
-                    <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 4-</span> لا يجوز أن ينص في نظام الجمعية أن تؤول أموالها عند الحل إلى الأعضاء أو إلى ورثتهم أو أسرهم ولا يسري هذا الحكم على المال الذي يخصص لصندوق الإعانات المتبادلة أو لصندوق المعاشات كما لا يسري على الحصص في الجمعيات التعاونية.</p>
-                    </div>
-
-                    <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 5-</span> يجوز لكل عضو ما لم يكن قد تعهد بالبقاء في الجمعية مدة معينة أن ينسحب منها في أي وقت وليس للعضو المنسحب ولا للعضو المفصول أي حق في أموال الجمعية إلا في الحالات المنصوص عليها في هذا القانون.</p>
-                    </div>
-
-                    <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 6-</span> لا يجوز أن تكون للجمعية حقوق ملكية أو حقوق أخرى على عقارات إلا بالقدر الضروري لتحقيق الغرض الذي أنشئت من أجله ولا يسري هذا الحكم على الجمعيات الخيرية والثقافية. كما يحظر على الجمعية أن تحتفظ برصيد نقدي يزيد عن ثلاثة أمثال المصروفات السنوية للإدارة إلا بإذن من الجهة الإدارية المختصة.</p>
-                    </div>
-
-                    <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 7-</span> لا تثبت الشخصية الاعتبارية للجمعية إلا إذا شهر نظامها وفقاً لأحكام هذا القانون.</p>
-                    </div>
-
-                    <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 8-</span> يحدد رسم الشهر (50) ليرة سورية ولا يرد الرسم بأي حال من الأحوال ويستثنى من الشهر التعديلات التي يتوجب إدخالها على الأنظمة بناء على طلب الجهة الإدارية المختصة أو بالاستناد إلى نص قانوني يصدر بعد شهر هذه الأنظمة.</p>
-                    </div>
-
-                    <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 9-</span> يكون شهر نظام الجمعية بمجرد قيده في السجل المعد لذلك، وينشر ملخص القيد في الجريدة الرسمية بغير مقابل وتبين اللائحة التنفيذية الشروط والأوضاع الخاصة بهذا السجل وإجراءات القيد فيه وشروطه.</p>
                     </div>
+
+                    
 
                     <div className="bg-primary/5 p-4 rounded-lg">
                       <p><span className="font-bold text-primary">مادة 10-</span> تقوم الجهة الإدارية المختصة بإجراء الشهر خلال ستين يوماً من تاريخ طلبه فإذا مضت الستين يوماً دون إتمامه اعتبر الشهر واقعاً بحكم القانون، وعلى الجهة المذكورة بناءً على طلب ذوي الشأن إجراء القيد في السجل والنشر في الجريدة الرسمية.</p>
