@@ -71,9 +71,6 @@ export default function AdminDashboard() {
   const [contentForm, setContentForm] = useState({ key: "", title: "", content: "" });
 
   const predefinedContentKeys = [
-    { key: "homepage_hero_title", label: "عنوان الصفحة الرئيسية" },
-    { key: "homepage_hero_description", label: "وصف الصفحة الرئيسية" },
-    { key: "homepage_about", label: "نبذة عن البوابة" },
     { key: "footer_contact", label: "معلومات التواصل" },
     { key: "registration_instructions", label: "تعليمات التسجيل" },
   ];
