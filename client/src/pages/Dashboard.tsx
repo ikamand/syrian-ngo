@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { useAuth } from "@/hooks/use-auth";
-import { useNgos, useUpdateNgo } from "@/hooks/use-ngos";
+import { useNgos } from "@/hooks/use-ngos";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
@@ -9,29 +9,15 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
+import { NgoEditDialog } from "@/components/NgoEditDialog";
 import type { Ngo } from "@shared/schema";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 export default function Dashboard() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { data: ngos, isLoading: isNgosLoading } = useNgos();
-  const { mutate: updateNgo } = useUpdateNgo();
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
-  const [editingNgo, setEditingNgo] = useState<any>(null);
+  const [editingNgo, setEditingNgo] = useState<Ngo | null>(null);
   const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
 
   if (isAuthLoading) return null;
@@ -42,17 +28,12 @@ export default function Dashboard() {
   }
 
   const myNgos = ngos?.filter(ngo => ngo.createdBy === user.id) || [];
-  const filteredNgos = myNgos.filter(ngo => 
-    ngo.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    ngo.city.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleEditSave = () => {
-    if (editingNgo) {
-      updateNgo({ id: editingNgo.id, data: editingNgo });
-      setEditingNgo(null);
-    }
-  };
+  const filteredNgos = myNgos.filter(ngo => {
+    const name = ngo.arabicName || ngo.name || "";
+    const city = ngo.city || "";
+    return name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+           city.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -134,15 +115,15 @@ export default function Dashboard() {
                 <div key={ngo.id} className="p-6 hover:bg-gray-50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                      <h3 className="font-bold text-lg text-primary">{ngo.name}</h3>
+                      <h3 className="font-bold text-lg text-primary">{ngo.arabicName || ngo.name || "غير محدد"}</h3>
                       <StatusBadge status={ngo.status as any} />
                     </div>
                     <div className="text-sm text-gray-500 flex flex-wrap gap-x-4 gap-y-1">
-                      <span>المدينة: {ngo.city}</span>
+                      <span>الشكل القانوني: {ngo.legalForm || "غير محدد"}</span>
                       <span>•</span>
-                      <span>الرئيس: {ngo.presidentName}</span>
+                      <span>النطاق: {ngo.scope || "غير محدد"}</span>
                       <span>•</span>
-                      <span>تاريخ التقديم: {new Date(ngo.createdAt!).toLocaleDateString("ar-SY")}</span>
+                      <span>تاريخ التقديم: {ngo.createdAt ? new Date(ngo.createdAt).toLocaleDateString("ar-SY") : "غير محدد"}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -170,130 +151,12 @@ export default function Dashboard() {
       </main>
 
       {/* Edit Dialog */}
-      <Dialog open={!!editingNgo} onOpenChange={(open) => !open && setEditingNgo(null)}>
-        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>تعديل بيانات المنظمة</DialogTitle>
-          </DialogHeader>
-          <div className="bg-yellow-50 border-r-4 border-yellow-400 p-4 mb-4">
-            <p className="text-sm text-yellow-700">
-              تنبيه: سيؤدي تعديل بيانات المنظمة إلى إعادة حالة الطلب إلى "قيد المراجعة" لحين موافقة المسؤول مرة أخرى.
-            </p>
-          </div>
-          {editingNgo && (
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">اسم المنظمة (بالعربي)</label>
-                  <Input 
-                    value={editingNgo.arabicName || ""} 
-                    onChange={(e) => setEditingNgo({...editingNgo, arabicName: e.target.value, name: e.target.value})}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">اسم المنظمة (بالإنكليزي)</label>
-                  <Input 
-                    value={editingNgo.englishName || ""} 
-                    onChange={(e) => setEditingNgo({...editingNgo, englishName: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">الشكل القانوني</label>
-                  <Select 
-                    value={editingNgo.legalForm || ""} 
-                    onValueChange={(val) => setEditingNgo({...editingNgo, legalForm: val})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="اختر الشكل القانوني" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="جمعية أهلية">جمعية أهلية</SelectItem>
-                      <SelectItem value="مؤسسة تنموية">مؤسسة تنموية</SelectItem>
-                      <SelectItem value="فرع منظمة دولية">فرع منظمة دولية</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">نطاق العمل</label>
-                  <Select 
-                    value={editingNgo.scope || ""} 
-                    onValueChange={(val) => setEditingNgo({...editingNgo, scope: val})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="اختر نطاق العمل" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="نطاق محلي">نطاق محلي</SelectItem>
-                      <SelectItem value="نطاق محافظات">نطاق محافظات</SelectItem>
-                      <SelectItem value="نطاق وطني">نطاق وطني</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">المحافظة (المقر الرئيسي)</label>
-                  <Select 
-                    value={editingNgo.city || ""} 
-                    onValueChange={(val) => setEditingNgo({...editingNgo, city: val})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="اختر المحافظة" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {["Damascus", "Aleppo", "Homs", "Hama", "Latakia", "Tartus", "Idlib", "Raqqa", "Deir ez-Zor", "Al-Hasakah", "Daraa", "As-Suwayda", "Quneitra", "Rif Dimashq"].map(city => (
-                        <SelectItem key={city} value={city}>{city}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">اسم رئيس مجلس الإدارة</label>
-                  <Input 
-                    value={editingNgo.presidentName || ""} 
-                    onChange={(e) => setEditingNgo({...editingNgo, presidentName: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">البريد الإلكتروني</label>
-                  <Input 
-                    type="email"
-                    value={editingNgo.email || ""} 
-                    onChange={(e) => setEditingNgo({...editingNgo, email: e.target.value})}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">رقم التواصل</label>
-                  <Input 
-                    value={editingNgo.phone || ""} 
-                    onChange={(e) => setEditingNgo({...editingNgo, phone: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">وصف أهداف المنظمة</label>
-                <textarea 
-                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  value={editingNgo.description || ""} 
-                  onChange={(e) => setEditingNgo({...editingNgo, description: e.target.value})}
-                />
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditingNgo(null)}>إلغاء</Button>
-            <Button type="submit" onClick={handleEditSave}>حفظ التغييرات وإرسال للمراجعة</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <NgoEditDialog
+        ngo={editingNgo}
+        open={!!editingNgo}
+        onOpenChange={(open) => !open && setEditingNgo(null)}
+        onSuccess={() => setEditingNgo(null)}
+      />
 
       {/* Details Dialog */}
       <NgoDetailsDialog 

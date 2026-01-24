@@ -6,6 +6,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { StatusBadge } from "@/components/StatusBadge";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Check, X } from "lucide-react";
 import type { Ngo } from "@shared/schema";
 
 interface NgoDetailsDialogProps {
@@ -15,25 +18,6 @@ interface NgoDetailsDialogProps {
 }
 
 export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogProps) {
-  const getLegalFormLabel = (form: string) => {
-    const forms: Record<string, string> = {
-      "جمعية أهلية": "جمعية أهلية",
-      "مؤسسة خيرية": "مؤسسة خيرية",
-      "مؤسسة تنموية": "مؤسسة تنموية",
-      "منظمة مجتمع مدني": "منظمة مجتمع مدني",
-    };
-    return forms[form] || form || "غير محدد";
-  };
-
-  const getScopeLabel = (scope: string) => {
-    const scopes: Record<string, string> = {
-      "نطاق محلي": "نطاق محلي",
-      "نطاق محافظات": "نطاق محافظات",
-      "نطاق وطني": "نطاق وطني",
-    };
-    return scopes[scope] || scope || "غير محدد";
-  };
-
   const getFieldValue = (value: string | null | undefined, fallback: string = "غير محدد") => {
     return value && value.trim() ? value : fallback;
   };
@@ -41,9 +25,23 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
   const displayName = ngo?.arabicName || ngo?.name || "غير محدد";
   const displayEnglishName = ngo?.englishName || "Not specified";
 
+  const BooleanBadge = ({ value }: { value: boolean | null | undefined }) => (
+    value ? (
+      <Badge variant="default" className="bg-green-100 text-green-700 hover:bg-green-100">
+        <Check className="w-3 h-3 ml-1" />
+        نعم
+      </Badge>
+    ) : (
+      <Badge variant="secondary" className="bg-gray-100 text-gray-600 hover:bg-gray-100">
+        <X className="w-3 h-3 ml-1" />
+        لا
+      </Badge>
+    )
+  );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto" dir="rtl" data-testid="dialog-ngo-details">
+      <DialogContent className="sm:max-w-[800px] max-h-[85vh] overflow-y-auto" dir="rtl" data-testid="dialog-ngo-details">
         {ngo ? (
           <>
             <DialogHeader className="text-right border-b pb-4">
@@ -56,49 +54,377 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
               </div>
             </DialogHeader>
 
-            <div className="space-y-6 py-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <DetailItem 
-                  label="الشكل القانوني"
-                  value={getLegalFormLabel(ngo.legalForm)}
-                />
-                <DetailItem 
-                  label="نطاق العمل"
-                  value={getScopeLabel(ngo.scope)}
-                />
-                <DetailItem 
-                  label="المدينة"
-                  value={getFieldValue(ngo.city)}
-                />
-                <DetailItem 
-                  label="اسم الرئيس"
-                  value={getFieldValue(ngo.presidentName)}
-                />
-                <DetailItem 
-                  label="البريد الإلكتروني"
-                  value={getFieldValue(ngo.email)}
-                />
-                <DetailItem 
-                  label="رقم الهاتف"
-                  value={getFieldValue(ngo.phone)}
-                />
-                <DetailItem 
-                  label="تاريخ التقديم"
-                  value={ngo.createdAt ? new Date(ngo.createdAt).toLocaleDateString("ar-SY", {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  }) : "غير محدد"}
-                />
-              </div>
+            <Accordion type="multiple" defaultValue={["section-1"]} className="w-full">
+              {/* Section 1: معلومات التأسيس */}
+              <AccordionItem value="section-1">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  معلومات التأسيس
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <DetailItem label="معرف المنظمة" value={getFieldValue(ngo.orgIdentifier)} />
+                    <DetailItem label="الاسم العربي" value={getFieldValue(ngo.arabicName)} />
+                    <DetailItem label="الاسم الإنكليزي" value={getFieldValue(ngo.englishName)} />
+                    <DetailItem label="الشكل القانوني" value={getFieldValue(ngo.legalForm)} />
+                  </div>
+                  
+                  <h4 className="font-medium text-sm text-muted-foreground border-t pt-3">معلومات الإشهار</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <DetailItem label="نطاق العمل" value={getFieldValue(ngo.scope)} />
+                    <DetailItem label="حالة المنظمة" value={getFieldValue(ngo.orgStatus)} />
+                    <DetailItem label="رقم قرار الإشهار" value={getFieldValue(ngo.publicationNumber)} />
+                    <DetailItem label="تاريخ قرار الإشهار" value={getFieldValue(ngo.publicationDate)} />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">صفة النفع العام:</span>
+                      <BooleanBadge value={ngo.hasPublicBenefit} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">نظام داخلي:</span>
+                      <BooleanBadge value={ngo.hasInternalRegulations} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">نظام نساء:</span>
+                      <BooleanBadge value={ngo.hasWomenPolicy} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">نظام تطوع:</span>
+                      <BooleanBadge value={ngo.hasVolunteerPolicy} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">هيكل تنظيمي:</span>
+                      <BooleanBadge value={ngo.hasOrgStructure} />
+                    </div>
+                  </div>
 
-              <div className="border-t pt-4">
-                <span className="text-sm font-medium text-muted-foreground mb-2 block">وصف المنظمة وأهدافها</span>
-                <div className="bg-muted/30 rounded-lg p-4">
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{getFieldValue(ngo.description, "لا يوجد وصف")}</p>
-                </div>
-              </div>
-            </div>
+                  {ngo.description && (
+                    <div className="border-t pt-3">
+                      <span className="text-sm font-medium text-muted-foreground block mb-2">نبذة عن المنظمة</span>
+                      <div className="bg-muted/30 rounded-lg p-3">
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{ngo.description}</p>
+                      </div>
+                    </div>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Section 2: التصنيفات والخدمات */}
+              {((ngo.classifications && (ngo.classifications as any[]).length > 0) || 
+                (ngo.services && (ngo.services as any[]).length > 0)) && (
+                <AccordionItem value="section-2">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    التصنيفات والخدمات
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    {ngo.classifications && (ngo.classifications as any[]).length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">التصنيفات</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {(ngo.classifications as any[]).map((c, i) => (
+                            <Badge key={i} variant="outline">{c.type}: {c.name}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {ngo.services && (ngo.services as any[]).length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">الخدمات</h4>
+                        <div className="space-y-2">
+                          {(ngo.services as any[]).map((s, i) => (
+                            <div key={i} className="bg-muted/30 rounded-lg p-3 text-sm">
+                              <div className="font-medium">{s.serviceType} - {s.specialty}</div>
+                              <div className="text-muted-foreground">{s.serviceDescription}</div>
+                              <div className="flex gap-4 mt-1 text-xs text-muted-foreground">
+                                <span>الفئة: {s.targetGroup}</span>
+                                <span>المحافظة: {s.governorate}</span>
+                                <span>الحالة: {s.availabilityStatus}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Section 3: المراكز الخدمية */}
+              {ngo.serviceCenters && (ngo.serviceCenters as any[]).length > 0 && (
+                <AccordionItem value="section-3">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    المراكز الخدمية ({(ngo.serviceCenters as any[]).length})
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-3">
+                    {(ngo.serviceCenters as any[]).map((center, i) => (
+                      <div key={i} className="bg-muted/30 rounded-lg p-3">
+                        <div className="font-medium text-sm">{center.name}</div>
+                        <div className="grid grid-cols-2 gap-2 mt-2 text-xs text-muted-foreground">
+                          <span>النوع: {center.centerType}</span>
+                          <span>رقم الترخيص: {center.licenseNumber}</span>
+                          <span>المحافظة: {center.licensedGovernorate}</span>
+                          <span>العنوان: {center.detailedAddress}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Section 4: الفروع والمكاتب */}
+              {ngo.branches && (ngo.branches as any[]).length > 0 && (
+                <AccordionItem value="section-4">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    الفروع والمكاتب ({(ngo.branches as any[]).length})
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-3">
+                    {(ngo.branches as any[]).map((branch, i) => (
+                      <div key={i} className="bg-muted/30 rounded-lg p-3">
+                        <div className="font-medium text-sm">{branch.branchType} - {branch.licensedGovernorate}</div>
+                        <div className="text-xs text-muted-foreground mt-1">{branch.address}</div>
+                        {branch.offeredServices && (
+                          <div className="text-xs text-muted-foreground mt-1">الخدمات: {branch.offeredServices}</div>
+                        )}
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Section 5: العلاقة مع الوزارة */}
+              {ngo.financialData && (ngo.financialData as any[]).length > 0 && (
+                <AccordionItem value="section-5">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    البيانات المالية ({(ngo.financialData as any[]).length})
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-2">
+                    {(ngo.financialData as any[]).map((fd, i) => (
+                      <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
+                        <span className="font-medium text-sm">سنة {fd.year}</span>
+                        <span className="text-sm text-muted-foreground">{fd.closingBudget}</span>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Section 6: معلومات التواصل */}
+              {ngo.contactMethods && (ngo.contactMethods as any[]).length > 0 && (
+                <AccordionItem value="section-6">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    معلومات التواصل ({(ngo.contactMethods as any[]).length})
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {(ngo.contactMethods as any[]).map((cm, i) => (
+                        <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">{cm.type}</span>
+                          <span className="font-medium text-sm">{cm.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Section 7: الحسابات البنكية */}
+              {ngo.bankAccounts && (ngo.bankAccounts as any[]).length > 0 && (
+                <AccordionItem value="section-7">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    الحسابات البنكية ({(ngo.bankAccounts as any[]).length})
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-2">
+                    {(ngo.bankAccounts as any[]).map((ba, i) => (
+                      <div key={i} className="bg-muted/30 rounded-lg p-3">
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium text-sm">{ba.bankName} - {ba.branchName}</span>
+                          {ba.isDonationAccount && <Badge variant="outline">حساب تبرعات</Badge>}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">رقم الحساب: {ba.accountNumber}</div>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Section 8: البرامج والأنشطة */}
+              {((ngo.programs && (ngo.programs as any[]).length > 0) || 
+                (ngo.activities && (ngo.activities as any[]).length > 0)) && (
+                <AccordionItem value="section-8">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    البرامج والأنشطة
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    {ngo.programs && (ngo.programs as any[]).length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">البرامج</h4>
+                        <div className="space-y-2">
+                          {(ngo.programs as any[]).map((p, i) => (
+                            <div key={i} className="bg-muted/30 rounded-lg p-3">
+                              <div className="font-medium text-sm">{p.name}</div>
+                              <div className="text-xs text-muted-foreground mt-1">الأهداف: {p.goals}</div>
+                              <div className="text-xs text-muted-foreground">الفئات المستهدفة: {p.targetGroups}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {ngo.activities && (ngo.activities as any[]).length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">الأنشطة</h4>
+                        <div className="space-y-2">
+                          {(ngo.activities as any[]).map((a, i) => (
+                            <div key={i} className="bg-muted/30 rounded-lg p-3">
+                              <div className="font-medium text-sm">{a.name} ({a.activityType})</div>
+                              <div className="text-xs text-muted-foreground mt-1">الأهداف: {a.goals}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Section 9: الموظفون والمتطوعون */}
+              {((ngo.employees && (ngo.employees as any[]).length > 0) || 
+                (ngo.volunteers && (ngo.volunteers as any[]).length > 0)) && (
+                <AccordionItem value="section-9">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    الوضع الإداري والتنظيمي
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    {ngo.employees && (ngo.employees as any[]).length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">الموظفون ({(ngo.employees as any[]).length})</h4>
+                        <div className="space-y-2">
+                          {(ngo.employees as any[]).map((e, i) => (
+                            <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
+                              <span className="font-medium text-sm">{e.firstName} {e.lastName}</span>
+                              <span className="text-sm text-muted-foreground">{e.position}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {ngo.volunteers && (ngo.volunteers as any[]).length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">المتطوعون ({(ngo.volunteers as any[]).length})</h4>
+                        <div className="space-y-2">
+                          {(ngo.volunteers as any[]).map((v, i) => (
+                            <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
+                              <span className="font-medium text-sm">{v.firstName} {v.lastName}</span>
+                              <span className="text-sm text-muted-foreground">{v.position}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Section 10: الممتلكات */}
+              {((ngo.vehicles && (ngo.vehicles as any[]).length > 0) || 
+                (ngo.realEstate && (ngo.realEstate as any[]).length > 0)) && (
+                <AccordionItem value="section-10">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    الممتلكات
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    {ngo.vehicles && (ngo.vehicles as any[]).length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">الآليات ({(ngo.vehicles as any[]).length})</h4>
+                        <div className="space-y-2">
+                          {(ngo.vehicles as any[]).map((v, i) => (
+                            <div key={i} className="bg-muted/30 rounded-lg p-3">
+                              <div className="font-medium text-sm">{v.vehicleType} - {v.model}</div>
+                              <div className="text-xs text-muted-foreground mt-1">رقم اللوحة: {v.plateNumber}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {ngo.realEstate && (ngo.realEstate as any[]).length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">العقارات ({(ngo.realEstate as any[]).length})</h4>
+                        <div className="space-y-2">
+                          {(ngo.realEstate as any[]).map((r, i) => (
+                            <div key={i} className="bg-muted/30 rounded-lg p-3">
+                              <div className="font-medium text-sm">{r.propertyType} - {r.governorate}</div>
+                              <div className="text-xs text-muted-foreground mt-1">رقم العقار: {r.propertyNumber}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Section 11: إعدادات إضافية */}
+              {(ngo.syriatelCashEnabled || ngo.mtnCashEnabled || ngo.showJobOpportunities || 
+                ngo.showVolunteerOpportunities || ngo.showEvents || ngo.showDonationCampaigns) && (
+                <AccordionItem value="section-11">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    الإعدادات الإضافية
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">Syriatel Cash:</span>
+                        <BooleanBadge value={ngo.syriatelCashEnabled} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">MTN Cash:</span>
+                        <BooleanBadge value={ngo.mtnCashEnabled} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">فرص العمل:</span>
+                        <BooleanBadge value={ngo.showJobOpportunities} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">فرص التطوع:</span>
+                        <BooleanBadge value={ngo.showVolunteerOpportunities} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">الفعاليات:</span>
+                        <BooleanBadge value={ngo.showEvents} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">حملات التبرع:</span>
+                        <BooleanBadge value={ngo.showDonationCampaigns} />
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {/* Legacy fields for backward compatibility */}
+              {(ngo.city || ngo.presidentName || ngo.email || ngo.phone) && (
+                <AccordionItem value="section-legacy">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    معلومات إضافية
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {ngo.city && <DetailItem label="المدينة" value={ngo.city} />}
+                      {ngo.presidentName && <DetailItem label="اسم الرئيس" value={ngo.presidentName} />}
+                      {ngo.email && <DetailItem label="البريد الإلكتروني" value={ngo.email} />}
+                      {ngo.phone && <DetailItem label="رقم الهاتف" value={ngo.phone} />}
+                    </div>
+                    <div className="mt-3 text-xs text-muted-foreground">
+                      تاريخ التقديم: {ngo.createdAt ? new Date(ngo.createdAt).toLocaleDateString("ar-SY", {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      }) : "غير محدد"}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+            </Accordion>
           </>
         ) : (
           <div className="py-8 text-center text-muted-foreground">
