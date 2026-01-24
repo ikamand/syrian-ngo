@@ -118,6 +118,13 @@ export async function registerRoutes(
 
   // --- NGO Routes ---
 
+  // Public endpoint: Get all approved NGOs (no auth required)
+  app.get(api.ngos.listPublic.path, async (_req, res) => {
+    const allNgos = await storage.getNgos();
+    const approvedNgos = allNgos.filter(ngo => ngo.status === "Approved");
+    res.json(approvedNgos);
+  });
+
   // Get all NGOs (Admin sees all, User sees theirs - logic in route or generic list?)
   // Requirement says: "Admin Panel: View all NGOs", "User Dashboard: View list of NGOs they created"
   // Let's implement /api/ngos to return based on role or context

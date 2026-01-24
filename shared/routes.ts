@@ -57,6 +57,13 @@ export const api = {
     },
   },
   ngos: {
+    listPublic: {
+      method: 'GET' as const,
+      path: '/api/ngos/public',
+      responses: {
+        200: z.array(z.custom<typeof ngos.$inferSelect>()),
+      },
+    },
     list: {
       method: 'GET' as const,
       path: '/api/ngos',

@@ -1,20 +1,58 @@
 import { Navbar } from "@/components/Navbar";
-import { useNgos } from "@/hooks/use-ngos";
 import { Input } from "@/components/ui/input";
-import { Search, MapPin, Phone, Mail, Building2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, MapPin, Eye, Building2, Scale, Globe } from "lucide-react";
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@shared/routes";
+import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
+import type { Ngo } from "@shared/schema";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function NgoList() {
-  const { data: ngos, isLoading } = useNgos();
-  const [searchTerm, setSearchTerm] = useState("");
+  const { data: ngos, isLoading } = useQuery({
+    queryKey: [api.ngos.listPublic.path],
+    queryFn: async () => {
+      const res = await fetch(api.ngos.listPublic.path);
+      if (!res.ok) throw new Error("Failed to fetch NGOs");
+      return api.ngos.listPublic.responses[200].parse(await res.json());
+    },
+  });
 
-  const approvedNgos = ngos?.filter(ngo => ngo.status === "Approved") || [];
-  const filteredNgos = approvedNgos.filter(ngo => 
-    ngo.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    ngo.city.toLowerCase().includes(searchTerm.toLowerCase())
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
+
+  const filteredNgos = (ngos || []).filter(ngo => 
+    (ngo.arabicName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (ngo.englishName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (ngo.city?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
+
+  const getLegalFormLabel = (form: string) => {
+    const forms: Record<string, string> = {
+      "جمعية أهلية": "جمعية أهلية",
+      "مؤسسة خيرية": "مؤسسة خيرية",
+      "مؤسسة تنموية": "مؤسسة تنموية",
+      "منظمة مجتمع مدني": "منظمة مجتمع مدني",
+    };
+    return forms[form] || form || "—";
+  };
+
+  const getScopeLabel = (scope: string) => {
+    const scopes: Record<string, string> = {
+      "نطاق محلي": "محلي",
+      "نطاق محافظات": "محافظات",
+      "نطاق وطني": "وطني",
+    };
+    return scopes[scope] || scope || "—";
+  };
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -30,7 +68,6 @@ export default function NgoList() {
       </div>
 
       <main className="container mx-auto px-4 -mt-6">
-        {/* Search Bar */}
         <div className="bg-white p-4 rounded-xl shadow-lg max-w-2xl mx-auto mb-10 flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -39,16 +76,18 @@ export default function NgoList() {
               className="pr-10 h-12 text-lg border-gray-200"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              data-testid="input-search-ngo"
             />
           </div>
         </div>
 
-        {/* Results Grid */}
         {isLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-48 bg-gray-200 rounded-xl animate-pulse" />
-            ))}
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-12 bg-gray-200 rounded animate-pulse" />
+              ))}
+            </div>
           </div>
         ) : filteredNgos.length === 0 ? (
           <div className="text-center py-20 text-muted-foreground">
@@ -56,40 +95,81 @@ export default function NgoList() {
             <p className="text-lg">لا توجد منظمات مطابقة لبحثك</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-            {filteredNgos.map((ngo) => (
-              <Card key={ngo.id} className="hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-primary">
-                <CardContent className="pt-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-                      <Building2 className="w-6 h-6" />
-                    </div>
-                    <Badge variant="secondary" className="bg-green-100 text-green-700 hover:bg-green-100">مرخصة</Badge>
-                  </div>
-                  
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1" title={ngo.name}>{ngo.name}</h3>
-                  <p className="text-gray-500 text-sm mb-4 line-clamp-2 min-h-[40px]">{ngo.description}</p>
-                  
-                  <div className="space-y-2 text-sm text-gray-600 border-t pt-4">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-primary" />
-                      <span>{ngo.city}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-primary" />
-                      <span className="truncate">{ngo.email}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-primary" />
-                      <span dir="ltr" className="text-right">{ngo.phone}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-20">
+            <div className="p-4 border-b bg-gray-50/50">
+              <p className="text-sm text-muted-foreground">
+                تم العثور على <span className="font-bold text-primary">{filteredNgos.length}</span> منظمة مرخصة
+              </p>
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-50/80">
+                    <TableHead className="text-right font-bold">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4" />
+                        اسم المنظمة
+                      </div>
+                    </TableHead>
+                    <TableHead className="text-right font-bold">
+                      <div className="flex items-center gap-2">
+                        <Scale className="w-4 h-4" />
+                        الشكل القانوني
+                      </div>
+                    </TableHead>
+                    <TableHead className="text-right font-bold">
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4" />
+                        النطاق
+                      </div>
+                    </TableHead>
+                    <TableHead className="text-right font-bold">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4" />
+                        المدينة
+                      </div>
+                    </TableHead>
+                    <TableHead className="text-center font-bold">الإجراءات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredNgos.map((ngo) => (
+                    <TableRow key={ngo.id} className="hover:bg-gray-50/50" data-testid={`row-ngo-${ngo.id}`}>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium text-gray-900">{ngo.arabicName || "—"}</p>
+                          <p className="text-sm text-muted-foreground">{ngo.englishName || ""}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-gray-600">{getLegalFormLabel(ngo.legalForm)}</TableCell>
+                      <TableCell className="text-gray-600">{getScopeLabel(ngo.scope)}</TableCell>
+                      <TableCell className="text-gray-600">{ngo.city || "—"}</TableCell>
+                      <TableCell className="text-center">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setViewingNgo(ngo)}
+                          className="gap-2"
+                          data-testid={`button-details-ngo-${ngo.id}`}
+                        >
+                          <Eye className="w-4 h-4" />
+                          التفاصيل
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         )}
       </main>
+
+      <NgoDetailsDialog 
+        ngo={viewingNgo} 
+        open={!!viewingNgo} 
+        onOpenChange={(open) => !open && setViewingNgo(null)} 
+      />
     </div>
   );
 }
