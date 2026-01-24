@@ -200,6 +200,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
   const donationCampaignsArray = useFieldArray({ control: form.control, name: "donationCampaigns" });
   const photoGalleryArray = useFieldArray({ control: form.control, name: "photoGallery" });
   const networkingArray = useFieldArray({ control: form.control, name: "networking" });
+  const statisticsArray = useFieldArray({ control: form.control, name: "statistics" });
 
   useEffect(() => {
     if (ngo && open) {
@@ -426,6 +427,35 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                         <FormItem className="flex items-center gap-2">
                           <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                           <FormLabel className="!mt-0">لديها هيكل تنظيمي</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-4 mt-4">
+                    <FormField control={form.control} name="internalRegulationsDoc"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>وثيقة النظام الداخلي</FormLabel>
+                          <FormControl><Input {...field} placeholder="رابط الملف" data-testid="edit-input-internal-regulations-doc" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="publicationDecisionDoc"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>وثيقة قرار الإشهار</FormLabel>
+                          <FormControl><Input {...field} placeholder="رابط الملف" data-testid="edit-input-publication-decision-doc" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="publicBenefitDoc"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>وثيقة النفع العام</FormLabel>
+                          <FormControl><Input {...field} placeholder="رابط الملف" data-testid="edit-input-public-benefit-doc" /></FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -658,6 +688,41 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                       <FormField control={form.control} name={`programs.${index}.goals`} render={({ field }) => (<FormItem><FormLabel>الأهداف</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl></FormItem>)} />
                     </div>
                   ))}
+
+                  <div className="flex items-center justify-between mt-6">
+                    <h4 className="font-medium">الأنشطة</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => activitiesArray.append({ name: "", activityType: "", goals: "", services: "", targetGroups: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة نشاط
+                    </Button>
+                  </div>
+                  {activitiesArray.fields.map((field, index) => (
+                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">نشاط {index + 1}</span>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => activitiesArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <FormField control={form.control} name={`activities.${index}.name`} render={({ field }) => (<FormItem><FormLabel>اسم النشاط</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`activities.${index}.activityType`} render={({ field }) => (<FormItem><FormLabel>نوع النشاط</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`activities.${index}.targetGroups`} render={({ field }) => (<FormItem><FormLabel>الفئات المستهدفة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex items-center justify-between mt-6">
+                    <h4 className="font-medium">البيانات المالية</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => financialDataArray.append({ year: "", closingBudget: "", budgetDocument: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة سنة مالية
+                    </Button>
+                  </div>
+                  {financialDataArray.fields.map((field, index) => (
+                    <div key={field.id} className="grid grid-cols-4 gap-2 items-end border-b pb-2">
+                      <FormField control={form.control} name={`financialData.${index}.year`} render={({ field }) => (<FormItem><FormLabel>السنة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`financialData.${index}.closingBudget`} render={({ field }) => (<FormItem><FormLabel>الميزانية الختامية</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`financialData.${index}.budgetDocument`} render={({ field }) => (<FormItem><FormLabel>وثيقة الميزانية</FormLabel><FormControl><Input {...field} placeholder="رابط الملف" /></FormControl></FormItem>)} />
+                      <Button type="button" variant="ghost" size="icon" onClick={() => financialDataArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                    </div>
+                  ))}
                 </AccordionContent>
               </AccordionItem>
 
@@ -743,6 +808,29 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                       </div>
                     </div>
                   ))}
+
+                  <div className="flex items-center justify-between mt-6">
+                    <h4 className="font-medium">العقارات</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => realEstateArray.append({ propertyNumber: "", propertyType: "", administrativeArea: "", governorate: "", ownershipType: "", ownershipDocument: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة عقار
+                    </Button>
+                  </div>
+                  {realEstateArray.fields.map((field, index) => (
+                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">عقار {index + 1}</span>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => realEstateArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <FormField control={form.control} name={`realEstate.${index}.propertyNumber`} render={({ field }) => (<FormItem><FormLabel>رقم العقار</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`realEstate.${index}.propertyType`} render={({ field }) => (<FormItem><FormLabel>نوع العقار</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`realEstate.${index}.administrativeArea`} render={({ field }) => (<FormItem><FormLabel>المنطقة الإدارية</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`realEstate.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`realEstate.${index}.ownershipType`} render={({ field }) => (<FormItem><FormLabel>نوع الملكية</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`realEstate.${index}.ownershipDocument`} render={({ field }) => (<FormItem><FormLabel>وثيقة الملكية</FormLabel><FormControl><Input {...field} placeholder="رابط الملف" /></FormControl></FormItem>)} />
+                      </div>
+                    </div>
+                  ))}
                 </AccordionContent>
               </AccordionItem>
 
@@ -825,10 +913,143 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 12: إعدادات العرض */}
+              {/* Section 12: البيانات الاختيارية */}
               <AccordionItem value="section-12" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-12">
-                  12. إعدادات العرض
+                  12. البيانات الاختيارية
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">فرص العمل</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة فرصة
+                    </Button>
+                  </div>
+                  {jobOpportunitiesArray.fields.map((field, index) => (
+                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">فرصة عمل {index + 1}</span>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => jobOpportunitiesArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <FormField control={form.control} name={`jobOpportunities.${index}.vacancyName`} render={({ field }) => (<FormItem><FormLabel>اسم الشاغر</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`jobOpportunities.${index}.workField`} render={({ field }) => (<FormItem><FormLabel>مجال العمل</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`jobOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex items-center justify-between mt-6">
+                    <h4 className="font-medium">فرص التطوع</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => volunteerOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", volunteerPurpose: "", qualification: "", skills: "", experience: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة فرصة
+                    </Button>
+                  </div>
+                  {volunteerOpportunitiesArray.fields.map((field, index) => (
+                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">فرصة تطوع {index + 1}</span>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => volunteerOpportunitiesArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <FormField control={form.control} name={`volunteerOpportunities.${index}.vacancyName`} render={({ field }) => (<FormItem><FormLabel>اسم الشاغر</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`volunteerOpportunities.${index}.workField`} render={({ field }) => (<FormItem><FormLabel>مجال العمل</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`volunteerOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex items-center justify-between mt-6">
+                    <h4 className="font-medium">الفعاليات</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => eventsArray.append({ image: "", eventName: "", invitationType: "", eventType: "", startDate: "", endDate: "", announcementDate: "", announcementEndDate: "", startDescription: "", endDescription: "", address: "", details: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة فعالية
+                    </Button>
+                  </div>
+                  {eventsArray.fields.map((field, index) => (
+                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">فعالية {index + 1}</span>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => eventsArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <FormField control={form.control} name={`events.${index}.eventName`} render={({ field }) => (<FormItem><FormLabel>اسم الفعالية</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`events.${index}.eventType`} render={({ field }) => (<FormItem><FormLabel>نوع الفعالية</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`events.${index}.address`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex items-center justify-between mt-6">
+                    <h4 className="font-medium">حملات التبرع</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => donationCampaignsArray.append({ image: "", campaignName: "", campaignType: "", targetGroups: "", startDate: "", endDate: "", governorate: "", details: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة حملة
+                    </Button>
+                  </div>
+                  {donationCampaignsArray.fields.map((field, index) => (
+                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">حملة {index + 1}</span>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => donationCampaignsArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <FormField control={form.control} name={`donationCampaigns.${index}.campaignName`} render={({ field }) => (<FormItem><FormLabel>اسم الحملة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`donationCampaigns.${index}.campaignType`} render={({ field }) => (<FormItem><FormLabel>نوع الحملة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`donationCampaigns.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex items-center justify-between mt-6">
+                    <h4 className="font-medium">الخطط السنوية</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => annualPlansArray.append({ plan: "", tracking: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة خطة
+                    </Button>
+                  </div>
+                  {annualPlansArray.fields.map((field, index) => (
+                    <div key={field.id} className="grid grid-cols-3 gap-2 items-end border-b pb-2">
+                      <FormField control={form.control} name={`annualPlans.${index}.plan`} render={({ field }) => (<FormItem><FormLabel>الخطة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`annualPlans.${index}.tracking`} render={({ field }) => (<FormItem><FormLabel>المتابعة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <Button type="button" variant="ghost" size="icon" onClick={() => annualPlansArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                    </div>
+                  ))}
+
+                  <div className="flex items-center justify-between mt-6">
+                    <h4 className="font-medium">محاضر الاجتماعات</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => meetingMinutesArray.append({ meetingName: "", meetingDate: "", attendees: "", minutesFile: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة محضر
+                    </Button>
+                  </div>
+                  {meetingMinutesArray.fields.map((field, index) => (
+                    <div key={field.id} className="grid grid-cols-5 gap-2 items-end border-b pb-2">
+                      <FormField control={form.control} name={`meetingMinutes.${index}.meetingName`} render={({ field }) => (<FormItem><FormLabel>اسم الاجتماع</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`meetingMinutes.${index}.meetingDate`} render={({ field }) => (<FormItem><FormLabel>التاريخ</FormLabel><FormControl><Input type="date" {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`meetingMinutes.${index}.attendees`} render={({ field }) => (<FormItem><FormLabel>الحضور</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`meetingMinutes.${index}.minutesFile`} render={({ field }) => (<FormItem><FormLabel>ملف المحضر</FormLabel><FormControl><Input {...field} placeholder="رابط الملف" /></FormControl></FormItem>)} />
+                      <Button type="button" variant="ghost" size="icon" onClick={() => meetingMinutesArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                    </div>
+                  ))}
+
+                  <div className="flex items-center justify-between mt-6">
+                    <h4 className="font-medium">معرض الصور</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => photoGalleryArray.append({ image: "", title: "", details: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة صورة
+                    </Button>
+                  </div>
+                  {photoGalleryArray.fields.map((field, index) => (
+                    <div key={field.id} className="grid grid-cols-4 gap-2 items-end border-b pb-2">
+                      <FormField control={form.control} name={`photoGallery.${index}.image`} render={({ field }) => (<FormItem><FormLabel>رابط الصورة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`photoGallery.${index}.title`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`photoGallery.${index}.details`} render={({ field }) => (<FormItem><FormLabel>التفاصيل</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <Button type="button" variant="ghost" size="icon" onClick={() => photoGalleryArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Section 13: إعدادات العرض */}
+              <AccordionItem value="section-13" className="border rounded-lg px-4">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-13">
+                  13. إعدادات العرض
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="space-y-3">
