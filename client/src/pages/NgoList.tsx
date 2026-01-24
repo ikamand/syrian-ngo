@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Eye, Building2, Scale, Globe } from "lucide-react";
+import { Search, Building2 } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
@@ -105,30 +105,10 @@ export default function NgoList() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-gray-50/80">
-                    <TableHead className="text-right font-bold">
-                      <div className="flex items-center gap-2">
-                        <Building2 className="w-4 h-4" />
-                        اسم المنظمة
-                      </div>
-                    </TableHead>
-                    <TableHead className="text-right font-bold">
-                      <div className="flex items-center gap-2">
-                        <Scale className="w-4 h-4" />
-                        الشكل القانوني
-                      </div>
-                    </TableHead>
-                    <TableHead className="text-right font-bold">
-                      <div className="flex items-center gap-2">
-                        <Globe className="w-4 h-4" />
-                        النطاق
-                      </div>
-                    </TableHead>
-                    <TableHead className="text-right font-bold">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />
-                        المدينة
-                      </div>
-                    </TableHead>
+                    <TableHead className="text-right font-bold">اسم المنظمة</TableHead>
+                    <TableHead className="text-right font-bold">الشكل القانوني</TableHead>
+                    <TableHead className="text-right font-bold">النطاق</TableHead>
+                    <TableHead className="text-right font-bold">المدينة</TableHead>
                     <TableHead className="text-center font-bold">الإجراءات</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -149,10 +129,8 @@ export default function NgoList() {
                           size="sm" 
                           variant="outline"
                           onClick={() => setViewingNgo(ngo)}
-                          className="gap-2"
                           data-testid={`button-details-ngo-${ngo.id}`}
                         >
-                          <Eye className="w-4 h-4" />
                           التفاصيل
                         </Button>
                       </TableCell>

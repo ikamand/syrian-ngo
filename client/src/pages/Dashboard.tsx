@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useNgos, useUpdateNgo } from "@/hooks/use-ngos";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Search, Edit2, Eye } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Input } from "@/components/ui/input";
@@ -106,13 +106,12 @@ export default function Dashboard() {
 
         {/* Search & List */}
         <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
-          <div className="p-4 border-b bg-gray-50 flex items-center gap-2">
-            <Search className="w-4 h-4 text-muted-foreground" />
+          <div className="p-4 border-b bg-gray-50">
             <Input 
               placeholder="بحث في طلباتك..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-xs border-none bg-transparent shadow-none focus-visible:ring-0"
+              className="max-w-xs"
             />
           </div>
 
@@ -149,21 +148,17 @@ export default function Dashboard() {
                   <div className="flex items-center gap-2">
                     <Button 
                       variant="outline" 
-                      size="sm" 
-                      className="gap-2"
+                      size="sm"
                       onClick={() => setEditingNgo(ngo)}
                     >
-                      <Edit2 className="w-4 h-4" />
                       تعديل
                     </Button>
                     <Button 
                       variant="ghost" 
-                      size="sm" 
-                      className="gap-2"
+                      size="sm"
                       onClick={() => setViewingNgo(ngo)}
                       data-testid={`button-details-${ngo.id}`}
                     >
-                      <Eye className="w-4 h-4" />
                       التفاصيل
                     </Button>
                   </div>

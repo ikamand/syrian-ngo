@@ -5,7 +5,7 @@ import { useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement, useDele
 import { useAllSiteContent, useUpsertSiteContent } from "@/hooks/use-site-content";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Check, X, Search, Filter, Trash2, Edit2, Save, Plus, Megaphone, Building2, FileEdit, Eye } from "lucide-react";
+import { Check, X, Trash2, Save, Plus } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -223,16 +223,13 @@ export default function AdminDashboard() {
 
         <Tabs defaultValue="ngos" className="space-y-6">
           <TabsList className="grid w-full max-w-xl grid-cols-3">
-            <TabsTrigger value="ngos" className="flex items-center gap-2" data-testid="tab-ngos">
-              <Building2 className="w-4 h-4" />
+            <TabsTrigger value="ngos" data-testid="tab-ngos">
               المنظمات
             </TabsTrigger>
-            <TabsTrigger value="announcements" className="flex items-center gap-2" data-testid="tab-announcements">
-              <Megaphone className="w-4 h-4" />
+            <TabsTrigger value="announcements" data-testid="tab-announcements">
               الإعلانات
             </TabsTrigger>
-            <TabsTrigger value="content" className="flex items-center gap-2" data-testid="tab-content">
-              <FileEdit className="w-4 h-4" />
+            <TabsTrigger value="content" data-testid="tab-content">
               المحتوى
             </TabsTrigger>
           </TabsList>
@@ -240,18 +237,14 @@ export default function AdminDashboard() {
           <TabsContent value="ngos">
             <div className="bg-white rounded-xl border shadow-sm">
               <div className="p-4 border-b flex flex-col md:flex-row gap-4 justify-between">
-                <div className="relative w-full md:w-96">
-                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input 
-                    placeholder="بحث باسم المنظمة أو المدينة..." 
-                    className="pr-9"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    data-testid="input-search-ngos"
-                  />
-                </div>
+                <Input 
+                  placeholder="بحث باسم المنظمة أو المدينة..." 
+                  className="w-full md:w-96"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  data-testid="input-search-ngos"
+                />
                 <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-muted-foreground" />
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
                     <SelectTrigger className="w-[180px]" data-testid="select-status-filter">
                       <SelectValue placeholder="تصفية حسب الحالة" />
@@ -322,22 +315,20 @@ export default function AdminDashboard() {
                                 </>
                               )}
                               <Button 
-                                size="icon" 
+                                size="sm" 
                                 variant="ghost"
                                 onClick={() => setViewingNgo(ngo)}
-                                title="التفاصيل"
                                 data-testid={`button-details-ngo-${ngo.id}`}
                               >
-                                <Eye className="w-4 h-4" />
+                                التفاصيل
                               </Button>
                               <Button 
-                                size="icon" 
+                                size="sm" 
                                 variant="outline"
                                 onClick={() => setEditingNgo(ngo)}
-                                title="تعديل"
                                 data-testid={`button-edit-ngo-${ngo.id}`}
                               >
-                                <Edit2 className="w-4 h-4" />
+                                تعديل
                               </Button>
                               <Button 
                                 size="icon" 
@@ -392,12 +383,12 @@ export default function AdminDashboard() {
                           </div>
                           <div className="flex items-center gap-2">
                             <Button
-                              size="icon"
+                              size="sm"
                               variant="outline"
                               onClick={() => openEditAnnouncement(announcement)}
                               data-testid={`button-edit-announcement-${announcement.id}`}
                             >
-                              <Edit2 className="w-4 h-4" />
+                              تعديل
                             </Button>
                             <Button
                               size="icon"
@@ -419,7 +410,6 @@ export default function AdminDashboard() {
               ) : (
                 <Card className="border-dashed">
                   <CardContent className="py-12 text-center">
-                    <Megaphone className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
                     <p className="text-muted-foreground">لا توجد إعلانات حالياً</p>
                     <Button variant="outline" className="mt-4" onClick={openCreateAnnouncement}>
                       <Plus className="w-4 h-4 ml-2" />
@@ -461,7 +451,7 @@ export default function AdminDashboard() {
                               </p>
                             </div>
                             <Button
-                              size="icon"
+                              size="sm"
                               variant="outline"
                               onClick={() => existingContent 
                                 ? openEditContent(existingContent) 
@@ -469,7 +459,7 @@ export default function AdminDashboard() {
                               }
                               data-testid={`button-edit-content-${item.key}`}
                             >
-                              <Edit2 className="w-4 h-4" />
+                              تعديل
                             </Button>
                           </div>
                         </CardHeader>

@@ -6,7 +6,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { StatusBadge } from "@/components/StatusBadge";
-import { Building2, MapPin, User, Mail, Phone, FileText, Calendar, Scale, Globe } from "lucide-react";
 import type { Ngo } from "@shared/schema";
 
 interface NgoDetailsDialogProps {
@@ -49,14 +48,9 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
           <>
             <DialogHeader className="text-right border-b pb-4">
               <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <Building2 className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <DialogTitle className="text-xl font-bold text-primary">{displayName}</DialogTitle>
-                    <DialogDescription className="text-sm text-muted-foreground mt-1">{displayEnglishName}</DialogDescription>
-                  </div>
+                <div>
+                  <DialogTitle className="text-xl font-bold text-primary">{displayName}</DialogTitle>
+                  <DialogDescription className="text-sm text-muted-foreground mt-1">{displayEnglishName}</DialogDescription>
                 </div>
                 <StatusBadge status={ngo.status as any} />
               </div>
@@ -65,37 +59,30 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
             <div className="space-y-6 py-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <DetailItem 
-                  icon={<Scale className="w-4 h-4" />}
                   label="الشكل القانوني"
                   value={getLegalFormLabel(ngo.legalForm)}
                 />
                 <DetailItem 
-                  icon={<Globe className="w-4 h-4" />}
                   label="نطاق العمل"
                   value={getScopeLabel(ngo.scope)}
                 />
                 <DetailItem 
-                  icon={<MapPin className="w-4 h-4" />}
                   label="المدينة"
                   value={getFieldValue(ngo.city)}
                 />
                 <DetailItem 
-                  icon={<User className="w-4 h-4" />}
                   label="اسم الرئيس"
                   value={getFieldValue(ngo.presidentName)}
                 />
                 <DetailItem 
-                  icon={<Mail className="w-4 h-4" />}
                   label="البريد الإلكتروني"
                   value={getFieldValue(ngo.email)}
                 />
                 <DetailItem 
-                  icon={<Phone className="w-4 h-4" />}
                   label="رقم الهاتف"
                   value={getFieldValue(ngo.phone)}
                 />
                 <DetailItem 
-                  icon={<Calendar className="w-4 h-4" />}
                   label="تاريخ التقديم"
                   value={ngo.createdAt ? new Date(ngo.createdAt).toLocaleDateString("ar-SY", {
                     year: 'numeric',
@@ -106,10 +93,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
               </div>
 
               <div className="border-t pt-4">
-                <div className="flex items-start gap-2 text-muted-foreground mb-2">
-                  <FileText className="w-4 h-4 mt-1" />
-                  <span className="text-sm font-medium">وصف المنظمة وأهدافها</span>
-                </div>
+                <span className="text-sm font-medium text-muted-foreground mb-2 block">وصف المنظمة وأهدافها</span>
                 <div className="bg-muted/30 rounded-lg p-4">
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">{getFieldValue(ngo.description, "لا يوجد وصف")}</p>
                 </div>
@@ -130,13 +114,10 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
   );
 }
 
-function DetailItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-muted/20 rounded-lg p-3 border" data-testid={`detail-${label}`}>
-      <div className="flex items-center gap-2 text-muted-foreground mb-1">
-        {icon}
-        <span className="text-xs font-medium">{label}</span>
-      </div>
+      <span className="text-xs font-medium text-muted-foreground block mb-1">{label}</span>
       <p className="text-sm font-medium text-foreground">{value}</p>
     </div>
   );
