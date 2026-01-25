@@ -123,11 +123,11 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="flex gap-2">
-              <Button asChild variant="ghost" className="font-bold">
-                <Link href="/login">تسجيل الدخول</Link>
+              <Button asChild variant="outline" className="font-bold">
+                <Link href="/create-ngo">إنشاء منظمة جديدة</Link>
               </Button>
               <Button asChild className="font-bold shadow-lg shadow-primary/20">
-                <Link href="/login?tab=register">حساب جديد</Link>
+                <Link href="/login">تسجيل الدخول</Link>
               </Button>
             </div>
           )}
@@ -250,18 +250,18 @@ export function Navbar() {
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/login" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
+                    <Link href="/create-ngo" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
                       <div className="flex items-center gap-3 w-full">
-                        <User className="h-4 w-4" />
-                        <span>تسجيل الدخول</span>
+                        <Building2 className="h-4 w-4" />
+                        <span>إنشاء منظمة جديدة</span>
                       </div>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/login?tab=register" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
+                    <Link href="/login" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
                       <div className="flex items-center gap-3 w-full text-primary font-medium">
                         <User className="h-4 w-4" />
-                        <span>حساب جديد</span>
+                        <span>تسجيل الدخول</span>
                       </div>
                     </Link>
                   </DropdownMenuItem>

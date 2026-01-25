@@ -48,7 +48,7 @@ export default function Dashboard() {
           <Link href="/ngos/new">
             <Button className="gap-2 shadow-lg shadow-primary/20">
               <Plus className="w-4 h-4" />
-              تسجيل منظمة جديدة
+              إنشاء منظمة جديدة
             </Button>
           </Link>
         </div>

@@ -429,7 +429,7 @@ export default function CreateNgo() {
 
         <Card className="max-w-4xl mx-auto shadow-lg border-primary/10">
           <CardHeader className="border-b bg-white rounded-t-xl pb-6">
-            <CardTitle className="text-2xl text-primary">تسجيل منظمة جديدة</CardTitle>
+            <CardTitle className="text-2xl text-primary">إنشاء منظمة جديدة</CardTitle>
             <CardDescription>يرجى ملء البيانات المطلوبة لتسجيل منظمتكم على منصة تشارك</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">

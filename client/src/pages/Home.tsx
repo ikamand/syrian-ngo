@@ -31,8 +31,8 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
               <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 text-lg h-14 px-8 shadow-xl shadow-black/10">
-                <Link href="/login?tab=register">
-                  تسجيل منظمة جديدة
+                <Link href="/create-ngo">
+                  إنشاء منظمة جديدة
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 text-lg h-14 px-8">
