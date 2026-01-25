@@ -629,14 +629,14 @@ export default function AdminDashboard() {
                 data-testid="input-announcement-content"
               />
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-3 p-3 border rounded-lg">
+              <Label htmlFor="published" className="cursor-pointer">نشر الإعلان (سيظهر للزوار)</Label>
               <Switch
                 id="published"
                 checked={announcementForm.published}
                 onCheckedChange={(checked) => setAnnouncementForm({ ...announcementForm, published: checked })}
                 data-testid="switch-announcement-published"
               />
-              <Label htmlFor="published">نشر الإعلان (سيظهر للزوار)</Label>
             </div>
           </div>
           <DialogFooter>

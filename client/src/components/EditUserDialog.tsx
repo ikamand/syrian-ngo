@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -213,34 +214,34 @@ export function EditUserDialog({ open, onOpenChange, user }: EditUserDialogProps
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="registrationDate">تاريخ الإشهار</Label>
-              <Input
-                id="registrationDate"
-                type="date"
-                value={formData.registrationDate}
-                onChange={(e) => setFormData({ ...formData, registrationDate: e.target.value })}
-                className="text-left"
-                dir="ltr"
-                data-testid="input-edit-registration-date"
-              />
+          <div className="space-y-2">
+            <Label htmlFor="registrationDate">تاريخ الإشهار</Label>
+            <Input
+              id="registrationDate"
+              type="date"
+              value={formData.registrationDate}
+              onChange={(e) => setFormData({ ...formData, registrationDate: e.target.value })}
+              className="text-left"
+              dir="ltr"
+              data-testid="input-edit-registration-date"
+            />
+          </div>
+
+          <div className="flex items-center justify-between gap-3 p-3 border rounded-lg">
+            <div className="space-y-1">
+              <Label htmlFor="status" className="cursor-pointer">الحساب فعّال</Label>
+              <p className="text-xs text-muted-foreground">
+                {formData.status === "active" 
+                  ? "المستخدم يمكنه تسجيل الدخول" 
+                  : "المستخدم لا يمكنه تسجيل الدخول"}
+              </p>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="status">حالة الحساب</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value) => setFormData({ ...formData, status: value })}
-              >
-                <SelectTrigger data-testid="select-edit-status">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">فعّال</SelectItem>
-                  <SelectItem value="suspended">متوقف</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Switch
+              id="status"
+              checked={formData.status === "active"}
+              onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? "active" : "suspended" })}
+              data-testid="switch-edit-status"
+            />
           </div>
 
           {formData.status === "suspended" && (
