@@ -42,16 +42,27 @@ export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
 
   constructor() {
-    if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL) {
-      this.sessionStore = new PgSession({
+    // Always use PostgreSQL session store when DATABASE_URL is available
+    // This ensures consistent behavior between development and production
+    if (process.env.DATABASE_URL) {
+      const pgStore = new PgSession({
         pool: pool as any,
         tableName: "session",
         createTableIfMissing: true,
+        pruneSessionInterval: 60, // Prune expired sessions every 60 seconds
       });
+      
+      pgStore.on('error', (error: Error) => {
+        console.error('Session store error:', error);
+      });
+      
+      this.sessionStore = pgStore;
+      console.log('Using PostgreSQL session store');
     } else {
       this.sessionStore = new MemoryStore({
         checkPeriod: 86400000,
       });
+      console.log('Using Memory session store');
     }
   }
 
