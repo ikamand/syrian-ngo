@@ -31,7 +31,9 @@ export async function registerRoutes(
 ): Promise<Server> {
   // Session setup
   const isProduction = app.get("env") === "production";
-  app.set("trust proxy", 1);
+  if (isProduction) {
+    app.set("trust proxy", 1);
+  }
   app.use(
     session({
       secret: process.env.SESSION_SECRET || "dev_secret_key",
