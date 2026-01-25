@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader2, Home } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Auth() {
   const { user, login, isLoggingIn } = useAuth();
@@ -84,6 +85,15 @@ export default function Auth() {
         <p className="text-center text-sm text-muted-foreground">
           للحصول على حساب جديد، يرجى التواصل مع المسؤول
         </p>
+
+        <div className="text-center">
+          <Link href="/">
+            <Button variant="ghost" className="gap-2" data-testid="link-home">
+              <Home className="w-4 h-4" />
+              العودة إلى الصفحة الرئيسية
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
