@@ -10,6 +10,8 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUserPassword(id: number, newPassword: string): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>;
 
   createNgo(ngo: InsertNgo & { createdBy: number }): Promise<Ngo>;
   getNgo(id: number): Promise<Ngo | undefined>;
@@ -55,6 +57,15 @@ export class DatabaseStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const [user] = await db.insert(users).values(insertUser).returning();
     return user;
+  }
+
+  async updateUserPassword(id: number, newPassword: string): Promise<User | undefined> {
+    const [user] = await db.update(users).set({ password: newPassword }).where(eq(users.id, id)).returning();
+    return user;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return db.select().from(users);
   }
 
   async createNgo(insertNgo: InsertNgo & { createdBy: number }): Promise<Ngo> {

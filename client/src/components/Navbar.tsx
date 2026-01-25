@@ -2,7 +2,7 @@ import logoUrl from "@assets/emblem-of-syria-seeklogo_1769035838735.png";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, LayoutDashboard, LogOut, User, Menu, FileText, Home, Building2, Scale, Megaphone } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, User, Menu, FileText, Home, Building2, Scale, Megaphone, Key } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,12 +17,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
 
 export function Navbar() {
   const { user, logout } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [legalMenuOpen, setLegalMenuOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   const isActive = (path: string) => location === path;
 
@@ -108,6 +110,10 @@ export function Navbar() {
                     </div>
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setChangePasswordOpen(true)} className="cursor-pointer" data-testid="menu-change-password">
+                  <Key className="ml-2 h-4 w-4" />
+                  تغيير كلمة المرور
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => logout()} className="text-red-600 focus:text-red-600 cursor-pointer">
                   <LogOut className="ml-2 h-4 w-4" />
@@ -153,6 +159,10 @@ export function Navbar() {
                       لوحة التحكم
                     </div>
                   </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setChangePasswordOpen(true)} className="cursor-pointer" data-testid="menu-change-password">
+                  <Key className="ml-2 h-4 w-4" />
+                  تغيير كلمة المرور
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => logout()} className="text-red-600 focus:text-red-600 cursor-pointer">
@@ -261,6 +271,7 @@ export function Navbar() {
           </DropdownMenu>
         </div>
       </div>
+      <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
     </nav>
   );
 }

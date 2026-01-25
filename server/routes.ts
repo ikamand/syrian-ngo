@@ -116,6 +116,74 @@ export async function registerRoutes(
     res.json(user);
   });
 
+  // --- Password Management Routes ---
+  
+  // User changes their own password
+  app.post("/api/user/change-password", requireAuth, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Current and new password are required" });
+      }
+      
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "New password must be at least 6 characters" });
+      }
+      
+      const user = await storage.getUser(req.session.userId!);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+      
+      if (user.password !== currentPassword) {
+        return res.status(401).json({ message: "Current password is incorrect" });
+      }
+      
+      await storage.updateUserPassword(user.id, newPassword);
+      res.json({ message: "Password changed successfully" });
+    } catch (err) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+  
+  // Admin resets a user's password
+  app.post("/api/admin/reset-user-password", requireAdmin, async (req, res) => {
+    try {
+      const { userId, newPassword } = req.body;
+      
+      if (!userId || !newPassword) {
+        return res.status(400).json({ message: "User ID and new password are required" });
+      }
+      
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "New password must be at least 6 characters" });
+      }
+      
+      const targetUser = await storage.getUser(userId);
+      if (!targetUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      await storage.updateUserPassword(userId, newPassword);
+      res.json({ message: "Password reset successfully" });
+    } catch (err) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+  
+  // Admin gets all users
+  app.get("/api/admin/users", requireAdmin, async (_req, res) => {
+    try {
+      const allUsers = await storage.getAllUsers();
+      // Don't send passwords to frontend
+      const safeUsers = allUsers.map(u => ({ id: u.id, username: u.username, role: u.role }));
+      res.json(safeUsers);
+    } catch (err) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // --- NGO Routes ---
 
   // Public endpoint: Get all approved NGOs (no auth required)

@@ -5,7 +5,9 @@ import { useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement, useDele
 import { useAllSiteContent, useUpsertSiteContent } from "@/hooks/use-site-content";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Check, X, Trash2, Save, Plus } from "lucide-react";
+import { Check, X, Trash2, Save, Plus, Key, Users } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ResetUserPasswordDialog } from "@/components/ResetUserPasswordDialog";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -55,6 +57,12 @@ export default function AdminDashboard() {
   const [editingNgo, setEditingNgo] = useState<Ngo | null>(null);
   const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
   const { toast } = useToast();
+
+  // Users management
+  const { data: allUsers, isLoading: isUsersLoading } = useQuery<{ id: number; username: string; role: string }[]>({
+    queryKey: ["/api/admin/users"],
+  });
+  const [resetPasswordUser, setResetPasswordUser] = useState<{ id: number; username: string } | null>(null);
 
   const { data: announcements, isLoading: isAnnouncementsLoading } = useAnnouncements();
   const { mutate: createAnnouncement, isPending: isCreating } = useCreateAnnouncement();
@@ -215,12 +223,15 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="ngos" className="space-y-6">
-          <TabsList className="grid w-full max-w-xl grid-cols-3">
+          <TabsList className="grid w-full max-w-2xl grid-cols-4">
             <TabsTrigger value="ngos" data-testid="tab-ngos">
               المنظمات
             </TabsTrigger>
             <TabsTrigger value="announcements" data-testid="tab-announcements">
               الإعلانات
+            </TabsTrigger>
+            <TabsTrigger value="users" data-testid="tab-users">
+              المستخدمين
             </TabsTrigger>
             <TabsTrigger value="content" data-testid="tab-content">
               المحتوى
@@ -414,6 +425,56 @@ export default function AdminDashboard() {
             </div>
           </TabsContent>
 
+          <TabsContent value="users">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold">إدارة المستخدمين</h2>
+              </div>
+              <p className="text-muted-foreground text-sm">
+                عرض وإدارة حسابات المستخدمين وإعادة تعيين كلمات المرور
+              </p>
+
+              {isUsersLoading ? (
+                <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
+              ) : (
+                <div className="bg-white rounded-xl border shadow-sm">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-right">اسم المستخدم</TableHead>
+                        <TableHead className="text-right">الدور</TableHead>
+                        <TableHead className="text-right">الإجراءات</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {allUsers?.map((u) => (
+                        <TableRow key={u.id} data-testid={`row-user-${u.id}`}>
+                          <TableCell className="font-medium">{u.username}</TableCell>
+                          <TableCell>
+                            <Badge variant={u.role === "admin" ? "default" : "secondary"}>
+                              {u.role === "admin" ? "مدير" : "مستخدم"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setResetPasswordUser({ id: u.id, username: u.username })}
+                              data-testid={`button-reset-password-${u.id}`}
+                            >
+                              <Key className="w-4 h-4 ml-1" />
+                              إعادة تعيين كلمة المرور
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
           <TabsContent value="content">
             <div className="space-y-6">
               <div className="flex justify-between items-center">
@@ -569,6 +630,13 @@ export default function AdminDashboard() {
         ngo={viewingNgo} 
         open={!!viewingNgo} 
         onOpenChange={(open) => !open && setViewingNgo(null)} 
+      />
+
+      {/* Reset User Password Dialog */}
+      <ResetUserPasswordDialog
+        open={!!resetPasswordUser}
+        onOpenChange={(open) => !open && setResetPasswordUser(null)}
+        user={resetPasswordUser}
       />
     </div>
   );
