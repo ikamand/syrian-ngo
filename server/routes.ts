@@ -349,6 +349,19 @@ export async function registerRoutes(
     res.json(approvedNgos);
   });
 
+  // Public endpoint: Get a single approved NGO by ID (no auth required)
+  app.get("/api/ngos/public/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid NGO ID" });
+    }
+    const ngo = await storage.getNgo(id);
+    if (!ngo || ngo.status !== "Approved") {
+      return res.status(404).json({ error: "NGO not found" });
+    }
+    res.json(ngo);
+  });
+
   // Public endpoint: Get all job and volunteer opportunities from approved NGOs
   app.get(api.opportunities.list.path, async (_req, res) => {
     const allNgos = await storage.getNgos();

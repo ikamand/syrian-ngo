@@ -34,8 +34,8 @@ const governorates = [
   "إدلب", "الرقة", "دير الزور", "الحسكة", "درعا", "السويداء", "القنيطرة",
 ];
 
-const legalForms = ["جمعية أهلية", "مؤسسة خاصة", "اتحاد جمعيات", "منظمة غير حكومية دولية"];
-const scopeOptions = ["محلي", "محافظة", "وطني", "إقليمي", "دولي"];
+const legalForms = ["جمعية أهلية", "مؤسسة خاصة", "مؤسسة تنموية", "مؤسسة خيرية", "اتحاد جمعيات", "منظمة غير حكومية دولية", "منظمة مجتمع مدني"];
+const scopeOptions = ["نطاق محلي", "نطاق محافظة", "نطاق محافظات", "نطاق وطني", "نطاق إقليمي", "نطاق دولي"];
 const orgStatusOptions = ["فعالة", "معلقة", "منحلة", "قيد التأسيس"];
 
 const formSchema = z.object({
@@ -283,6 +283,21 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
     updateMutation.mutate(data);
   };
 
+  const handleFormError = () => {
+    const errors = form.formState.errors;
+    if (Object.keys(errors).length > 0) {
+      console.error("Form validation errors:", errors);
+      const errorMessages = Object.entries(errors)
+        .map(([field, error]) => `${field}: ${(error as any)?.message || 'خطأ'}`)
+        .join(', ');
+      toast({ 
+        title: "أخطاء في النموذج", 
+        description: errorMessages || "يرجى التحقق من البيانات المدخلة", 
+        variant: "destructive" 
+      });
+    }
+  };
+
   if (!ngo) return null;
 
   return (
@@ -293,7 +308,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit, handleFormError)} className="space-y-4">
             <Accordion type="multiple" defaultValue={["section-1"]} className="w-full space-y-2">
               
               {/* Section 1: معلومات التأسيس */}

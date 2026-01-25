@@ -13,9 +13,9 @@ export default function NgoProfile() {
   const ngoId = params?.id;
 
   const { data: ngo, isLoading, error } = useQuery<Ngo>({
-    queryKey: ['/api/ngos', ngoId],
+    queryKey: ['/api/ngos/public', ngoId],
     queryFn: async () => {
-      const res = await fetch(`/api/ngos/${ngoId}`);
+      const res = await fetch(`/api/ngos/public/${ngoId}`);
       if (!res.ok) throw new Error("Failed to fetch NGO");
       return res.json();
     },

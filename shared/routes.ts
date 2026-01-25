@@ -64,6 +64,14 @@ export const api = {
         200: z.array(z.custom<typeof ngos.$inferSelect>()),
       },
     },
+    getPublic: {
+      method: 'GET' as const,
+      path: '/api/ngos/public/:id',
+      responses: {
+        200: z.custom<typeof ngos.$inferSelect>(),
+        404: errorSchemas.notFound,
+      },
+    },
     list: {
       method: 'GET' as const,
       path: '/api/ngos',

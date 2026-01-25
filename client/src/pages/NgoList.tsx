@@ -1,21 +1,11 @@
 import { Navbar } from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, Building2, ExternalLink } from "lucide-react";
+import { Search, Building2 } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
-import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
-import type { Ngo } from "@shared/schema";
 import { Link } from "wouter";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Card } from "@/components/ui/card";
 
 export default function NgoList() {
   const { data: ngos, isLoading } = useQuery({
@@ -28,32 +18,12 @@ export default function NgoList() {
   });
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
 
   const filteredNgos = (ngos || []).filter(ngo => 
     (ngo.arabicName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
     (ngo.englishName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
     (ngo.city?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
-
-  const getLegalFormLabel = (form: string) => {
-    const forms: Record<string, string> = {
-      "جمعية أهلية": "جمعية أهلية",
-      "مؤسسة خيرية": "مؤسسة خيرية",
-      "مؤسسة تنموية": "مؤسسة تنموية",
-      "منظمة مجتمع مدني": "منظمة مجتمع مدني",
-    };
-    return forms[form] || form || "—";
-  };
-
-  const getScopeLabel = (scope: string) => {
-    const scopes: Record<string, string> = {
-      "نطاق محلي": "محلي",
-      "نطاق محافظات": "محافظات",
-      "نطاق وطني": "وطني",
-    };
-    return scopes[scope] || scope || "—";
-  };
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -83,12 +53,13 @@ export default function NgoList() {
         </div>
 
         {isLoading ? (
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-12 bg-gray-200 rounded animate-pulse" />
-              ))}
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-20">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-white rounded-xl shadow p-6 animate-pulse">
+                <div className="w-20 h-20 bg-gray-200 rounded-lg mx-auto mb-4" />
+                <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto" />
+              </div>
+            ))}
           </div>
         ) : filteredNgos.length === 0 ? (
           <div className="text-center py-20 text-muted-foreground">
@@ -96,87 +67,50 @@ export default function NgoList() {
             <p className="text-lg">لا توجد منظمات مطابقة لبحثك</p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-20">
-            <div className="p-4 border-b bg-gray-50/50">
+          <>
+            <div className="text-center mb-6">
               <p className="text-sm text-muted-foreground">
                 تم العثور على <span className="font-bold text-primary">{filteredNgos.length}</span> منظمة مرخصة
               </p>
             </div>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-gray-50/80">
-                    <TableHead className="text-right font-bold w-[80px]">الشعار</TableHead>
-                    <TableHead className="text-right font-bold">اسم المنظمة</TableHead>
-                    <TableHead className="text-right font-bold">الشكل القانوني</TableHead>
-                    <TableHead className="text-right font-bold">النطاق</TableHead>
-                    <TableHead className="text-right font-bold">المدينة</TableHead>
-                    <TableHead className="text-center font-bold">الإجراءات</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredNgos.map((ngo) => (
-                    <TableRow key={ngo.id} className="hover:bg-gray-50/50" data-testid={`row-ngo-${ngo.id}`}>
-                      <TableCell>
-                        <Link href={`/ngos/${ngo.id}`} className="block">
-                          {ngo.logo ? (
-                            <img 
-                              src={ngo.logo} 
-                              alt={ngo.arabicName || "Logo"} 
-                              className="w-12 h-12 object-contain border rounded bg-white cursor-pointer hover:opacity-80 transition-opacity"
-                              data-testid={`img-ngo-logo-${ngo.id}`}
-                            />
-                          ) : (
-                            <div className="w-12 h-12 border rounded bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
-                              <Building2 className="w-6 h-6 text-gray-400" />
-                            </div>
-                          )}
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <Link href={`/ngos/${ngo.id}`} className="block cursor-pointer hover:text-primary transition-colors">
-                          <p className="font-medium text-gray-900">{ngo.arabicName || "—"}</p>
-                          <p className="text-sm text-muted-foreground">{ngo.englishName || ""}</p>
-                        </Link>
-                      </TableCell>
-                      <TableCell className="text-gray-600">{getLegalFormLabel(ngo.legalForm)}</TableCell>
-                      <TableCell className="text-gray-600">{getScopeLabel(ngo.scope)}</TableCell>
-                      <TableCell className="text-gray-600">{ngo.city || "—"}</TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => setViewingNgo(ngo)}
-                            data-testid={`button-details-ngo-${ngo.id}`}
-                          >
-                            التفاصيل
-                          </Button>
-                          <Link href={`/ngos/${ngo.id}`}>
-                            <Button 
-                              size="sm" 
-                              variant="ghost"
-                              data-testid={`button-profile-ngo-${ngo.id}`}
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                            </Button>
-                          </Link>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-20" dir="rtl">
+              {filteredNgos.map((ngo) => (
+                <Link 
+                  key={ngo.id} 
+                  href={`/ngos/${ngo.id}`}
+                  data-testid={`link-ngo-${ngo.id}`}
+                  aria-label={`عرض ملف ${ngo.arabicName || ngo.name || 'المنظمة'}`}
+                  className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
+                >
+                  <Card 
+                    className="p-6 overflow-visible hover-elevate cursor-pointer transition-all duration-200 h-full flex flex-col items-center justify-center text-center"
+                    data-testid={`card-ngo-${ngo.id}`}
+                  >
+                    {ngo.logo ? (
+                      <img 
+                        src={ngo.logo} 
+                        alt={ngo.arabicName || "شعار المنظمة"} 
+                        className="w-20 h-20 object-contain mb-4"
+                        data-testid={`img-ngo-logo-${ngo.id}`}
+                      />
+                    ) : (
+                      <div 
+                        className="w-20 h-20 border-2 border-dashed rounded-lg bg-gray-50 flex items-center justify-center mb-4"
+                        aria-hidden="true"
+                      >
+                        <Building2 className="w-10 h-10 text-gray-300" />
+                      </div>
+                    )}
+                    <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2">
+                      {ngo.arabicName || ngo.name || "—"}
+                    </h3>
+                  </Card>
+                </Link>
+              ))}
             </div>
-          </div>
+          </>
         )}
       </main>
-
-      <NgoDetailsDialog 
-        ngo={viewingNgo} 
-        open={!!viewingNgo} 
-        onOpenChange={(open) => !open && setViewingNgo(null)} 
-      />
     </div>
   );
 }
