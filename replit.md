@@ -29,8 +29,14 @@ Preferred communication style: Simple, everyday language.
 - **Schema**: Defined in `shared/schema.ts` with four main tables:
   - `users`: User accounts with username, password, and role
   - `ngos`: NGO registrations with approval workflow (Pending/Approved/Rejected status)
-  - `announcements`: News and announcements with title, content, published status, and author tracking
+  - `announcements`: News and announcements with title, content, imageUrl (optional), published status, and author tracking
   - `siteContent`: Editable website content with key-based lookup for page elements (homepage title, descriptions, etc.)
+
+### News/Announcements Feature
+- **Public News List**: Grid layout at `/announcements` with clickable news cards showing featured images
+- **Article Detail Page**: Full article view at `/news/:id` with RTL-compatible layout and back navigation
+- **Image Uploads**: Admin can upload images (up to 5MB) when creating/editing announcements using presigned URL pattern via object storage
+- **Admin Management**: Full CRUD for announcements in admin panel with image preview and thumbnail display
 - **Validation**: Drizzle-Zod integration for type-safe schema validation
 
 ### Project Structure
