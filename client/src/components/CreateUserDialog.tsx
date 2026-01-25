@@ -58,7 +58,12 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
   const createUserMutation = useMutation({
     mutationFn: async (data: typeof formData & { password: string }) => {
       const res = await apiRequest("POST", "/api/register", data);
-      return res.json();
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        return {};
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
@@ -68,7 +73,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
     onError: (error: Error) => {
       toast({
         title: "خطأ في إنشاء الحساب",
-        description: error.message || "حدث خطأ أثناء إنشاء الحساب",
+        description: error.message || "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى",
         variant: "destructive"
       });
     }
