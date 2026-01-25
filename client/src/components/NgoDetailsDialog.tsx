@@ -363,7 +363,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                 </AccordionItem>
               )}
 
-              {/* Section 11: واجهات الجمهور */}
+              {/* Section 11: فرص عمل و تطوع */}
               {((ngo.jobOpportunities && (ngo.jobOpportunities as any[]).length > 0) ||
                 (ngo.volunteerOpportunities && (ngo.volunteerOpportunities as any[]).length > 0) ||
                 (ngo.events && (ngo.events as any[]).length > 0) ||
@@ -373,7 +373,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                 (ngo.networking && (ngo.networking as any[]).length > 0)) && (
               <AccordionItem value="section-11">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-trigger-section-11">
-                  واجهات الجمهور
+                  فرص عمل و تطوع
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
                   {/* فرص العمل */}
