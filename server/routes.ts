@@ -127,16 +127,16 @@ export async function registerRoutes(
       } = req.body;
       
       if (!username || !password) {
-        return res.status(400).json({ message: "Username and password are required" });
+        return res.status(400).json({ message: "اسم المستخدم وكلمة المرور مطلوبان" });
       }
       
       if (password.length < 6) {
-        return res.status(400).json({ message: "Password must be at least 6 characters" });
+        return res.status(400).json({ message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" });
       }
       
       const existing = await storage.getUserByUsername(username);
       if (existing) {
-        return res.status(400).json({ message: "Username already exists" });
+        return res.status(400).json({ message: "اسم المستخدم موجود مسبقاً. يرجى اختيار اسم مستخدم آخر" });
       }
 
       // Hash password before storing
