@@ -88,7 +88,7 @@ export default function AdminDashboard() {
   // Handle redirect in useEffect to avoid setState during render
   useEffect(() => {
     if (!isAuthLoading && !user) {
-      setLocation("/auth");
+      setLocation("/login");
     } else if (!isAuthLoading && user && user.role !== "admin") {
       setLocation("/dashboard");
     }

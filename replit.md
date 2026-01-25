@@ -52,10 +52,13 @@ Preferred communication style: Simple, everyday language.
 ```
 
 ### Authentication Design
-The authentication system is intentionally designed as a temporary dummy implementation that can be easily replaced with Auth0, Clerk, or similar providers. Current implementation uses:
+The authentication system uses secure password hashing with bcrypt and admin-only user management:
 - Session-based authentication with cookies
-- Simple username/password storage
-- Role-based authorization middleware
+- Bcrypt password hashing (SALT_ROUNDS=10) with legacy plaintext migration on login
+- Admin-only user creation with auto-generated passwords
+- Extended user fields: firstName, lastName, email, phone, organizationName, governorate, registrationNumber, registrationDate
+- Account status management (active/suspended) with login blocking for suspended accounts
+- Role-based authorization middleware (user/admin roles)
 
 ## External Dependencies
 
