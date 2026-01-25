@@ -399,6 +399,13 @@ export default function CreateNgo() {
   const volunteersArray = useFieldArray({ control: form.control, name: "volunteers" });
   const vehiclesArray = useFieldArray({ control: form.control, name: "vehicles" });
   const realEstateArray = useFieldArray({ control: form.control, name: "realEstate" });
+  const jobOpportunitiesArray = useFieldArray({ control: form.control, name: "jobOpportunities" });
+  const volunteerOpportunitiesArray = useFieldArray({ control: form.control, name: "volunteerOpportunities" });
+  const statisticsArray = useFieldArray({ control: form.control, name: "statistics" });
+  const eventsArray = useFieldArray({ control: form.control, name: "events" });
+  const donationCampaignsArray = useFieldArray({ control: form.control, name: "donationCampaigns" });
+  const photoGalleryArray = useFieldArray({ control: form.control, name: "photoGallery" });
+  const networkingArray = useFieldArray({ control: form.control, name: "networking" });
 
   if (isAuthLoading) return null;
 
@@ -1910,6 +1917,200 @@ export default function CreateNgo() {
                       11. البيانات الاختيارية
                     </AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
+                      {/* فرص العمل */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b pb-2">
+                          <h3 className="font-semibold text-foreground">فرص العمل</h3>
+                          <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "" })} data-testid="button-add-job">
+                            <Plus className="w-4 h-4 ml-2" />
+                            إضافة فرصة عمل
+                          </Button>
+                        </div>
+                        {jobOpportunitiesArray.fields.map((field, index) => (
+                          <div key={field.id} className="border rounded-lg p-4 space-y-4 bg-white">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium text-primary">فرصة عمل {index + 1}</span>
+                              <Button type="button" variant="ghost" size="icon" onClick={() => jobOpportunitiesArray.remove(index)} data-testid={`button-remove-job-${index}`}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <FormField control={form.control} name={`jobOpportunities.${index}.vacancyName`} render={({ field }) => (<FormItem><FormLabel>اسم الشاغر</FormLabel><FormControl><Input {...field} data-testid={`input-job-vacancyName-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.workField`} render={({ field }) => (<FormItem><FormLabel>مجال العمل</FormLabel><FormControl><Input {...field} data-testid={`input-job-workField-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.vacancyNumber`} render={({ field }) => (<FormItem><FormLabel>رقم الشاغر</FormLabel><FormControl><Input {...field} data-testid={`input-job-vacancyNumber-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} data-testid={`input-job-governorate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.startDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ البدء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-job-startDate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.endDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ الانتهاء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-job-endDate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.commitmentNature`} render={({ field }) => (<FormItem><FormLabel>طبيعة الالتزام</FormLabel><FormControl><Input {...field} data-testid={`input-job-commitmentNature-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.jobPurpose`} render={({ field }) => (<FormItem><FormLabel>الغرض الوظيفي</FormLabel><FormControl><Input {...field} data-testid={`input-job-jobPurpose-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.qualification`} render={({ field }) => (<FormItem><FormLabel>المؤهلات</FormLabel><FormControl><Input {...field} data-testid={`input-job-qualification-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.skills`} render={({ field }) => (<FormItem><FormLabel>المهارات</FormLabel><FormControl><Input {...field} data-testid={`input-job-skills-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`jobOpportunities.${index}.experience`} render={({ field }) => (<FormItem><FormLabel>الخبرة</FormLabel><FormControl><Input {...field} data-testid={`input-job-experience-${index}`} /></FormControl></FormItem>)} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* فرص التطوع */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b pb-2">
+                          <h3 className="font-semibold text-foreground">فرص التطوع</h3>
+                          <Button type="button" variant="outline" size="sm" onClick={() => volunteerOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", volunteerPurpose: "", qualification: "", skills: "", experience: "" })} data-testid="button-add-volunteer">
+                            <Plus className="w-4 h-4 ml-2" />
+                            إضافة فرصة تطوع
+                          </Button>
+                        </div>
+                        {volunteerOpportunitiesArray.fields.map((field, index) => (
+                          <div key={field.id} className="border rounded-lg p-4 space-y-4 bg-white">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium text-primary">فرصة تطوع {index + 1}</span>
+                              <Button type="button" variant="ghost" size="icon" onClick={() => volunteerOpportunitiesArray.remove(index)} data-testid={`button-remove-volunteer-${index}`}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.vacancyName`} render={({ field }) => (<FormItem><FormLabel>اسم الشاغر</FormLabel><FormControl><Input {...field} data-testid={`input-volunteer-vacancyName-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.workField`} render={({ field }) => (<FormItem><FormLabel>مجال العمل</FormLabel><FormControl><Input {...field} data-testid={`input-volunteer-workField-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.vacancyNumber`} render={({ field }) => (<FormItem><FormLabel>رقم الشاغر</FormLabel><FormControl><Input {...field} data-testid={`input-volunteer-vacancyNumber-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} data-testid={`input-volunteer-governorate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.startDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ البدء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-volunteer-startDate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.endDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ الانتهاء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-volunteer-endDate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.commitmentNature`} render={({ field }) => (<FormItem><FormLabel>طبيعة الالتزام</FormLabel><FormControl><Input {...field} data-testid={`input-volunteer-commitmentNature-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.volunteerPurpose`} render={({ field }) => (<FormItem><FormLabel>الغرض التطوعي</FormLabel><FormControl><Input {...field} data-testid={`input-volunteer-volunteerPurpose-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.qualification`} render={({ field }) => (<FormItem><FormLabel>المؤهلات</FormLabel><FormControl><Input {...field} data-testid={`input-volunteer-qualification-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.skills`} render={({ field }) => (<FormItem><FormLabel>المهارات</FormLabel><FormControl><Input {...field} data-testid={`input-volunteer-skills-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`volunteerOpportunities.${index}.experience`} render={({ field }) => (<FormItem><FormLabel>الخبرة</FormLabel><FormControl><Input {...field} data-testid={`input-volunteer-experience-${index}`} /></FormControl></FormItem>)} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* الفعاليات */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b pb-2">
+                          <h3 className="font-semibold text-foreground">الفعاليات</h3>
+                          <Button type="button" variant="outline" size="sm" onClick={() => eventsArray.append({ image: "", eventName: "", invitationType: "", eventType: "", startDate: "", endDate: "", announcementDate: "", announcementEndDate: "", startDescription: "", endDescription: "", address: "", details: "" })} data-testid="button-add-event">
+                            <Plus className="w-4 h-4 ml-2" />
+                            إضافة فعالية
+                          </Button>
+                        </div>
+                        {eventsArray.fields.map((field, index) => (
+                          <div key={field.id} className="border rounded-lg p-4 space-y-4 bg-white">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium text-primary">فعالية {index + 1}</span>
+                              <Button type="button" variant="ghost" size="icon" onClick={() => eventsArray.remove(index)} data-testid={`button-remove-event-${index}`}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <FormField control={form.control} name={`events.${index}.eventName`} render={({ field }) => (<FormItem><FormLabel>اسم الفعالية</FormLabel><FormControl><Input {...field} data-testid={`input-event-eventName-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`events.${index}.eventType`} render={({ field }) => (<FormItem><FormLabel>نوع الفعالية</FormLabel><FormControl><Input {...field} data-testid={`input-event-eventType-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`events.${index}.invitationType`} render={({ field }) => (<FormItem><FormLabel>نوع الدعوة</FormLabel><FormControl><Input {...field} data-testid={`input-event-invitationType-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`events.${index}.address`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} data-testid={`input-event-address-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`events.${index}.startDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ البدء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-event-startDate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`events.${index}.endDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ الانتهاء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-event-endDate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`events.${index}.details`} render={({ field }) => (<FormItem className="md:col-span-3"><FormLabel>تفاصيل الفعالية</FormLabel><FormControl><Textarea {...field} data-testid={`textarea-event-details-${index}`} /></FormControl></FormItem>)} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* حملات التبرع */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b pb-2">
+                          <h3 className="font-semibold text-foreground">حملات التبرع</h3>
+                          <Button type="button" variant="outline" size="sm" onClick={() => donationCampaignsArray.append({ image: "", campaignName: "", campaignType: "", targetGroups: "", startDate: "", endDate: "", governorate: "", details: "" })} data-testid="button-add-campaign">
+                            <Plus className="w-4 h-4 ml-2" />
+                            إضافة حملة
+                          </Button>
+                        </div>
+                        {donationCampaignsArray.fields.map((field, index) => (
+                          <div key={field.id} className="border rounded-lg p-4 space-y-4 bg-white">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium text-primary">حملة {index + 1}</span>
+                              <Button type="button" variant="ghost" size="icon" onClick={() => donationCampaignsArray.remove(index)} data-testid={`button-remove-campaign-${index}`}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <FormField control={form.control} name={`donationCampaigns.${index}.campaignName`} render={({ field }) => (<FormItem><FormLabel>اسم الحملة</FormLabel><FormControl><Input {...field} data-testid={`input-campaign-campaignName-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`donationCampaigns.${index}.campaignType`} render={({ field }) => (<FormItem><FormLabel>نوع الحملة</FormLabel><FormControl><Input {...field} data-testid={`input-campaign-campaignType-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`donationCampaigns.${index}.targetGroups`} render={({ field }) => (<FormItem><FormLabel>الفئات المستهدفة</FormLabel><FormControl><Input {...field} data-testid={`input-campaign-targetGroups-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`donationCampaigns.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} data-testid={`input-campaign-governorate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`donationCampaigns.${index}.startDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ البدء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-campaign-startDate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`donationCampaigns.${index}.endDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ الانتهاء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-campaign-endDate-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`donationCampaigns.${index}.details`} render={({ field }) => (<FormItem className="md:col-span-3"><FormLabel>تفاصيل الحملة</FormLabel><FormControl><Textarea {...field} data-testid={`textarea-campaign-details-${index}`} /></FormControl></FormItem>)} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* معرض الصور */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b pb-2">
+                          <h3 className="font-semibold text-foreground">معرض الصور</h3>
+                          <Button type="button" variant="outline" size="sm" onClick={() => photoGalleryArray.append({ image: "", title: "", details: "" })} data-testid="button-add-photo">
+                            <Plus className="w-4 h-4 ml-2" />
+                            إضافة صورة
+                          </Button>
+                        </div>
+                        {photoGalleryArray.fields.map((field, index) => (
+                          <div key={field.id} className="border rounded-lg p-4 space-y-4 bg-white">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium text-primary">صورة {index + 1}</span>
+                              <Button type="button" variant="ghost" size="icon" onClick={() => photoGalleryArray.remove(index)} data-testid={`button-remove-photo-${index}`}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <FormField control={form.control} name={`photoGallery.${index}.title`} render={({ field }) => (<FormItem><FormLabel>عنوان الصورة</FormLabel><FormControl><Input {...field} data-testid={`input-photo-title-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`photoGallery.${index}.image`} render={({ field }) => (<FormItem><FormLabel>رابط الصورة</FormLabel><FormControl><Input {...field} data-testid={`input-photo-image-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`photoGallery.${index}.details`} render={({ field }) => (<FormItem><FormLabel>التفاصيل</FormLabel><FormControl><Input {...field} data-testid={`input-photo-details-${index}`} /></FormControl></FormItem>)} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* الإحصائيات */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b pb-2">
+                          <h3 className="font-semibold text-foreground">الإحصائيات</h3>
+                          <Button type="button" variant="outline" size="sm" onClick={() => statisticsArray.append({ title: "", count: "", icon: "" })} data-testid="button-add-stat">
+                            <Plus className="w-4 h-4 ml-2" />
+                            إضافة إحصائية
+                          </Button>
+                        </div>
+                        {statisticsArray.fields.map((field, index) => (
+                          <div key={field.id} className="border rounded-lg p-4 space-y-4 bg-white">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium text-primary">إحصائية {index + 1}</span>
+                              <Button type="button" variant="ghost" size="icon" onClick={() => statisticsArray.remove(index)} data-testid={`button-remove-stat-${index}`}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <FormField control={form.control} name={`statistics.${index}.title`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} data-testid={`input-stat-title-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`statistics.${index}.count`} render={({ field }) => (<FormItem><FormLabel>العدد</FormLabel><FormControl><Input {...field} data-testid={`input-stat-count-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`statistics.${index}.icon`} render={({ field }) => (<FormItem><FormLabel>الأيقونة</FormLabel><FormControl><Input {...field} data-testid={`input-stat-icon-${index}`} /></FormControl></FormItem>)} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* التشبيك */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b pb-2">
+                          <h3 className="font-semibold text-foreground">التشبيك</h3>
+                          <Button type="button" variant="outline" size="sm" onClick={() => networkingArray.append({ needType: "", classification: "", need: "", description: "", count: "" })} data-testid="button-add-networking">
+                            <Plus className="w-4 h-4 ml-2" />
+                            إضافة احتياج
+                          </Button>
+                        </div>
+                        {networkingArray.fields.map((field, index) => (
+                          <div key={field.id} className="border rounded-lg p-4 space-y-4 bg-white">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium text-primary">احتياج {index + 1}</span>
+                              <Button type="button" variant="ghost" size="icon" onClick={() => networkingArray.remove(index)} data-testid={`button-remove-networking-${index}`}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <FormField control={form.control} name={`networking.${index}.needType`} render={({ field }) => (<FormItem><FormLabel>نوع الاحتياج</FormLabel><FormControl><Input {...field} data-testid={`input-networking-needType-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`networking.${index}.classification`} render={({ field }) => (<FormItem><FormLabel>التصنيف</FormLabel><FormControl><Input {...field} data-testid={`input-networking-classification-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`networking.${index}.need`} render={({ field }) => (<FormItem><FormLabel>الاحتياج</FormLabel><FormControl><Input {...field} data-testid={`input-networking-need-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`networking.${index}.count`} render={({ field }) => (<FormItem><FormLabel>العدد</FormLabel><FormControl><Input {...field} data-testid={`input-networking-count-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`networking.${index}.description`} render={({ field }) => (<FormItem className="md:col-span-2"><FormLabel>الوصف</FormLabel><FormControl><Textarea {...field} data-testid={`textarea-networking-description-${index}`} /></FormControl></FormItem>)} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
                       {/* إعدادات الدفع الإلكتروني */}
                       <div className="space-y-4">
                         <h3 className="font-semibold text-foreground border-b pb-2">إدارة الدفع الإلكتروني</h3>
