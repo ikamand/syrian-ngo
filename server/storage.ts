@@ -1,10 +1,12 @@
 import { users, ngos, announcements, siteContent, type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
-import { db } from "./db";
+import connectPgSimple from "connect-pg-simple";
+import { db, pool } from "./db";
 import { eq, desc } from "drizzle-orm";
 
 const MemoryStore = createMemoryStore(session);
+const PgSession = connectPgSimple(session);
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -40,9 +42,17 @@ export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
 
   constructor() {
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000,
-    });
+    if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL) {
+      this.sessionStore = new PgSession({
+        pool: pool as any,
+        tableName: "session",
+        createTableIfMissing: true,
+      });
+    } else {
+      this.sessionStore = new MemoryStore({
+        checkPeriod: 86400000,
+      });
+    }
   }
 
   async getUser(id: number): Promise<User | undefined> {

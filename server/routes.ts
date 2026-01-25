@@ -30,6 +30,8 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   // Session setup
+  const isProduction = app.get("env") === "production";
+  app.set("trust proxy", 1);
   app.use(
     session({
       secret: process.env.SESSION_SECRET || "dev_secret_key",
@@ -37,7 +39,9 @@ export async function registerRoutes(
       saveUninitialized: false,
       store: storage.sessionStore,
       cookie: {
-        secure: app.get("env") === "production",
+        secure: isProduction,
+        httpOnly: true,
+        sameSite: isProduction ? "none" : "lax",
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
       },
     })
