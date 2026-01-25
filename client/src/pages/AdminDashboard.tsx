@@ -633,6 +633,7 @@ export default function AdminDashboard() {
               <Label htmlFor="published" className="cursor-pointer">نشر الإعلان (سيظهر للزوار)</Label>
               <Switch
                 id="published"
+                dir="ltr"
                 checked={announcementForm.published}
                 onCheckedChange={(checked) => setAnnouncementForm({ ...announcementForm, published: checked })}
                 data-testid="switch-announcement-published"

@@ -238,6 +238,7 @@ export function EditUserDialog({ open, onOpenChange, user }: EditUserDialogProps
             </div>
             <Switch
               id="status"
+              dir="ltr"
               checked={formData.status === "active"}
               onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? "active" : "suspended" })}
               data-testid="switch-edit-status"
