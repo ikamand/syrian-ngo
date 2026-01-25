@@ -117,7 +117,7 @@ const formSchema = z.object({
   jobOpportunities: z.array(z.object({
     workField: z.string(), vacancyName: z.string(), vacancyNumber: z.string(), governorate: z.string(),
     startDate: z.string(), endDate: z.string(), commitmentNature: z.string(), jobPurpose: z.string(),
-    qualification: z.string(), skills: z.string(), experience: z.string(),
+    qualification: z.string(), skills: z.string(), experience: z.string(), details: z.string(),
   })).optional(),
   volunteerOpportunities: z.array(z.object({
     workField: z.string(), vacancyName: z.string(), vacancyNumber: z.string(), governorate: z.string(),
@@ -921,7 +921,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">فرص العمل</h4>
-                    <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "" })}>
+                    <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "", details: "" })}>
                       <Plus className="w-4 h-4 ml-1" /> إضافة فرصة
                     </Button>
                   </div>
@@ -936,6 +936,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                         <FormField control={form.control} name={`jobOpportunities.${index}.workField`} render={({ field }) => (<FormItem><FormLabel>مجال العمل</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
                         <FormField control={form.control} name={`jobOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
                       </div>
+                      <FormField control={form.control} name={`jobOpportunities.${index}.details`} render={({ field }) => (<FormItem><FormLabel>تفاصيل الوظيفة</FormLabel><FormControl><Textarea {...field} rows={6} placeholder="أدخل تفاصيل الوظيفة الكاملة هنا..." /></FormControl></FormItem>)} />
                     </div>
                   ))}
 

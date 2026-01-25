@@ -259,6 +259,7 @@ const formSchema = z.object({
     qualification: z.string(),
     skills: z.string(),
     experience: z.string(),
+    details: z.string(),
   })).optional(),
   volunteerOpportunities: z.array(z.object({
     workField: z.string(),
@@ -1921,7 +1922,7 @@ export default function CreateNgo() {
                       <div className="space-y-4">
                         <div className="flex items-center justify-between border-b pb-2">
                           <h3 className="font-semibold text-foreground">فرص العمل</h3>
-                          <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "" })} data-testid="button-add-job">
+                          <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "", details: "" })} data-testid="button-add-job">
                             <Plus className="w-4 h-4 ml-2" />
                             إضافة فرصة عمل
                           </Button>
@@ -1945,6 +1946,7 @@ export default function CreateNgo() {
                               <FormField control={form.control} name={`jobOpportunities.${index}.skills`} render={({ field }) => (<FormItem><FormLabel>المهارات</FormLabel><FormControl><Input {...field} data-testid={`input-job-skills-${index}`} /></FormControl></FormItem>)} />
                               <FormField control={form.control} name={`jobOpportunities.${index}.experience`} render={({ field }) => (<FormItem><FormLabel>الخبرة</FormLabel><FormControl><Input {...field} data-testid={`input-job-experience-${index}`} /></FormControl></FormItem>)} />
                             </div>
+                            <FormField control={form.control} name={`jobOpportunities.${index}.details`} render={({ field }) => (<FormItem className="col-span-full"><FormLabel>تفاصيل الوظيفة</FormLabel><FormControl><Textarea {...field} rows={6} placeholder="أدخل تفاصيل الوظيفة الكاملة هنا..." data-testid={`textarea-job-details-${index}`} /></FormControl></FormItem>)} />
                           </div>
                         ))}
                       </div>

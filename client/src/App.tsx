@@ -13,6 +13,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import AssociationLaw from "@/pages/AssociationLaw";
 import OtherLaws from "@/pages/OtherLaws";
 import Announcements from "@/pages/Announcements";
+import Opportunities from "@/pages/Opportunities";
 
 function Router() {
   return (
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/legal/association-law" component={AssociationLaw} />
       <Route path="/legal/other-laws" component={OtherLaws} />
       <Route path="/announcements" component={Announcements} />
+      <Route path="/opportunities" component={Opportunities} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -385,14 +385,23 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                           <div key={i} className="bg-muted/30 rounded-lg p-3">
                             <div className="font-medium text-sm">{job.vacancyName || job.jobTitle}</div>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-xs text-muted-foreground">
-                              {job.jobTitle && <span>المسمى الوظيفي: {job.jobTitle}</span>}
-                              {job.workHours && <span>ساعات العمل: {job.workHours}</span>}
-                              {job.contractType && <span>نوع العقد: {job.contractType}</span>}
+                              {job.workField && <span>مجال العمل: {job.workField}</span>}
+                              {job.vacancyNumber && <span>رقم الشاغر: {job.vacancyNumber}</span>}
                               {job.governorate && <span>المحافظة: {job.governorate}</span>}
-                              {job.genderPreference && <span>الجنس: {job.genderPreference}</span>}
+                              {job.startDate && <span>تاريخ البدء: {job.startDate}</span>}
+                              {job.endDate && <span>تاريخ الانتهاء: {job.endDate}</span>}
+                              {job.commitmentNature && <span>طبيعة الالتزام: {job.commitmentNature}</span>}
+                              {job.jobPurpose && <span>الغرض الوظيفي: {job.jobPurpose}</span>}
+                              {job.qualification && <span>المؤهلات: {job.qualification}</span>}
+                              {job.skills && <span>المهارات: {job.skills}</span>}
+                              {job.experience && <span>الخبرة: {job.experience}</span>}
                             </div>
-                            {job.skillsRequired && <div className="text-xs text-muted-foreground mt-1">المهارات: {job.skillsRequired}</div>}
-                            {job.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: {job.details}</div>}
+                            {job.details && (
+                              <div className="mt-3 pt-3 border-t border-muted">
+                                <div className="text-xs font-medium text-muted-foreground mb-1">تفاصيل الوظيفة:</div>
+                                <div className="text-sm whitespace-pre-wrap bg-background/50 rounded p-2">{job.details}</div>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>

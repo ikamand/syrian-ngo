@@ -339,6 +339,82 @@ export async function registerRoutes(
     res.json(approvedNgos);
   });
 
+  // Public endpoint: Get all job and volunteer opportunities from approved NGOs
+  app.get(api.opportunities.list.path, async (_req, res) => {
+    const allNgos = await storage.getNgos();
+    const approvedNgos = allNgos.filter(ngo => ngo.status === "Approved");
+    
+    const opportunities: Array<{
+      id: string;
+      type: 'job' | 'volunteer';
+      ngoId: number;
+      ngoName: string;
+      vacancyName: string;
+      workField?: string;
+      governorate?: string;
+      startDate?: string;
+      endDate?: string;
+      commitmentNature?: string;
+      qualification?: string;
+      skills?: string;
+      experience?: string;
+      details?: string;
+      jobPurpose?: string;
+      volunteerPurpose?: string;
+    }> = [];
+
+    for (const ngo of approvedNgos) {
+      // Extract job opportunities
+      if (ngo.jobOpportunities && Array.isArray(ngo.jobOpportunities)) {
+        for (let i = 0; i < ngo.jobOpportunities.length; i++) {
+          const job = ngo.jobOpportunities[i] as any;
+          opportunities.push({
+            id: `job-${ngo.id}-${i}`,
+            type: 'job',
+            ngoId: ngo.id,
+            ngoName: ngo.arabicName,
+            vacancyName: job.vacancyName || '',
+            workField: job.workField,
+            governorate: job.governorate,
+            startDate: job.startDate,
+            endDate: job.endDate,
+            commitmentNature: job.commitmentNature,
+            qualification: job.qualification,
+            skills: job.skills,
+            experience: job.experience,
+            details: job.details,
+            jobPurpose: job.jobPurpose,
+          });
+        }
+      }
+
+      // Extract volunteer opportunities
+      if (ngo.volunteerOpportunities && Array.isArray(ngo.volunteerOpportunities)) {
+        for (let i = 0; i < ngo.volunteerOpportunities.length; i++) {
+          const vol = ngo.volunteerOpportunities[i] as any;
+          opportunities.push({
+            id: `volunteer-${ngo.id}-${i}`,
+            type: 'volunteer',
+            ngoId: ngo.id,
+            ngoName: ngo.arabicName,
+            vacancyName: vol.vacancyName || '',
+            workField: vol.workField,
+            governorate: vol.governorate,
+            startDate: vol.startDate,
+            endDate: vol.endDate,
+            commitmentNature: vol.commitmentNature,
+            qualification: vol.qualification,
+            skills: vol.skills,
+            experience: vol.experience,
+            volunteerPurpose: vol.volunteerPurpose,
+          });
+        }
+      }
+    }
+
+    res.json(opportunities);
+  });
+
   // Get all NGOs (Admin sees all, User sees theirs - logic in route or generic list?)
   // Requirement says: "Admin Panel: View all NGOs", "User Dashboard: View list of NGOs they created"
   // Let's implement /api/ngos to return based on role or context
