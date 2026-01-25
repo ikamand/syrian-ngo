@@ -363,15 +363,25 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                 </AccordionItem>
               )}
 
-              {/* Section 11: إعدادات إضافية */}
+              {/* Section 11: واجهات الجمهور والإعدادات */}
               {(ngo.syriatelCashEnabled || ngo.mtnCashEnabled || ngo.showJobOpportunities || 
-                ngo.showVolunteerOpportunities || ngo.showEvents || ngo.showDonationCampaigns) && (
-                <AccordionItem value="section-11">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    الإعدادات الإضافية
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                ngo.showVolunteerOpportunities || ngo.showEvents || ngo.showDonationCampaigns ||
+                (ngo.jobOpportunities && (ngo.jobOpportunities as any[]).length > 0) ||
+                (ngo.volunteerOpportunities && (ngo.volunteerOpportunities as any[]).length > 0) ||
+                (ngo.events && (ngo.events as any[]).length > 0) ||
+                (ngo.donationCampaigns && (ngo.donationCampaigns as any[]).length > 0) ||
+                (ngo.photoGallery && (ngo.photoGallery as any[]).length > 0) ||
+                (ngo.statistics && (ngo.statistics as any[]).length > 0) ||
+                (ngo.networking && (ngo.networking as any[]).length > 0)) && (
+              <AccordionItem value="section-11">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-trigger-section-11">
+                  واجهات الجمهور والإعدادات
+                </AccordionTrigger>
+                <AccordionContent className="space-y-6">
+                  {/* إعدادات الدفع الإلكتروني */}
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">إعدادات الدفع الإلكتروني</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-muted-foreground">Syriatel Cash:</span>
                         <BooleanBadge value={ngo.syriatelCashEnabled} />
@@ -380,6 +390,13 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                         <span className="text-sm text-muted-foreground">MTN Cash:</span>
                         <BooleanBadge value={ngo.mtnCashEnabled} />
                       </div>
+                    </div>
+                  </div>
+
+                  {/* إعدادات العرض */}
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">إدارة واجهات الجمهور</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-muted-foreground">فرص العمل:</span>
                         <BooleanBadge value={ngo.showJobOpportunities} />
@@ -397,8 +414,145 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                         <BooleanBadge value={ngo.showDonationCampaigns} />
                       </div>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
+                  </div>
+
+                  {/* فرص العمل */}
+                  {ngo.jobOpportunities && (ngo.jobOpportunities as any[]).length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">فرص العمل ({(ngo.jobOpportunities as any[]).length})</h4>
+                      <div className="space-y-2">
+                        {(ngo.jobOpportunities as any[]).map((job, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{job.vacancyName || job.jobTitle}</div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-xs text-muted-foreground">
+                              {job.jobTitle && <span>المسمى الوظيفي: {job.jobTitle}</span>}
+                              {job.workHours && <span>ساعات العمل: {job.workHours}</span>}
+                              {job.contractType && <span>نوع العقد: {job.contractType}</span>}
+                              {job.governorate && <span>المحافظة: {job.governorate}</span>}
+                              {job.genderPreference && <span>الجنس: {job.genderPreference}</span>}
+                            </div>
+                            {job.skillsRequired && <div className="text-xs text-muted-foreground mt-1">المهارات: {job.skillsRequired}</div>}
+                            {job.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: {job.details}</div>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* فرص التطوع */}
+                  {ngo.volunteerOpportunities && (ngo.volunteerOpportunities as any[]).length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">فرص التطوع ({(ngo.volunteerOpportunities as any[]).length})</h4>
+                      <div className="space-y-2">
+                        {(ngo.volunteerOpportunities as any[]).map((vol, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{vol.workField}</div>
+                            <div className="grid grid-cols-2 gap-2 mt-2 text-xs text-muted-foreground">
+                              {vol.volunteerType && <span>نوع التطوع: {vol.volunteerType}</span>}
+                            </div>
+                            {vol.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: {vol.details}</div>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* الفعاليات */}
+                  {ngo.events && (ngo.events as any[]).length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">الفعاليات ({(ngo.events as any[]).length})</h4>
+                      <div className="space-y-2">
+                        {(ngo.events as any[]).map((event, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{event.eventName}</div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-xs text-muted-foreground">
+                              {event.eventType && <span>نوع الفعالية: {event.eventType}</span>}
+                              {event.invitationType && <span>نوع الدعوة: {event.invitationType}</span>}
+                              {event.address && <span>العنوان: {event.address}</span>}
+                              {event.startDate && <span>تاريخ البدء: {event.startDate}</span>}
+                              {event.endDate && <span>تاريخ الانتهاء: {event.endDate}</span>}
+                            </div>
+                            {event.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: {event.details}</div>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* حملات التبرع */}
+                  {ngo.donationCampaigns && (ngo.donationCampaigns as any[]).length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">حملات التبرع ({(ngo.donationCampaigns as any[]).length})</h4>
+                      <div className="space-y-2">
+                        {(ngo.donationCampaigns as any[]).map((campaign, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{campaign.campaignName}</div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-xs text-muted-foreground">
+                              {campaign.campaignType && <span>نوع الحملة: {campaign.campaignType}</span>}
+                              {campaign.targetGroups && <span>الفئات المستهدفة: {campaign.targetGroups}</span>}
+                              {campaign.governorate && <span>المحافظة: {campaign.governorate}</span>}
+                              {campaign.startDate && <span>تاريخ البدء: {campaign.startDate}</span>}
+                              {campaign.endDate && <span>تاريخ الانتهاء: {campaign.endDate}</span>}
+                            </div>
+                            {campaign.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: {campaign.details}</div>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* معرض الصور */}
+                  {ngo.photoGallery && (ngo.photoGallery as any[]).length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">معرض الصور ({(ngo.photoGallery as any[]).length})</h4>
+                      <div className="space-y-2">
+                        {(ngo.photoGallery as any[]).map((photo, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{photo.title}</div>
+                            {photo.details && <div className="text-xs text-muted-foreground mt-1">{photo.details}</div>}
+                            {photo.image && <div className="text-xs text-muted-foreground mt-1">رابط الصورة: {photo.image}</div>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* الإحصائيات */}
+                  {ngo.statistics && (ngo.statistics as any[]).length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">الإحصائيات ({(ngo.statistics as any[]).length})</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        {(ngo.statistics as any[]).map((stat, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3 text-center">
+                            <div className="text-lg font-bold text-primary">{stat.count}</div>
+                            <div className="text-sm text-muted-foreground">{stat.title}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* التشبيك */}
+                  {ngo.networking && (ngo.networking as any[]).length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">التشبيك ({(ngo.networking as any[]).length})</h4>
+                      <div className="space-y-2">
+                        {(ngo.networking as any[]).map((net, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{net.need || net.needType}</div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-xs text-muted-foreground">
+                              {net.needType && <span>نوع الاحتياج: {net.needType}</span>}
+                              {net.classification && <span>التصنيف: {net.classification}</span>}
+                              {net.count && <span>العدد: {net.count}</span>}
+                            </div>
+                            {net.description && <div className="text-xs text-muted-foreground mt-1">الوصف: {net.description}</div>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
               )}
 
               {/* Legacy fields for backward compatibility */}
