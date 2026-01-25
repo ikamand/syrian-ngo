@@ -363,10 +363,8 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                 </AccordionItem>
               )}
 
-              {/* Section 11: واجهات الجمهور والإعدادات */}
-              {(ngo.syriatelCashEnabled || ngo.mtnCashEnabled || ngo.showJobOpportunities || 
-                ngo.showVolunteerOpportunities || ngo.showEvents || ngo.showDonationCampaigns ||
-                (ngo.jobOpportunities && (ngo.jobOpportunities as any[]).length > 0) ||
+              {/* Section 11: واجهات الجمهور */}
+              {((ngo.jobOpportunities && (ngo.jobOpportunities as any[]).length > 0) ||
                 (ngo.volunteerOpportunities && (ngo.volunteerOpportunities as any[]).length > 0) ||
                 (ngo.events && (ngo.events as any[]).length > 0) ||
                 (ngo.donationCampaigns && (ngo.donationCampaigns as any[]).length > 0) ||
@@ -375,47 +373,9 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                 (ngo.networking && (ngo.networking as any[]).length > 0)) && (
               <AccordionItem value="section-11">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-trigger-section-11">
-                  واجهات الجمهور والإعدادات
+                  واجهات الجمهور
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
-                  {/* إعدادات الدفع الإلكتروني */}
-                  <div>
-                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">إعدادات الدفع الإلكتروني</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">Syriatel Cash:</span>
-                        <BooleanBadge value={ngo.syriatelCashEnabled} />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">MTN Cash:</span>
-                        <BooleanBadge value={ngo.mtnCashEnabled} />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* إعدادات العرض */}
-                  <div>
-                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">إدارة واجهات الجمهور</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">فرص العمل:</span>
-                        <BooleanBadge value={ngo.showJobOpportunities} />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">فرص التطوع:</span>
-                        <BooleanBadge value={ngo.showVolunteerOpportunities} />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">الفعاليات:</span>
-                        <BooleanBadge value={ngo.showEvents} />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">حملات التبرع:</span>
-                        <BooleanBadge value={ngo.showDonationCampaigns} />
-                      </div>
-                    </div>
-                  </div>
-
                   {/* فرص العمل */}
                   {ngo.jobOpportunities && (ngo.jobOpportunities as any[]).length > 0 && (
                     <div>
