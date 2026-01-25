@@ -6,6 +6,7 @@ import { z } from "zod";
 import session from "express-session";
 import type { User } from "@shared/schema";
 import bcrypt from "bcrypt";
+import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 
 const SALT_ROUNDS = 10;
 
@@ -67,6 +68,9 @@ export async function registerRoutes(
     }
     next();
   };
+
+  // Register object storage routes for file uploads
+  registerObjectStorageRoutes(app);
 
   // --- Auth Routes ---
   app.post(api.auth.login.path, async (req, res) => {

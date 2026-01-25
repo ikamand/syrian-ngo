@@ -42,6 +42,9 @@ export const ngos = pgTable("ngos", {
   // Section 1: نبذة عن المنظمة
   description: text("description"),
   
+  // Organization logo
+  logo: text("logo"),
+  
   // Section 1: وثائق المنظمة (file paths stored as text)
   internalRegulationsDoc: text("internal_regulations_doc"),
   publicationDecisionDoc: text("publication_decision_doc"),
