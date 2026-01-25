@@ -10,6 +10,8 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Loader2, Plus, Trash2 } from "lucide-react";
+import { LogoUploader } from "@/components/LogoUploader";
+import { ImageUploader } from "@/components/ImageUploader";
 import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 
@@ -83,6 +85,7 @@ const formSchema = z.object({
   hasVolunteerPolicy: z.boolean().default(false),
   hasOrgStructure: z.boolean().default(false),
   description: z.string().optional(),
+  logo: z.string().optional(),
   
   // Section 2: التصنيفات والخدمات
   classifications: z.array(z.object({
@@ -354,6 +357,7 @@ export default function CreateNgo() {
       hasVolunteerPolicy: false,
       hasOrgStructure: false,
       description: "",
+      logo: "",
       classifications: [],
       services: [],
       serviceCenters: [],
@@ -673,6 +677,27 @@ export default function CreateNgo() {
                                   className="min-h-[120px] resize-none"
                                   {...field} 
                                   data-testid="textarea-description"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      {/* شعار المنظمة */}
+                      <div className="space-y-4">
+                        <h3 className="font-semibold text-foreground border-b pb-2">شعار المنظمة</h3>
+                        <FormField
+                          control={form.control}
+                          name="logo"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <LogoUploader
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  label="شعار المنظمة"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -2054,10 +2079,26 @@ export default function CreateNgo() {
                               <span className="font-medium text-primary">صورة {index + 1}</span>
                               <Button type="button" variant="ghost" size="icon" onClick={() => photoGalleryArray.remove(index)} data-testid={`button-remove-photo-${index}`}><Trash2 className="w-4 h-4 text-destructive" /></Button>
                             </div>
-                            <div className="grid md:grid-cols-3 gap-4">
-                              <FormField control={form.control} name={`photoGallery.${index}.title`} render={({ field }) => (<FormItem><FormLabel>عنوان الصورة</FormLabel><FormControl><Input {...field} data-testid={`input-photo-title-${index}`} /></FormControl></FormItem>)} />
-                              <FormField control={form.control} name={`photoGallery.${index}.image`} render={({ field }) => (<FormItem><FormLabel>رابط الصورة</FormLabel><FormControl><Input {...field} data-testid={`input-photo-image-${index}`} /></FormControl></FormItem>)} />
-                              <FormField control={form.control} name={`photoGallery.${index}.details`} render={({ field }) => (<FormItem><FormLabel>التفاصيل</FormLabel><FormControl><Input {...field} data-testid={`input-photo-details-${index}`} /></FormControl></FormItem>)} />
+                            <div className="flex gap-4 items-start">
+                              <FormField 
+                                control={form.control} 
+                                name={`photoGallery.${index}.image`} 
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormControl>
+                                      <ImageUploader
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        size="md"
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                )} 
+                              />
+                              <div className="flex-1 grid md:grid-cols-2 gap-4">
+                                <FormField control={form.control} name={`photoGallery.${index}.title`} render={({ field }) => (<FormItem><FormLabel>عنوان الصورة</FormLabel><FormControl><Input {...field} data-testid={`input-photo-title-${index}`} /></FormControl></FormItem>)} />
+                                <FormField control={form.control} name={`photoGallery.${index}.details`} render={({ field }) => (<FormItem><FormLabel>التفاصيل</FormLabel><FormControl><Input {...field} data-testid={`input-photo-details-${index}`} /></FormControl></FormItem>)} />
+                              </div>
                             </div>
                           </div>
                         ))}

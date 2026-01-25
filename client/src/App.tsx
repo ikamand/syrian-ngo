@@ -9,6 +9,7 @@ import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import CreateNgo from "@/pages/CreateNgo";
 import NgoList from "@/pages/NgoList";
+import NgoProfile from "@/pages/NgoProfile";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AssociationLaw from "@/pages/AssociationLaw";
 import OtherLaws from "@/pages/OtherLaws";
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/ngos/new" component={CreateNgo} />
+      <Route path="/ngos/:id" component={NgoProfile} />
       <Route path="/ngos" component={NgoList} />
       <Route path="/legal/association-law" component={AssociationLaw} />
       <Route path="/legal/other-laws" component={OtherLaws} />

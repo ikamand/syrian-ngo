@@ -1,12 +1,13 @@
 import { Navbar } from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Building2 } from "lucide-react";
+import { Search, Building2, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
 import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
 import type { Ngo } from "@shared/schema";
+import { Link } from "wouter";
 import {
   Table,
   TableBody,
@@ -105,6 +106,7 @@ export default function NgoList() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-gray-50/80">
+                    <TableHead className="text-right font-bold w-[80px]">الشعار</TableHead>
                     <TableHead className="text-right font-bold">اسم المنظمة</TableHead>
                     <TableHead className="text-right font-bold">الشكل القانوني</TableHead>
                     <TableHead className="text-right font-bold">النطاق</TableHead>
@@ -116,23 +118,50 @@ export default function NgoList() {
                   {filteredNgos.map((ngo) => (
                     <TableRow key={ngo.id} className="hover:bg-gray-50/50" data-testid={`row-ngo-${ngo.id}`}>
                       <TableCell>
-                        <div>
+                        <Link href={`/ngos/${ngo.id}`} className="block">
+                          {ngo.logo ? (
+                            <img 
+                              src={ngo.logo} 
+                              alt={ngo.arabicName || "Logo"} 
+                              className="w-12 h-12 object-contain border rounded bg-white cursor-pointer hover:opacity-80 transition-opacity"
+                              data-testid={`img-ngo-logo-${ngo.id}`}
+                            />
+                          ) : (
+                            <div className="w-12 h-12 border rounded bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
+                              <Building2 className="w-6 h-6 text-gray-400" />
+                            </div>
+                          )}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <Link href={`/ngos/${ngo.id}`} className="block cursor-pointer hover:text-primary transition-colors">
                           <p className="font-medium text-gray-900">{ngo.arabicName || "—"}</p>
                           <p className="text-sm text-muted-foreground">{ngo.englishName || ""}</p>
-                        </div>
+                        </Link>
                       </TableCell>
                       <TableCell className="text-gray-600">{getLegalFormLabel(ngo.legalForm)}</TableCell>
                       <TableCell className="text-gray-600">{getScopeLabel(ngo.scope)}</TableCell>
                       <TableCell className="text-gray-600">{ngo.city || "—"}</TableCell>
                       <TableCell className="text-center">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => setViewingNgo(ngo)}
-                          data-testid={`button-details-ngo-${ngo.id}`}
-                        >
-                          التفاصيل
-                        </Button>
+                        <div className="flex items-center justify-center gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => setViewingNgo(ngo)}
+                            data-testid={`button-details-ngo-${ngo.id}`}
+                          >
+                            التفاصيل
+                          </Button>
+                          <Link href={`/ngos/${ngo.id}`}>
+                            <Button 
+                              size="sm" 
+                              variant="ghost"
+                              data-testid={`button-profile-ngo-${ngo.id}`}
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </Button>
+                          </Link>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

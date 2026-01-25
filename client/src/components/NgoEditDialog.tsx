@@ -13,6 +13,8 @@ import type { Ngo } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { LogoUploader } from "@/components/LogoUploader";
+import { ImageUploader } from "@/components/ImageUploader";
 import {
   Select,
   SelectContent,
@@ -54,6 +56,7 @@ const formSchema = z.object({
   publicationDecisionDoc: z.string().optional(),
   publicBenefitDoc: z.string().optional(),
   description: z.string().optional(),
+  logo: z.string().optional(),
   name: z.string().optional(),
   city: z.string().optional(),
   presidentName: z.string().optional(),
@@ -165,7 +168,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
       orgStatus: "", publicationNumber: "", publicationDate: "", hasPublicBenefit: false,
       hasInternalRegulations: false, hasWomenPolicy: false, hasVolunteerPolicy: false,
       hasOrgStructure: false, internalRegulationsDoc: "", publicationDecisionDoc: "",
-      publicBenefitDoc: "", description: "", name: "", city: "", presidentName: "",
+      publicBenefitDoc: "", description: "", logo: "", name: "", city: "", presidentName: "",
       email: "", phone: "", classifications: [], services: [],
       serviceCenters: [], branches: [], financialData: [], contactMethods: [],
       bankAccounts: [], programs: [], activities: [], employees: [], volunteers: [],
@@ -222,6 +225,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
         publicationDecisionDoc: ngo.publicationDecisionDoc || "",
         publicBenefitDoc: ngo.publicBenefitDoc || "",
         description: ngo.description || "",
+        logo: ngo.logo || "",
         name: ngo.name || "",
         city: ngo.city || "",
         presidentName: ngo.presidentName || "",
@@ -465,6 +469,20 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                       <FormItem>
                         <FormLabel>نبذة عن المنظمة</FormLabel>
                         <FormControl><Textarea {...field} rows={3} data-testid="edit-textarea-description" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField control={form.control} name="logo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <LogoUploader
+                            value={field.value}
+                            onChange={field.onChange}
+                            label="شعار المنظمة"
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -1037,11 +1055,24 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                     </Button>
                   </div>
                   {photoGalleryArray.fields.map((field, index) => (
-                    <div key={field.id} className="grid grid-cols-4 gap-2 items-end border-b pb-2">
-                      <FormField control={form.control} name={`photoGallery.${index}.image`} render={({ field }) => (<FormItem><FormLabel>رابط الصورة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                      <FormField control={form.control} name={`photoGallery.${index}.title`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                      <FormField control={form.control} name={`photoGallery.${index}.details`} render={({ field }) => (<FormItem><FormLabel>التفاصيل</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                      <Button type="button" variant="ghost" size="icon" onClick={() => photoGalleryArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                    <div key={field.id} className="border rounded-lg p-3 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-primary">صورة {index + 1}</span>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => photoGalleryArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                      </div>
+                      <div className="flex gap-3 items-start">
+                        <FormField control={form.control} name={`photoGallery.${index}.image`} render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <ImageUploader value={field.value} onChange={field.onChange} size="sm" />
+                            </FormControl>
+                          </FormItem>
+                        )} />
+                        <div className="flex-1 grid grid-cols-2 gap-2">
+                          <FormField control={form.control} name={`photoGallery.${index}.title`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                          <FormField control={form.control} name={`photoGallery.${index}.details`} render={({ field }) => (<FormItem><FormLabel>التفاصيل</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </AccordionContent>

@@ -46,9 +46,19 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
           <>
             <DialogHeader className="text-right border-b pb-4">
               <div className="flex items-center justify-between gap-4">
-                <div>
-                  <DialogTitle className="text-xl font-bold text-primary">{displayName}</DialogTitle>
-                  <DialogDescription className="text-sm text-muted-foreground mt-1">{displayEnglishName}</DialogDescription>
+                <div className="flex items-center gap-4">
+                  {ngo.logo && (
+                    <img
+                      src={ngo.logo}
+                      alt={displayName}
+                      className="w-16 h-16 object-contain border rounded-lg bg-white"
+                      data-testid="img-ngo-logo"
+                    />
+                  )}
+                  <div>
+                    <DialogTitle className="text-xl font-bold text-primary">{displayName}</DialogTitle>
+                    <DialogDescription className="text-sm text-muted-foreground mt-1">{displayEnglishName}</DialogDescription>
+                  </div>
                 </div>
                 <StatusBadge status={ngo.status as any} />
               </div>
