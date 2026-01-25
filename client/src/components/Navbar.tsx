@@ -30,8 +30,8 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
-      <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
-        <div className="flex items-center gap-2 md:gap-4">
+      <div className="container mx-auto px-2 h-14 md:h-16 flex items-center justify-between">
+        <div className="flex items-center gap-1 md:gap-2">
           <Link href="/">
             <div className="flex items-center gap-2 md:gap-3 cursor-pointer">
               <div className="w-10 h-10 md:w-16 md:h-16 flex items-center justify-center overflow-hidden">
@@ -123,10 +123,10 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="flex gap-2">
-              <Button asChild variant="outline" className="font-bold">
+              <Button asChild size="sm" variant="outline" className="font-bold">
                 <Link href="/create-ngo">إنشاء منظمة جديدة</Link>
               </Button>
-              <Button asChild className="font-bold shadow-lg shadow-primary/20">
+              <Button asChild size="sm" className="font-bold shadow-lg shadow-primary/20">
                 <Link href="/login">تسجيل الدخول</Link>
               </Button>
             </div>
