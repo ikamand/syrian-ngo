@@ -57,7 +57,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
 
   const createUserMutation = useMutation({
     mutationFn: async (data: typeof formData & { password: string }) => {
-      const res = await apiRequest("POST", "/api/register", data);
+      const res = await apiRequest("POST", "/api/auth/register", data);
       const text = await res.text();
       try {
         return JSON.parse(text);
