@@ -113,6 +113,8 @@ export async function registerRoutes(
   // Admin-only user creation endpoint
   app.post(api.auth.register.path, requireAdmin, async (req, res) => {
     try {
+      console.log("[register] Request body:", JSON.stringify(req.body));
+      
       const { 
         username, 
         password,
@@ -127,20 +129,25 @@ export async function registerRoutes(
       } = req.body;
       
       if (!username || !password) {
+        console.log("[register] Missing username or password");
         return res.status(400).json({ message: "اسم المستخدم وكلمة المرور مطلوبان" });
       }
       
       if (password.length < 6) {
+        console.log("[register] Password too short");
         return res.status(400).json({ message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" });
       }
       
       const existing = await storage.getUserByUsername(username);
+      console.log("[register] Existing user check:", existing ? "found" : "not found");
       if (existing) {
         return res.status(400).json({ message: "اسم المستخدم موجود مسبقاً. يرجى اختيار اسم مستخدم آخر" });
       }
 
       // Hash password before storing
+      console.log("[register] Hashing password...");
       const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+      console.log("[register] Password hashed, creating user...");
       
       const user = await storage.createUser({
         username,
@@ -157,8 +164,10 @@ export async function registerRoutes(
         status: "active"
       });
       
+      console.log("[register] User created:", user.id, user.username);
       res.status(201).json(user);
     } catch (err) {
+      console.log("[register] Error:", err);
       if (err instanceof z.ZodError) {
         return res.status(400).json({ message: err.errors[0].message });
       }
