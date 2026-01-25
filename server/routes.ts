@@ -5,6 +5,9 @@ import { api } from "@shared/routes";
 import { z } from "zod";
 import session from "express-session";
 import type { User } from "@shared/schema";
+import bcrypt from "bcrypt";
+
+const SALT_ROUNDS = 10;
 
 // Extend express-session types
 declare module "express-session" {
@@ -65,7 +68,35 @@ export async function registerRoutes(
       const { username, password } = api.auth.login.input.parse(req.body);
       const user = await storage.getUserByUsername(username);
       
-      if (!user || user.password !== password) {
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      // Check if account is suspended
+      if (user.status === "suspended") {
+        return res.status(403).json({ message: "تم إيقاف هذا الحساب. يرجى التواصل مع المسؤول." });
+      }
+      
+      // Check password - support both bcrypt and legacy plaintext for migration
+      let isValidPassword = false;
+      
+      // First try bcrypt comparison (for hashed passwords)
+      try {
+        isValidPassword = await bcrypt.compare(password, user.password);
+      } catch {
+        // If bcrypt fails (e.g., password isn't a valid hash), try plaintext
+        isValidPassword = false;
+      }
+      
+      // If bcrypt failed, check if it's a legacy plaintext password
+      if (!isValidPassword && user.password === password) {
+        isValidPassword = true;
+        // Upgrade to hashed password for security
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+        await storage.updateUserPassword(user.id, hashedPassword);
+      }
+      
+      if (!isValidPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
@@ -79,17 +110,53 @@ export async function registerRoutes(
     }
   });
 
-  app.post(api.auth.register.path, async (req, res) => {
+  // Admin-only user creation endpoint
+  app.post(api.auth.register.path, requireAdmin, async (req, res) => {
     try {
-      const input = api.auth.register.input.parse(req.body);
+      const { 
+        username, 
+        password,
+        firstName,
+        lastName,
+        email,
+        phone,
+        organizationName,
+        governorate,
+        registrationNumber,
+        registrationDate
+      } = req.body;
       
-      const existing = await storage.getUserByUsername(input.username);
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+      
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters" });
+      }
+      
+      const existing = await storage.getUserByUsername(username);
       if (existing) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
-      const user = await storage.createUser(input);
-      req.session.userId = user.id;
+      // Hash password before storing
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+      
+      const user = await storage.createUser({
+        username,
+        password: hashedPassword,
+        role: "user",
+        firstName,
+        lastName,
+        email,
+        phone,
+        organizationName,
+        governorate,
+        registrationNumber,
+        registrationDate,
+        status: "active"
+      });
+      
       res.status(201).json(user);
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -136,11 +203,26 @@ export async function registerRoutes(
         return res.status(401).json({ message: "User not found" });
       }
       
-      if (user.password !== currentPassword) {
+      // Compare current password - support both bcrypt and legacy plaintext
+      let isValidPassword = false;
+      try {
+        isValidPassword = await bcrypt.compare(currentPassword, user.password);
+      } catch {
+        isValidPassword = false;
+      }
+      
+      // Fallback to plaintext comparison for legacy passwords
+      if (!isValidPassword && user.password === currentPassword) {
+        isValidPassword = true;
+      }
+      
+      if (!isValidPassword) {
         return res.status(401).json({ message: "Current password is incorrect" });
       }
       
-      await storage.updateUserPassword(user.id, newPassword);
+      // Hash new password before storing
+      const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+      await storage.updateUserPassword(user.id, hashedPassword);
       res.json({ message: "Password changed successfully" });
     } catch (err) {
       res.status(500).json({ message: "Internal server error" });
@@ -165,20 +247,75 @@ export async function registerRoutes(
         return res.status(404).json({ message: "User not found" });
       }
       
-      await storage.updateUserPassword(userId, newPassword);
+      // Hash new password before storing
+      const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+      await storage.updateUserPassword(userId, hashedPassword);
       res.json({ message: "Password reset successfully" });
     } catch (err) {
       res.status(500).json({ message: "Internal server error" });
     }
   });
   
-  // Admin gets all users
+  // Admin gets all users (with full details except password)
   app.get("/api/admin/users", requireAdmin, async (_req, res) => {
     try {
       const allUsers = await storage.getAllUsers();
-      // Don't send passwords to frontend
-      const safeUsers = allUsers.map(u => ({ id: u.id, username: u.username, role: u.role }));
+      // Don't send passwords to frontend, but include all other fields
+      const safeUsers = allUsers.map(u => ({ 
+        id: u.id, 
+        username: u.username, 
+        role: u.role,
+        firstName: u.firstName,
+        lastName: u.lastName,
+        email: u.email,
+        phone: u.phone,
+        organizationName: u.organizationName,
+        governorate: u.governorate,
+        registrationNumber: u.registrationNumber,
+        registrationDate: u.registrationDate,
+        status: u.status,
+        createdAt: u.createdAt
+      }));
       res.json(safeUsers);
+    } catch (err) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+  
+  // Admin updates a user's details
+  app.patch("/api/admin/users/:id", requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { 
+        firstName, 
+        lastName, 
+        email, 
+        phone, 
+        organizationName, 
+        governorate, 
+        registrationNumber, 
+        registrationDate,
+        status 
+      } = req.body;
+      
+      const targetUser = await storage.getUser(userId);
+      if (!targetUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const updatedUser = await storage.updateUser(userId, {
+        firstName,
+        lastName,
+        email,
+        phone,
+        organizationName,
+        governorate,
+        registrationNumber,
+        registrationDate,
+        status
+      });
+      
+      res.json(updatedUser);
     } catch (err) {
       res.status(500).json({ message: "Internal server error" });
     }

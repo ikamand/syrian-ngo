@@ -5,9 +5,11 @@ import { useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement, useDele
 import { useAllSiteContent, useUpsertSiteContent } from "@/hooks/use-site-content";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Check, X, Trash2, Save, Plus, Key, Users } from "lucide-react";
+import { Check, X, Trash2, Save, Plus, Key, Users, UserPlus, Pencil } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { ResetUserPasswordDialog } from "@/components/ResetUserPasswordDialog";
+import { CreateUserDialog } from "@/components/CreateUserDialog";
+import { EditUserDialog } from "@/components/EditUserDialog";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -45,6 +47,24 @@ import { ar } from "date-fns/locale";
 import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
 import { NgoEditDialog } from "@/components/NgoEditDialog";
 import type { Ngo } from "@shared/schema";
+import { useEffect } from "react";
+
+// Users management type - defined outside component
+interface AdminUser {
+  id: number;
+  username: string;
+  role: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  organizationName?: string | null;
+  governorate?: string | null;
+  registrationNumber?: string | null;
+  registrationDate?: string | null;
+  status?: string;
+  createdAt?: string | null;
+}
 
 export default function AdminDashboard() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -58,11 +78,21 @@ export default function AdminDashboard() {
   const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
   const { toast } = useToast();
 
-  // Users management
-  const { data: allUsers, isLoading: isUsersLoading } = useQuery<{ id: number; username: string; role: string }[]>({
+  const { data: allUsers, isLoading: isUsersLoading } = useQuery<AdminUser[]>({
     queryKey: ["/api/admin/users"],
   });
   const [resetPasswordUser, setResetPasswordUser] = useState<{ id: number; username: string } | null>(null);
+  const [createUserOpen, setCreateUserOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+  
+  // Handle redirect in useEffect to avoid setState during render
+  useEffect(() => {
+    if (!isAuthLoading && !user) {
+      setLocation("/auth");
+    } else if (!isAuthLoading && user && user.role !== "admin") {
+      setLocation("/dashboard");
+    }
+  }, [user, isAuthLoading, setLocation]);
 
   const { data: announcements, isLoading: isAnnouncementsLoading } = useAnnouncements();
   const { mutate: createAnnouncement, isPending: isCreating } = useCreateAnnouncement();
@@ -83,10 +113,8 @@ export default function AdminDashboard() {
     { key: "registration_instructions", label: "تعليمات التسجيل" },
   ];
 
-  if (isAuthLoading) return null;
-
-  if (!user || user.role !== "admin") {
-    setLocation("/");
+  // Show nothing while loading or if user isn't an admin (useEffect handles redirect)
+  if (isAuthLoading || !user || user.role !== "admin") {
     return null;
   }
 
@@ -427,44 +455,77 @@ export default function AdminDashboard() {
 
           <TabsContent value="users">
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">إدارة المستخدمين</h2>
+              <div className="flex justify-between items-center flex-wrap gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold">إدارة المستخدمين</h2>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    إنشاء وتعديل حسابات المستخدمين وإدارة حالة الحسابات
+                  </p>
+                </div>
+                <Button onClick={() => setCreateUserOpen(true)} data-testid="button-create-user">
+                  <UserPlus className="w-4 h-4 ml-2" />
+                  إنشاء حساب جديد
+                </Button>
               </div>
-              <p className="text-muted-foreground text-sm">
-                عرض وإدارة حسابات المستخدمين وإعادة تعيين كلمات المرور
-              </p>
 
               {isUsersLoading ? (
                 <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
               ) : (
-                <div className="bg-white rounded-xl border shadow-sm">
+                <div className="bg-white rounded-xl border shadow-sm overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead className="text-right">اسم المستخدم</TableHead>
+                        <TableHead className="text-right">الإسم الكامل</TableHead>
+                        <TableHead className="text-right">المنظمة</TableHead>
+                        <TableHead className="text-right">المحافظة</TableHead>
+                        <TableHead className="text-right">رقم الإشهار</TableHead>
                         <TableHead className="text-right">الدور</TableHead>
+                        <TableHead className="text-right">الحالة</TableHead>
                         <TableHead className="text-right">الإجراءات</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {allUsers?.map((u) => (
                         <TableRow key={u.id} data-testid={`row-user-${u.id}`}>
-                          <TableCell className="font-medium">{u.username}</TableCell>
+                          <TableCell className="font-medium font-mono text-left" dir="ltr">{u.username}</TableCell>
+                          <TableCell>
+                            {u.firstName || u.lastName ? `${u.firstName || ""} ${u.lastName || ""}`.trim() : "-"}
+                          </TableCell>
+                          <TableCell>{u.organizationName || "-"}</TableCell>
+                          <TableCell>{u.governorate || "-"}</TableCell>
+                          <TableCell>{u.registrationNumber || "-"}</TableCell>
                           <TableCell>
                             <Badge variant={u.role === "admin" ? "default" : "secondary"}>
                               {u.role === "admin" ? "مدير" : "مستخدم"}
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setResetPasswordUser({ id: u.id, username: u.username })}
-                              data-testid={`button-reset-password-${u.id}`}
-                            >
-                              <Key className="w-4 h-4 ml-1" />
-                              إعادة تعيين كلمة المرور
-                            </Button>
+                            <Badge variant={u.status === "suspended" ? "destructive" : "outline"}>
+                              {u.status === "suspended" ? "متوقف" : "فعّال"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2 flex-wrap">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setEditingUser(u)}
+                                data-testid={`button-edit-user-${u.id}`}
+                              >
+                                <Pencil className="w-4 h-4 ml-1" />
+                                تعديل
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setResetPasswordUser({ id: u.id, username: u.username })}
+                                data-testid={`button-reset-password-${u.id}`}
+                              >
+                                <Key className="w-4 h-4 ml-1" />
+                                كلمة المرور
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -637,6 +698,19 @@ export default function AdminDashboard() {
         open={!!resetPasswordUser}
         onOpenChange={(open) => !open && setResetPasswordUser(null)}
         user={resetPasswordUser}
+      />
+
+      {/* Create User Dialog */}
+      <CreateUserDialog
+        open={createUserOpen}
+        onOpenChange={setCreateUserOpen}
+      />
+
+      {/* Edit User Dialog */}
+      <EditUserDialog
+        open={!!editingUser}
+        onOpenChange={(open) => !open && setEditingUser(null)}
+        user={editingUser}
       />
     </div>
   );

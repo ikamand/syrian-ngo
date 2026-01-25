@@ -7,6 +7,16 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   role: text("role", { enum: ["user", "admin"] }).default("user").notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  email: text("email"),
+  phone: text("phone"),
+  organizationName: text("organization_name"),
+  governorate: text("governorate"),
+  registrationNumber: text("registration_number"),
+  registrationDate: text("registration_date"),
+  status: text("status", { enum: ["active", "suspended"] }).default("active").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const ngos = pgTable("ngos", {
