@@ -5,7 +5,7 @@ import { useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement, useDele
 import { useAllSiteContent, useUpsertSiteContent } from "@/hooks/use-site-content";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Check, X, Trash2, Save, Plus, Key, Users, UserPlus, Pencil } from "lucide-react";
+import { Check, X, Trash2, Save, Plus, Key, Users, UserPlus, Pencil, Upload, ImageIcon, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { ResetUserPasswordDialog } from "@/components/ResetUserPasswordDialog";
 import { CreateUserDialog } from "@/components/CreateUserDialog";
@@ -100,7 +100,8 @@ export default function AdminDashboard() {
   const { mutate: deleteAnnouncement } = useDeleteAnnouncement();
   const [announcementDialogOpen, setAnnouncementDialogOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState<any>(null);
-  const [announcementForm, setAnnouncementForm] = useState({ title: "", content: "", published: true });
+  const [announcementForm, setAnnouncementForm] = useState({ title: "", content: "", imageUrl: "", published: true });
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const { data: siteContent, isLoading: isSiteContentLoading } = useAllSiteContent();
   const { mutate: upsertSiteContent, isPending: isSiteContentUpdating } = useUpsertSiteContent();
@@ -144,7 +145,7 @@ export default function AdminDashboard() {
   
   const openCreateAnnouncement = () => {
     setEditingAnnouncement(null);
-    setAnnouncementForm({ title: "", content: "", published: true });
+    setAnnouncementForm({ title: "", content: "", imageUrl: "", published: true });
     setAnnouncementDialogOpen(true);
   };
 
@@ -153,9 +154,77 @@ export default function AdminDashboard() {
     setAnnouncementForm({
       title: announcement.title,
       content: announcement.content,
+      imageUrl: announcement.imageUrl || "",
       published: announcement.published
     });
     setAnnouncementDialogOpen(true);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "خطأ",
+        description: "يرجى اختيار ملف صورة صالح",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast({
+        title: "خطأ",
+        description: "حجم الصورة يتجاوز 5 ميغابايت",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUploadingImage(true);
+    try {
+      const requestUrlResponse = await fetch("/api/uploads/request-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: file.name,
+          size: file.size,
+          contentType: file.type
+        }),
+      });
+
+      if (!requestUrlResponse.ok) {
+        throw new Error("فشل الحصول على رابط الرفع");
+      }
+
+      const { uploadURL, objectPath } = await requestUrlResponse.json();
+
+      const uploadResponse = await fetch(uploadURL, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("فشل رفع الصورة");
+      }
+
+      setAnnouncementForm(prev => ({ ...prev, imageUrl: objectPath }));
+      toast({
+        title: "تم الرفع",
+        description: "تم رفع الصورة بنجاح"
+      });
+    } catch (error) {
+      toast({
+        title: "خطأ",
+        description: "فشل رفع الصورة، يرجى المحاولة مرة أخرى",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploadingImage(false);
+    }
   };
 
   const handleAnnouncementSave = () => {
@@ -397,45 +466,64 @@ export default function AdminDashboard() {
               ) : announcements && announcements.length > 0 ? (
                 <div className="grid gap-4">
                   {announcements.map((announcement) => (
-                    <Card key={announcement.id} data-testid={`card-announcement-${announcement.id}`}>
-                      <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="space-y-1">
-                            <CardTitle className="text-lg">{announcement.title}</CardTitle>
-                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                              {announcement.createdAt && (
-                                <span>{format(new Date(announcement.createdAt), "d MMMM yyyy", { locale: ar })}</span>
-                              )}
-                              {announcement.published ? (
-                                <Badge variant="default" className="bg-green-600">منشور</Badge>
-                              ) : (
-                                <Badge variant="secondary">مسودة</Badge>
-                              )}
+                    <Card key={announcement.id} className="overflow-hidden" data-testid={`card-announcement-${announcement.id}`}>
+                      <div className="flex flex-col md:flex-row">
+                        {announcement.imageUrl && (
+                          <div className="w-full md:w-48 h-32 md:h-auto shrink-0 bg-muted">
+                            <img 
+                              src={announcement.imageUrl} 
+                              alt={announcement.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <CardHeader className="pb-3">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="space-y-1">
+                                <CardTitle className="text-lg">{announcement.title}</CardTitle>
+                                <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
+                                  {announcement.createdAt && (
+                                    <span>{format(new Date(announcement.createdAt), "d MMMM yyyy", { locale: ar })}</span>
+                                  )}
+                                  {announcement.published ? (
+                                    <Badge variant="default" className="bg-green-600">منشور</Badge>
+                                  ) : (
+                                    <Badge variant="secondary">مسودة</Badge>
+                                  )}
+                                  {announcement.imageUrl && (
+                                    <Badge variant="outline">
+                                      <ImageIcon className="w-3 h-3 ml-1" />
+                                      صورة
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => openEditAnnouncement(announcement)}
+                                  data-testid={`button-edit-announcement-${announcement.id}`}
+                                >
+                                  تعديل
+                                </Button>
+                                <Button
+                                  size="icon"
+                                  variant="destructive"
+                                  onClick={() => handleAnnouncementDelete(announcement.id)}
+                                  data-testid={`button-delete-announcement-${announcement.id}`}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => openEditAnnouncement(announcement)}
-                              data-testid={`button-edit-announcement-${announcement.id}`}
-                            >
-                              تعديل
-                            </Button>
-                            <Button
-                              size="icon"
-                              variant="destructive"
-                              onClick={() => handleAnnouncementDelete(announcement.id)}
-                              data-testid={`button-delete-announcement-${announcement.id}`}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-foreground/80 line-clamp-2">{announcement.content}</p>
+                          </CardContent>
                         </div>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-foreground/80 line-clamp-2">{announcement.content}</p>
-                      </CardContent>
+                      </div>
                     </Card>
                   ))}
                 </div>
@@ -603,34 +691,82 @@ export default function AdminDashboard() {
 
       {/* Announcement Dialog */}
       <Dialog open={announcementDialogOpen} onOpenChange={setAnnouncementDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingAnnouncement ? "تعديل الإعلان" : "إعلان جديد"}</DialogTitle>
+            <DialogTitle>{editingAnnouncement ? "تعديل الخبر" : "خبر جديد"}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="title">عنوان الإعلان</Label>
+              <Label htmlFor="title">عنوان الخبر</Label>
               <Input
                 id="title"
                 value={announcementForm.title}
                 onChange={(e) => setAnnouncementForm({ ...announcementForm, title: e.target.value })}
-                placeholder="أدخل عنوان الإعلان"
+                placeholder="أدخل عنوان الخبر"
                 data-testid="input-announcement-title"
               />
             </div>
+            
             <div className="grid gap-2">
-              <Label htmlFor="content">محتوى الإعلان</Label>
+              <Label>صورة الخبر (اختياري)</Label>
+              <div className="space-y-3">
+                {announcementForm.imageUrl ? (
+                  <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border">
+                    <img 
+                      src={announcementForm.imageUrl} 
+                      alt="صورة الخبر" 
+                      className="w-full h-full object-cover"
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="destructive"
+                      className="absolute top-2 left-2"
+                      onClick={() => setAnnouncementForm(prev => ({ ...prev, imageUrl: "" }))}
+                      data-testid="button-remove-image"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/30 hover:bg-muted/50 transition-colors">
+                    <div className="flex flex-col items-center justify-center py-4">
+                      {isUploadingImage ? (
+                        <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+                      ) : (
+                        <>
+                          <ImageIcon className="w-8 h-8 text-muted-foreground mb-2" />
+                          <p className="text-sm text-muted-foreground">اضغط لرفع صورة</p>
+                          <p className="text-xs text-muted-foreground mt-1">PNG, JPG حتى 5MB</p>
+                        </>
+                      )}
+                    </div>
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={isUploadingImage}
+                      data-testid="input-announcement-image"
+                    />
+                  </label>
+                )}
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="content">محتوى الخبر</Label>
               <Textarea
                 id="content"
                 value={announcementForm.content}
                 onChange={(e) => setAnnouncementForm({ ...announcementForm, content: e.target.value })}
-                placeholder="أدخل محتوى الإعلان"
+                placeholder="أدخل محتوى الخبر"
                 className="min-h-[150px]"
                 data-testid="input-announcement-content"
               />
             </div>
             <div className="flex items-center justify-between gap-3 p-3 border rounded-lg">
-              <Label htmlFor="published" className="cursor-pointer">نشر الإعلان (سيظهر للزوار)</Label>
+              <Label htmlFor="published" className="cursor-pointer">نشر الخبر (سيظهر للزوار)</Label>
               <Switch
                 id="published"
                 dir="ltr"
@@ -644,11 +780,11 @@ export default function AdminDashboard() {
             <Button variant="outline" onClick={() => setAnnouncementDialogOpen(false)}>إلغاء</Button>
             <Button 
               onClick={handleAnnouncementSave} 
-              disabled={isCreating || isAnnouncementUpdating}
+              disabled={isCreating || isAnnouncementUpdating || isUploadingImage}
               data-testid="button-save-announcement"
             >
               <Save className="w-4 h-4 ml-2" />
-              {editingAnnouncement ? "حفظ التغييرات" : "إنشاء الإعلان"}
+              {editingAnnouncement ? "حفظ التغييرات" : "إنشاء الخبر"}
             </Button>
           </DialogFooter>
         </DialogContent>

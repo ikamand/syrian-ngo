@@ -14,6 +14,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import AssociationLaw from "@/pages/AssociationLaw";
 import OtherLaws from "@/pages/OtherLaws";
 import Announcements from "@/pages/Announcements";
+import AnnouncementDetail from "@/pages/AnnouncementDetail";
 import Opportunities from "@/pages/Opportunities";
 
 function Router() {
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/ngos" component={NgoList} />
       <Route path="/legal/association-law" component={AssociationLaw} />
       <Route path="/legal/other-laws" component={OtherLaws} />
+      <Route path="/news/:id" component={AnnouncementDetail} />
       <Route path="/announcements" component={Announcements} />
       <Route path="/opportunities" component={Opportunities} />
       <Route component={NotFound} />
