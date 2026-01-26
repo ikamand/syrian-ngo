@@ -13,7 +13,7 @@ export default function AnnouncementDetail() {
   const { data: announcement, isLoading, isError } = useAnnouncement(id);
 
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen bg-gray-50/50">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">

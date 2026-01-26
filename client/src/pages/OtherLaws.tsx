@@ -33,16 +33,24 @@ function CollapsibleSection({ title, children, defaultOpen = false }: Collapsibl
 
 export default function OtherLaws() {
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen bg-gray-50/50">
       <Navbar />
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center space-y-4">
-            <h1 className="text-3xl font-bold text-primary">القوانين والمراسيم المرتبطة بعمل المنظمات غير الحكومية</h1>
-            <p className="text-muted-foreground">مجموعة التشريعات والمراسيم التكميلية والقرارات المنظمة للعمل الأهلي</p>
+      
+      <div className="bg-primary text-white py-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Scale className="w-10 h-10" />
+            <h1 className="text-2xl md:text-3xl font-bold leading-relaxed">القوانين والمراسيم المرتبطة بعمل المنظمات غير الحكومية</h1>
           </div>
+          <p className="text-white/80 max-w-2xl mx-auto">
+            مجموعة التشريعات والمراسيم التكميلية والقرارات المنظمة للعمل الأهلي
+          </p>
+        </div>
+      </div>
 
-          <Card className="border-none shadow-lg">
+      <main className="container mx-auto px-4 py-10">
+        <div className="max-w-4xl mx-auto">
+          <Card className="border-none shadow-lg bg-white">
             <CardContent className="p-8 space-y-6 text-right" dir="rtl">
               <div className="flex items-center gap-4 text-primary border-b pb-4">
                 <Scale className="w-8 h-8" />

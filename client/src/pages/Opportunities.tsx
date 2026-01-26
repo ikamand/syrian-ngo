@@ -103,20 +103,23 @@ export default function Opportunities() {
   const volunteerCount = opportunities?.filter(o => o.type === 'volunteer').length || 0;
 
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen bg-gray-50/50">
       <Navbar />
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto space-y-8">
-          <div className="text-center space-y-3">
-            <div className="flex items-center justify-center gap-3 text-primary">
-              <Briefcase className="w-8 h-8" />
-              <h1 className="text-xl md:text-3xl font-bold">فرص العمل والتطوع</h1>
-            </div>
-            <p className="text-sm md:text-base text-muted-foreground">
-              تصفح فرص العمل والتطوع المتاحة لدى المنظمات غير الحكومية المسجلة
-            </p>
+      
+      <div className="bg-primary text-white py-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Briefcase className="w-10 h-10" />
+            <h1 className="text-3xl font-bold">فرص العمل والتطوع</h1>
           </div>
+          <p className="text-white/80 max-w-2xl mx-auto">
+            تصفح فرص العمل والتطوع المتاحة لدى المنظمات غير الحكومية المسجلة
+          </p>
+        </div>
+      </div>
 
+      <main className="container mx-auto px-4 py-10">
+        <div className="max-w-6xl mx-auto">
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)} dir="rtl">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
               <TabsList className="grid w-full md:w-auto grid-cols-3 gap-1">

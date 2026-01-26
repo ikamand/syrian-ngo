@@ -37,7 +37,7 @@ export default function OpportunityDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background font-sans">
+      <div className="min-h-screen bg-gray-50/50">
         <Navbar />
         <div className="flex justify-center items-center py-24">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -48,7 +48,7 @@ export default function OpportunityDetail() {
 
   if (error || !opportunity) {
     return (
-      <div className="min-h-screen bg-background font-sans">
+      <div className="min-h-screen bg-gray-50/50">
         <Navbar />
         <main className="container mx-auto px-4 py-12">
           <Card className="max-w-2xl mx-auto">
@@ -71,7 +71,7 @@ export default function OpportunityDetail() {
   const purpose = isJob ? opportunity.jobPurpose : opportunity.volunteerPurpose;
 
   return (
-    <div className="min-h-screen bg-background font-sans" dir="rtl">
+    <div className="min-h-screen bg-gray-50/50" dir="rtl">
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         <article className="max-w-4xl mx-auto space-y-6" data-testid={`opportunity-detail-${opportunityId}`}>

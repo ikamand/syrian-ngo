@@ -18,27 +18,48 @@ export default function Notices() {
   const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen bg-gray-50/50">
       <Navbar />
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center space-y-3">
-            <h1 className="text-xl md:text-3xl font-bold text-primary leading-relaxed">التعاميم</h1>
-            <p className="text-sm md:text-base text-muted-foreground">
-              التعاميم والقرارات الرسمية الصادرة عن وزارة الشؤون الاجتماعية والعمل
-            </p>
+      
+      <div className="bg-primary text-white py-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <FileText className="w-10 h-10" />
+            <h1 className="text-3xl font-bold">التعاميم</h1>
           </div>
+          <p className="text-white/80 max-w-2xl mx-auto">
+            التعاميم والقرارات الرسمية الصادرة عن وزارة الشؤون الاجتماعية والعمل
+          </p>
+        </div>
+      </div>
 
-          {isLoading ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <main className="container mx-auto px-4 py-10">
+        {isLoading ? (
+          <div className="max-w-4xl mx-auto grid gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white rounded-xl shadow-sm p-6 animate-pulse">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gray-200 rounded-lg" />
+                  <div className="flex-1">
+                    <div className="h-4 bg-gray-200 rounded w-1/4 mb-3" />
+                    <div className="h-5 bg-gray-200 rounded w-2/3" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : notices && notices.length > 0 ? (
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-bold text-primary">{notices.length}</span> تعميم
+              </p>
             </div>
-          ) : notices && notices.length > 0 ? (
             <div className="grid gap-4">
               {notices.map((notice) => (
                 <Card 
                   key={notice.id} 
-                  className="hover-elevate cursor-pointer transition-all"
+                  className="bg-white rounded-xl shadow-sm overflow-visible hover-elevate cursor-pointer transition-all"
                   onClick={() => setSelectedNotice(notice)}
                   data-testid={`card-notice-${notice.id}`}
                 >
@@ -84,15 +105,13 @@ export default function Notices() {
                 </Card>
               ))}
             </div>
-          ) : (
-            <Card className="border-dashed">
-              <CardContent className="py-12 text-center">
-                <FileText className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground">لا توجد تعاميم حالياً</p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="text-center py-20 text-muted-foreground">
+            <FileText className="w-16 h-16 mx-auto mb-4 opacity-20" />
+            <p className="text-lg">لا توجد تعاميم حالياً</p>
+          </div>
+        )}
       </main>
 
       <Dialog open={!!selectedNotice} onOpenChange={() => setSelectedNotice(null)}>
