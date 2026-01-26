@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { usePublishedAnnouncements } from "@/hooks/use-announcements";
 import { Card } from "@/components/ui/card";
-import { Megaphone, Calendar, Loader2, ArrowLeft, Newspaper } from "lucide-react";
+import { Calendar, Loader2, ArrowLeft, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
@@ -16,10 +16,7 @@ export default function Announcements() {
       
       <div className="bg-primary text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Newspaper className="w-10 h-10" />
-            <h1 className="text-3xl font-bold">الأخبار والإعلانات</h1>
-          </div>
+          <h1 className="text-3xl font-bold mb-4">الأخبار والإعلانات</h1>
           <p className="text-white/80 max-w-2xl mx-auto">
             آخر الأخبار والإعلانات الصادرة عن وزارة الشؤون الاجتماعية والعمل
           </p>

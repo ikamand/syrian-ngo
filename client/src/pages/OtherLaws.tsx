@@ -38,10 +38,7 @@ export default function OtherLaws() {
       
       <div className="bg-primary text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Scale className="w-10 h-10" />
-            <h1 className="text-2xl md:text-3xl font-bold leading-relaxed">القوانين والمراسيم المرتبطة بعمل المنظمات غير الحكومية</h1>
-          </div>
+          <h1 className="text-2xl md:text-3xl font-bold leading-relaxed mb-4">القوانين والمراسيم المرتبطة بعمل المنظمات غير الحكومية</h1>
           <p className="text-white/80 max-w-2xl mx-auto">
             مجموعة التشريعات والمراسيم التكميلية والقرارات المنظمة للعمل الأهلي
           </p>

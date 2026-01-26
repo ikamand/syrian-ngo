@@ -39,10 +39,7 @@ export default function AssociationLaw() {
       
       <div className="bg-primary text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <FileText className="w-10 h-10" />
-            <h1 className="text-2xl md:text-3xl font-bold leading-relaxed">قانون الجمعيات والمؤسسات الخاصة ولائحته التنفيذية</h1>
-          </div>
+          <h1 className="text-2xl md:text-3xl font-bold leading-relaxed mb-4">قانون الجمعيات والمؤسسات الخاصة ولائحته التنفيذية</h1>
           <p className="text-white/80 max-w-2xl mx-auto">
             الإطار القانوني الناظم لعمل الجمعيات والمؤسسات الخاصة في الجمهورية العربية السورية
           </p>
@@ -54,10 +51,7 @@ export default function AssociationLaw() {
           <Card className="border-none shadow-lg bg-white">
             <CardContent className="p-4 md:p-8 space-y-6 text-right" dir="rtl">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
-                <div className="flex items-center gap-3 text-primary">
-                  <FileText className="w-6 h-6 md:w-8 md:h-8 shrink-0" />
-                  <h2 className="text-base md:text-xl font-bold leading-relaxed">قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)</h2>
-                </div>
+                <h2 className="text-base md:text-xl font-bold leading-relaxed text-primary">قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)</h2>
                 <Button asChild variant="outline" size="sm" className="gap-2 shrink-0 self-start sm:self-auto" data-testid="button-download-pdf">
                   <a href={lawPdfUrl} download="قانون_الجمعيات_93_لعام_1958.pdf">
                     <Download className="w-4 h-4" />

@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Calendar, Download, Loader2, ExternalLink } from "lucide-react";
+import { Calendar, Download, Loader2 } from "lucide-react";
 import { usePublicNotices } from "@/hooks/use-notices";
 import { useState } from "react";
 import {
@@ -23,10 +23,7 @@ export default function Notices() {
       
       <div className="bg-primary text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <FileText className="w-10 h-10" />
-            <h1 className="text-3xl font-bold">التعاميم</h1>
-          </div>
+          <h1 className="text-3xl font-bold mb-4">التعاميم</h1>
           <p className="text-white/80 max-w-2xl mx-auto">
             التعاميم والقرارات الرسمية الصادرة عن وزارة الشؤون الاجتماعية والعمل
           </p>
@@ -55,7 +52,7 @@ export default function Notices() {
                 <span className="font-bold text-primary">{notices.length}</span> تعميم
               </p>
             </div>
-            <div className="grid gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {notices.map((notice) => (
                 <Card 
                   key={notice.id} 
@@ -63,44 +60,23 @@ export default function Notices() {
                   onClick={() => setSelectedNotice(notice)}
                   data-testid={`card-notice-${notice.id}`}
                 >
-                  <CardContent className="p-4 md:p-6">
-                    <div className="flex items-start gap-4" dir="rtl">
-                      <div className="shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <FileText className="w-6 h-6 text-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0 text-right">
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <Badge variant="outline" className="text-xs">
-                            رقم التعميم: {notice.noticeNumber}
-                          </Badge>
-                          <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {notice.noticeDate}
-                          </Badge>
-                        </div>
-                        {notice.title ? (
-                          <h3 className="text-lg font-medium mb-1">{notice.title}</h3>
-                        ) : (
-                          <h3 className="text-lg font-medium mb-1">تعميم رقم {notice.noticeNumber}</h3>
-                        )}
-                        <p className="text-sm text-muted-foreground">
-                          اضغط لعرض التفاصيل وتحميل الملف
-                        </p>
-                      </div>
-                      <div className="shrink-0">
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedNotice(notice);
-                          }}
-                          data-testid={`button-view-notice-${notice.id}`}
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </Button>
-                      </div>
+                  <CardContent className="p-5" dir="rtl">
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <Badge variant="outline" className="text-xs">
+                        رقم التعميم: {notice.noticeNumber}
+                      </Badge>
+                      <Badge variant="secondary" className="text-xs">
+                        {notice.noticeDate}
+                      </Badge>
                     </div>
+                    {notice.title ? (
+                      <h3 className="text-base font-semibold mb-2 line-clamp-2">{notice.title}</h3>
+                    ) : (
+                      <h3 className="text-base font-semibold mb-2">تعميم رقم {notice.noticeNumber}</h3>
+                    )}
+                    <p className="text-sm text-muted-foreground">
+                      اضغط لعرض التفاصيل وتحميل الملف
+                    </p>
                   </CardContent>
                 </Card>
               ))}
@@ -108,7 +84,7 @@ export default function Notices() {
           </div>
         ) : (
           <div className="text-center py-20 text-muted-foreground">
-            <FileText className="w-16 h-16 mx-auto mb-4 opacity-20" />
+            <Calendar className="w-16 h-16 mx-auto mb-4 opacity-20" />
             <p className="text-lg">لا توجد تعاميم حالياً</p>
           </div>
         )}
