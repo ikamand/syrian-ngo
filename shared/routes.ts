@@ -152,6 +152,32 @@ export const api = {
         })),
       },
     },
+    get: {
+      method: 'GET' as const,
+      path: '/api/public/opportunities/:id',
+      responses: {
+        200: z.object({
+          id: z.string(),
+          type: z.enum(['job', 'volunteer']),
+          ngoId: z.number(),
+          ngoName: z.string(),
+          vacancyName: z.string(),
+          vacancyNumber: z.string().optional(),
+          workField: z.string().optional(),
+          governorate: z.string().optional(),
+          startDate: z.string().optional(),
+          endDate: z.string().optional(),
+          commitmentNature: z.string().optional(),
+          qualification: z.string().optional(),
+          skills: z.string().optional(),
+          experience: z.string().optional(),
+          details: z.string().optional(),
+          jobPurpose: z.string().optional(),
+          volunteerPurpose: z.string().optional(),
+        }),
+        404: errorSchemas.notFound,
+      },
+    },
   },
   announcements: {
     list: {

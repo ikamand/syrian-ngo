@@ -16,6 +16,7 @@ import OtherLaws from "@/pages/OtherLaws";
 import Announcements from "@/pages/Announcements";
 import AnnouncementDetail from "@/pages/AnnouncementDetail";
 import Opportunities from "@/pages/Opportunities";
+import OpportunityDetail from "@/pages/OpportunityDetail";
 
 function Router() {
   return (
@@ -31,6 +32,7 @@ function Router() {
       <Route path="/legal/other-laws" component={OtherLaws} />
       <Route path="/news/:id" component={AnnouncementDetail} />
       <Route path="/announcements" component={Announcements} />
+      <Route path="/opportunities/:id" component={OpportunityDetail} />
       <Route path="/opportunities" component={Opportunities} />
       <Route component={NotFound} />
     </Switch>

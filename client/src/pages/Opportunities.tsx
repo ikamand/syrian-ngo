@@ -1,12 +1,14 @@
 import { useState, useMemo } from "react";
 import { Navbar } from "@/components/Navbar";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Users, Search, MapPin, Building2, Calendar, Loader2, Filter, Clock } from "lucide-react";
+import { Briefcase, Users, Search, MapPin, Building2, Calendar, Loader2, Filter, Clock, ArrowLeft } from "lucide-react";
 
 interface Opportunity {
   id: string;
@@ -199,13 +201,15 @@ export default function Opportunities() {
             ) : filteredOpportunities.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-2" dir="rtl">
                 {filteredOpportunities.map((opp) => (
-                  <Card key={opp.id} className="hover-elevate" data-testid={`opportunity-card-${opp.id}`}>
+                  <Card key={opp.id} className="hover-elevate transition-shadow" data-testid={`opportunity-card-${opp.id}`}>
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between gap-2">
                         <div className="space-y-1">
-                          <CardTitle className="text-lg text-primary leading-relaxed">
-                            {opp.vacancyName || opp.workField || 'فرصة جديدة'}
-                          </CardTitle>
+                          <Link href={`/opportunities/${opp.id}`} data-testid={`link-opportunity-title-${opp.id}`}>
+                            <CardTitle className="text-lg text-primary leading-relaxed hover:underline cursor-pointer">
+                              {opp.vacancyName || opp.workField || 'فرصة جديدة'}
+                            </CardTitle>
+                          </Link>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Building2 className="w-4 h-4" />
                             <span>{opp.ngoName}</span>
@@ -243,31 +247,20 @@ export default function Opportunities() {
                       )}
 
                       {(opp.jobPurpose || opp.volunteerPurpose) && (
-                        <div className="text-sm">
+                        <div className="text-sm line-clamp-2">
                           <span className="text-muted-foreground">الغرض: </span>
                           <span>{opp.jobPurpose || opp.volunteerPurpose}</span>
                         </div>
                       )}
 
-                      {opp.qualification && (
-                        <div className="text-sm">
-                          <span className="text-muted-foreground">المؤهلات: </span>
-                          <span>{opp.qualification}</span>
-                        </div>
-                      )}
-
-                      {opp.skills && (
-                        <div className="text-sm">
-                          <span className="text-muted-foreground">المهارات: </span>
-                          <span>{opp.skills}</span>
-                        </div>
-                      )}
-
-                      {opp.details && (
-                        <div className="mt-3 pt-3 border-t">
-                          <p className="text-sm whitespace-pre-wrap line-clamp-4">{opp.details}</p>
-                        </div>
-                      )}
+                      <div className="pt-3 border-t flex justify-between items-center">
+                        <Link href={`/opportunities/${opp.id}`}>
+                          <Button variant="outline" size="sm" data-testid={`button-view-opportunity-${opp.id}`}>
+                            عرض التفاصيل
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                          </Button>
+                        </Link>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}

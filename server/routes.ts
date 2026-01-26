@@ -438,6 +438,81 @@ export async function registerRoutes(
     res.json(opportunities);
   });
 
+  // Get a single opportunity by ID
+  app.get(api.opportunities.get.path, async (req, res) => {
+    const id = req.params.id as string;
+    
+    // Parse the ID format: job-{ngoId}-{index} or volunteer-{ngoId}-{index}
+    const match = id.match(/^(job|volunteer)-(\d+)-(\d+)$/);
+    if (!match) {
+      return res.status(404).json({ message: "الفرصة غير موجودة" });
+    }
+
+    const [, type, ngoIdStr, indexStr] = match;
+    const ngoId = parseInt(ngoIdStr);
+    const index = parseInt(indexStr);
+
+    const ngo = await storage.getNgo(ngoId);
+    if (!ngo || ngo.status !== "Approved") {
+      return res.status(404).json({ message: "الفرصة غير موجودة" });
+    }
+
+    let opportunity: any = null;
+
+    if (type === 'job') {
+      const jobs = ngo.jobOpportunities as any[] | null;
+      if (jobs && jobs[index]) {
+        const job = jobs[index];
+        opportunity = {
+          id,
+          type: 'job' as const,
+          ngoId: ngo.id,
+          ngoName: ngo.arabicName,
+          vacancyName: job.vacancyName || '',
+          vacancyNumber: job.vacancyNumber,
+          workField: job.workField,
+          governorate: job.governorate,
+          startDate: job.startDate,
+          endDate: job.endDate,
+          commitmentNature: job.commitmentNature,
+          qualification: job.qualification,
+          skills: job.skills,
+          experience: job.experience,
+          details: job.details,
+          jobPurpose: job.jobPurpose,
+        };
+      }
+    } else {
+      const volunteers = ngo.volunteerOpportunities as any[] | null;
+      if (volunteers && volunteers[index]) {
+        const vol = volunteers[index];
+        opportunity = {
+          id,
+          type: 'volunteer' as const,
+          ngoId: ngo.id,
+          ngoName: ngo.arabicName,
+          vacancyName: vol.vacancyName || '',
+          vacancyNumber: vol.vacancyNumber,
+          workField: vol.workField,
+          governorate: vol.governorate,
+          startDate: vol.startDate,
+          endDate: vol.endDate,
+          commitmentNature: vol.commitmentNature,
+          qualification: vol.qualification,
+          skills: vol.skills,
+          experience: vol.experience,
+          volunteerPurpose: vol.volunteerPurpose,
+        };
+      }
+    }
+
+    if (!opportunity) {
+      return res.status(404).json({ message: "الفرصة غير موجودة" });
+    }
+
+    res.json(opportunity);
+  });
+
   // Get all NGOs (Admin sees all, User sees theirs - logic in route or generic list?)
   // Requirement says: "Admin Panel: View all NGOs", "User Dashboard: View list of NGOs they created"
   // Let's implement /api/ngos to return based on role or context
