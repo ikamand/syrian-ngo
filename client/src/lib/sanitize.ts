@@ -21,3 +21,9 @@ export function sanitizeHtml(dirty: string): string {
     FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover'],
   });
 }
+
+export function stripHtml(html: string): string {
+  if (!html) return '';
+  const clean = DOMPurify.sanitize(html, { ALLOWED_TAGS: [] });
+  return clean.replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+}
