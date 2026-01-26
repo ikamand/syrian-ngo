@@ -57,24 +57,24 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-3xl font-bold text-primary mb-4">خدمات المنصة</h2>
-            <p className="text-muted-foreground">تسهل المنصة الإجراءات الإدارية والقانونية للمنظمات من خلال مجموعة من الخدمات الرقمية المتكاملة</p>
+            <p className="text-muted-foreground">تقدّم المنصة مجموعة من الخدمات الرقمية التي تنظّم عمل الجمعيات وتسهّل التواصل مع الوزارة، من خلال مجموعة من الخدمات الرقمية المتكاملة.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard 
               icon={<FileCheck className="w-10 h-10 text-primary" />}
-              title="التسجيل الإلكتروني"
+              title="ترخيص وإشهار إلكتروني"
               description="تقديم طلبات ترخيص المنظمات والجمعيات بشكل إلكتروني كامل دون الحاجة للمراجعة الورقية."
             />
             <FeatureCard 
               icon={<Users className="w-10 h-10 text-primary" />}
-              title="قاعدة بيانات موحدة"
-              description="دليل شامل لكافة المنظمات العاملة لتسهيل التشبيك وتنسيق الجهود الإنسانية والتنموية."
+              title="دليل المنظمات الأهلية"
+              description="يمكنك استعراض بيانات المنظمات غير الحكومية المرخصة، والتعرّف على أنشطتها ومجالات عملها في مختلف المحافظات"
             />
             <FeatureCard 
               icon={<Building2 className="w-10 h-10 text-primary" />}
-              title="إدارة شفافة"
-              description="متابعة حالة الطلبات والتراخيص والحصول على الموافقات الرسمية بشفافية وسرعة."
+              title="منبر المنظمات"
+              description="حيث تتيح المنصة نشر أخبار المنظمات غير الحكومية، الإعلان عن حملات التبرع، فرص العمل والتطوع، والأنشطة المجتمعية، لتعزيز التواصل مع الجمهور والجهات الشريكة."
             />
           </div>
         </div>
