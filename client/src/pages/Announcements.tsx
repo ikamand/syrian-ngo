@@ -1,8 +1,8 @@
 import { Navbar } from "@/components/Navbar";
 import { usePublishedAnnouncements } from "@/hooks/use-announcements";
 import { Card } from "@/components/ui/card";
-import { Calendar, Loader2, ArrowLeft, Megaphone, Newspaper } from "lucide-react";
-import { format } from "date-fns";
+import { Calendar, Loader2, ArrowLeft, Megaphone, Newspaper, Clock } from "lucide-react";
+import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
@@ -10,85 +10,200 @@ import { stripHtml } from "@/lib/sanitize";
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
 
+  const featuredArticle = announcements?.[0];
+  const secondaryArticles = announcements?.slice(1, 3) || [];
+  const remainingArticles = announcements?.slice(3) || [];
+
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
       
-      <div className="bg-primary text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl font-bold mb-4">الأخبار والإعلانات</h1>
-          <p className="text-white/80 max-w-2xl mx-auto">
-            آخر الأخبار والإعلانات الصادرة عن وزارة الشؤون الاجتماعية والعمل
-          </p>
+      <div className="bg-primary text-white py-8 border-b-4 border-secondary">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Newspaper className="w-10 h-10" />
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold">الأخبار والإعلانات</h1>
+                <p className="text-white/80 text-sm">آخر المستجدات من وزارة الشؤون الاجتماعية والعمل</p>
+              </div>
+            </div>
+            {announcements && announcements.length > 0 && (
+              <div className="hidden md:block text-left">
+                <div className="text-3xl font-bold text-secondary">{announcements.length}</div>
+                <div className="text-sm text-white/70">خبر منشور</div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      <main className="container mx-auto px-4 py-10">
+      <main className="container mx-auto px-4 py-8">
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-xl shadow-sm p-4 animate-pulse">
-                <div className="w-full aspect-video bg-gray-200 rounded-lg mb-4" />
-                <div className="h-4 bg-gray-200 rounded w-1/4 mb-3" />
-                <div className="h-5 bg-gray-200 rounded w-3/4 mb-2" />
-                <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="space-y-6">
+            <div className="bg-white p-6 animate-pulse">
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="lg:w-2/3 aspect-video bg-gray-200" />
+                <div className="lg:w-1/3 space-y-4">
+                  <div className="h-4 bg-gray-200 w-1/4" />
+                  <div className="h-8 bg-gray-200 w-full" />
+                  <div className="h-4 bg-gray-200 w-full" />
+                  <div className="h-4 bg-gray-200 w-3/4" />
+                </div>
               </div>
-            ))}
+            </div>
           </div>
         ) : announcements && announcements.length > 0 ? (
-          <>
-            <div className="text-center mb-8">
-              <p className="text-sm text-muted-foreground">
-                <span className="font-bold text-primary">{announcements.length}</span> خبر وإعلان
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" dir="rtl">
-              {announcements.map((announcement) => (
-                <Link key={announcement.id} href={`/news/${announcement.id}`}>
-                  <Card 
-                    className="bg-white rounded-xl shadow-sm overflow-visible hover-elevate cursor-pointer group transition-all duration-200 h-full" 
-                    data-testid={`announcement-card-${announcement.id}`}
-                  >
-                    {announcement.imageUrl ? (
-                      <div className="relative w-full aspect-video overflow-hidden rounded-t-xl bg-gray-100">
-                        <img
-                          src={announcement.imageUrl}
-                          alt={announcement.title}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
+          <div className="space-y-8" dir="rtl">
+            {featuredArticle && (
+              <section>
+                <Link href={`/news/${featuredArticle.id}`}>
+                  <article className="bg-white shadow-lg overflow-hidden group cursor-pointer" data-testid={`featured-article-${featuredArticle.id}`}>
+                    <div className="flex flex-col lg:flex-row">
+                      <div className="lg:w-2/3 relative overflow-hidden">
+                        {featuredArticle.imageUrl ? (
+                          <img
+                            src={featuredArticle.imageUrl}
+                            alt={featuredArticle.title}
+                            className="w-full h-64 lg:h-96 object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-64 lg:h-96 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                            <Megaphone className="w-24 h-24 text-primary/20" />
+                          </div>
+                        )}
+                        <div className="absolute top-4 right-4 bg-secondary text-black px-4 py-1 font-bold text-sm">
+                          خبر رئيسي
+                        </div>
                       </div>
-                    ) : (
-                      <div className="relative w-full aspect-video overflow-hidden rounded-t-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                        <Megaphone className="w-14 h-14 text-primary/30" />
-                      </div>
-                    )}
-                    <div className="p-5 space-y-3">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>
-                          {announcement.createdAt 
-                            ? format(new Date(announcement.createdAt), "d MMMM yyyy", { locale: ar })
-                            : ""}
-                        </span>
-                      </div>
-                      <h2 className="font-bold text-lg text-gray-900 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
-                        {announcement.title}
-                      </h2>
-                      <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">
-                        {stripHtml(announcement.content)}
-                      </p>
-                      <div className="flex items-center gap-1 text-primary text-sm font-medium pt-2">
-                        <span>اقرأ المزيد</span>
-                        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                      <div className="lg:w-1/3 p-6 lg:p-8 flex flex-col justify-center">
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            {featuredArticle.createdAt 
+                              ? format(new Date(featuredArticle.createdAt), "d MMMM yyyy", { locale: ar })
+                              : ""}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {featuredArticle.createdAt 
+                              ? formatDistanceToNow(new Date(featuredArticle.createdAt), { locale: ar, addSuffix: true })
+                              : ""}
+                          </span>
+                        </div>
+                        <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-primary transition-colors">
+                          {featuredArticle.title}
+                        </h2>
+                        <p className="text-muted-foreground leading-relaxed line-clamp-4 mb-6">
+                          {stripHtml(featuredArticle.content)}
+                        </p>
+                        <div className="flex items-center gap-2 text-primary font-bold">
+                          <span>قراءة الخبر كاملاً</span>
+                          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
+                        </div>
                       </div>
                     </div>
-                  </Card>
+                  </article>
                 </Link>
-              ))}
-            </div>
-          </>
+              </section>
+            )}
+
+            {secondaryArticles.length > 0 && (
+              <section>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {secondaryArticles.map((article) => (
+                    <Link key={article.id} href={`/news/${article.id}`}>
+                      <article className="bg-white shadow-sm overflow-hidden group cursor-pointer h-full" data-testid={`secondary-article-${article.id}`}>
+                        <div className="flex flex-col sm:flex-row h-full">
+                          <div className="sm:w-2/5 relative overflow-hidden">
+                            {article.imageUrl ? (
+                              <img
+                                src={article.imageUrl}
+                                alt={article.title}
+                                className="w-full h-48 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            ) : (
+                              <div className="w-full h-48 sm:h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                                <Megaphone className="w-12 h-12 text-primary/20" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="sm:w-3/5 p-5 flex flex-col">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                              <Calendar className="w-3.5 h-3.5" />
+                              <span>
+                                {article.createdAt 
+                                  ? format(new Date(article.createdAt), "d MMMM yyyy", { locale: ar })
+                                  : ""}
+                              </span>
+                            </div>
+                            <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
+                              {article.title}
+                            </h3>
+                            <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed flex-grow">
+                              {stripHtml(article.content)}
+                            </p>
+                            <div className="flex items-center gap-1 text-primary text-sm font-medium mt-3">
+                              <span>المزيد</span>
+                              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {remainingArticles.length > 0 && (
+              <section>
+                <div className="border-b-2 border-primary mb-6 pb-2">
+                  <h2 className="text-xl font-bold text-primary">المزيد من الأخبار</h2>
+                </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {remainingArticles.map((article) => (
+                    <Link key={article.id} href={`/news/${article.id}`}>
+                      <article className="bg-white shadow-sm overflow-hidden group cursor-pointer h-full flex flex-col" data-testid={`article-${article.id}`}>
+                        <div className="relative overflow-hidden">
+                          {article.imageUrl ? (
+                            <img
+                              src={article.imageUrl}
+                              alt={article.title}
+                              className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-40 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                              <Megaphone className="w-10 h-10 text-primary/20" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-4 flex flex-col flex-grow">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                            <Calendar className="w-3 h-3" />
+                            <span>
+                              {article.createdAt 
+                                ? format(new Date(article.createdAt), "d MMMM yyyy", { locale: ar })
+                                : ""}
+                            </span>
+                          </div>
+                          <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-snug flex-grow">
+                            {article.title}
+                          </h3>
+                          <div className="flex items-center gap-1 text-primary text-xs font-medium">
+                            <span>اقرأ المزيد</span>
+                            <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                      </article>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
         ) : (
-          <div className="text-center py-20 text-muted-foreground">
+          <div className="text-center py-20 text-muted-foreground bg-white">
             <Newspaper className="w-16 h-16 mx-auto mb-4 opacity-20" />
             <p className="text-lg">لا توجد أخبار حالياً</p>
           </div>
