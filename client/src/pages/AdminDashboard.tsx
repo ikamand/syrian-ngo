@@ -15,6 +15,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { stripHtml } from "@/lib/sanitize";
 import { useState } from "react";
 import {
   Table,
@@ -658,7 +659,7 @@ export default function AdminDashboard() {
                             </div>
                           </CardHeader>
                           <CardContent>
-                            <p className="text-foreground/80 line-clamp-2">{announcement.content}</p>
+                            <p className="text-foreground/80 line-clamp-2">{stripHtml(announcement.content)}</p>
                           </CardContent>
                         </div>
                       </div>

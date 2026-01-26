@@ -5,6 +5,7 @@ import { Megaphone, Calendar, Loader2, ArrowLeft, Newspaper } from "lucide-react
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
+import { stripHtml } from "@/lib/sanitize";
 
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
@@ -77,7 +78,7 @@ export default function Announcements() {
                         {announcement.title}
                       </h2>
                       <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">
-                        {announcement.content}
+                        {stripHtml(announcement.content)}
                       </p>
                       <div className="flex items-center gap-1 text-primary text-sm font-medium pt-2">
                         <span>اقرأ المزيد</span>
