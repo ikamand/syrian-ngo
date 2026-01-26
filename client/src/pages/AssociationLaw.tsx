@@ -289,10 +289,12 @@ export default function AssociationLaw() {
                   <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 </div>
               ) : executiveRegulations?.content ? (
-                <div 
-                  className="prose prose-slate max-w-none prose-headings:text-primary prose-p:text-foreground prose-li:text-foreground"
-                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(executiveRegulations.content) }}
-                />
+                <CollapsibleSection title="نص اللائحة التنفيذية" defaultOpen={false}>
+                  <div 
+                    className="prose prose-slate max-w-none prose-headings:text-primary prose-p:text-foreground prose-li:text-foreground"
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(executiveRegulations.content) }}
+                  />
+                </CollapsibleSection>
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <p>لم يتم إضافة محتوى اللائحة التنفيذية بعد</p>
