@@ -33,6 +33,13 @@ Preferred communication style: Simple, everyday language.
   - `siteContent`: Editable website content with key-based lookup for page elements (homepage title, descriptions, etc.)
   - `notices`: Official government notices/circulars (التعاميم) with noticeNumber, noticeDate, title (optional), pdfUrl
 
+### Public Page Design Pattern
+All public pages follow a consistent design pattern for visual cohesion:
+- **Hero Banner**: Green bg-primary banner at top with white text, centered icon, title and description
+- **Main Background**: Light gray bg-gray-50/50 for content areas
+- **Cards**: White cards with shadow-sm, rounded-xl styling
+- **Layout**: Container with max-width constraints, RTL direction
+
 ### News/Announcements Feature
 - **Public News List**: Grid layout at `/announcements` with clickable news cards showing featured images
 - **Article Detail Page**: Full article view at `/news/:id` with RTL-compatible layout and back navigation
