@@ -36,6 +36,7 @@ function CollapsibleSection({ title, children, defaultOpen = false }: Collapsibl
 
 export default function AssociationLaw() {
   const { data: executiveRegulations, isLoading: isLoadingRegulations } = useSiteContent("executive_regulations");
+  const { data: executiveRegulationsPdf } = useSiteContent("executive_regulations_pdf");
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -274,6 +275,14 @@ export default function AssociationLaw() {
             <CardContent className="p-4 md:p-8 space-y-6 text-right" dir="rtl">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
                 <h2 className="text-base md:text-xl font-bold leading-relaxed text-primary">اللائحة التنفيذية لقانون الجمعيات</h2>
+                {executiveRegulationsPdf?.content && (
+                  <Button asChild variant="outline" size="sm" className="gap-2 shrink-0 self-start sm:self-auto" data-testid="button-download-regulations-pdf">
+                    <a href={`/api/files/${executiveRegulationsPdf.content}`} download="اللائحة_التنفيذية.pdf">
+                      <Download className="w-4 h-4" />
+                      <span>تحميل PDF</span>
+                    </a>
+                  </Button>
+                )}
               </div>
               {isLoadingRegulations ? (
                 <div className="flex items-center justify-center py-8">
