@@ -61,7 +61,7 @@ export default function AssociationLaw() {
                 <h2 className="text-base md:text-xl font-bold leading-relaxed text-primary">قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)</h2>
                 {associationLawPdf?.content && (
                   <Button asChild variant="outline" size="sm" className="gap-2 shrink-0 self-start sm:self-auto" data-testid="button-download-pdf">
-                    <a href={`/api/files/${associationLawPdf.content}`} download="قانون_الجمعيات_93_لعام_1958.pdf">
+                    <a href={associationLawPdf.content} target="_blank" rel="noopener noreferrer">
                       <Download className="w-4 h-4" />
                       <span>تحميل PDF</span>
                     </a>
@@ -95,7 +95,7 @@ export default function AssociationLaw() {
                 <h2 className="text-base md:text-xl font-bold leading-relaxed text-primary">اللائحة التنفيذية لقانون الجمعيات</h2>
                 {executiveRegulationsPdf?.content && (
                   <Button asChild variant="outline" size="sm" className="gap-2 shrink-0 self-start sm:self-auto" data-testid="button-download-regulations-pdf">
-                    <a href={`/api/files/${executiveRegulationsPdf.content}`} download="اللائحة_التنفيذية.pdf">
+                    <a href={executiveRegulationsPdf.content} target="_blank" rel="noopener noreferrer">
                       <Download className="w-4 h-4" />
                       <span>تحميل PDF</span>
                     </a>
