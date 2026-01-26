@@ -39,6 +39,14 @@ Preferred communication style: Simple, everyday language.
 - **Admin Management**: Full CRUD for announcements in admin panel with image preview and thumbnail display
 - **Validation**: Drizzle-Zod integration for type-safe schema validation
 
+### Opportunities Feature
+- **Public Opportunities List**: Grid layout at `/opportunities` showing all job and volunteer opportunities from approved NGOs
+- **Opportunity Detail Page**: Full opportunity view at `/opportunities/:id` with comprehensive information display
+- **Opportunity ID Format**: IDs follow pattern `job-{ngoId}-{index}` or `volunteer-{ngoId}-{index}`
+- **API Endpoint**: GET `/api/public/opportunities/:id` returns detailed opportunity information
+- **Features**: Purpose, qualifications, skills, experience, work fields, commitment nature, vacancy numbers
+- **Navigation**: Links to associated NGO profiles at `/ngos/:id`
+
 ### Project Structure
 ```
 ├── client/           # React frontend application
