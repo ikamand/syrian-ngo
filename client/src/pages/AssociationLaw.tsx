@@ -265,25 +265,31 @@ export default function AssociationLaw() {
                   </div>
                 </CollapsibleSection>
 
-                {/* Executive Regulations Section */}
-                <CollapsibleSection title="اللائحة التنفيذية">
-                  {isLoadingRegulations ? (
-                    <div className="flex items-center justify-center py-8">
-                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                    </div>
-                  ) : executiveRegulations?.content ? (
-                    <div 
-                      className="prose prose-slate max-w-none prose-headings:text-primary prose-p:text-foreground prose-li:text-foreground"
-                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(executiveRegulations.content) }}
-                    />
-                  ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <p>لم يتم إضافة محتوى اللائحة التنفيذية بعد</p>
-                      <p className="text-sm mt-2">يمكن للمسؤول إضافة المحتوى من لوحة التحكم</p>
-                    </div>
-                  )}
-                </CollapsibleSection>
+                </div>
+            </CardContent>
+          </Card>
+
+          {/* Executive Regulations Section - Separate Card */}
+          <Card className="border-none shadow-lg bg-white mt-8">
+            <CardContent className="p-4 md:p-8 space-y-6 text-right" dir="rtl">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
+                <h2 className="text-base md:text-xl font-bold leading-relaxed text-primary">اللائحة التنفيذية لقانون الجمعيات</h2>
               </div>
+              {isLoadingRegulations ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                </div>
+              ) : executiveRegulations?.content ? (
+                <div 
+                  className="prose prose-slate max-w-none prose-headings:text-primary prose-p:text-foreground prose-li:text-foreground"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(executiveRegulations.content) }}
+                />
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>لم يتم إضافة محتوى اللائحة التنفيذية بعد</p>
+                  <p className="text-sm mt-2">يمكن للمسؤول إضافة المحتوى من لوحة التحكم</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
