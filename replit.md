@@ -40,6 +40,12 @@ All public pages follow a consistent design pattern for visual cohesion:
 - **Cards**: White cards with shadow-sm, rounded-xl styling
 - **Layout**: Container with max-width constraints, RTL direction
 
+### Rich Text Editor Feature
+- **Component**: TipTap-based rich text editor at `client/src/components/ui/rich-text-editor.tsx`
+- **Formatting Options**: Bold, italic, underline, headings (H1-H3), bullet lists, numbered lists, text alignment, links
+- **Usage**: Announcement content, NGO description, job/volunteer details, event details, campaign details, networking descriptions
+- **Security**: All HTML content sanitized using DOMPurify via `client/src/lib/sanitize.ts` with whitelist of allowed tags (p, br, b, strong, i, em, u, h1-h6, ul, ol, li, a, span, div) and forbidden tags (script, style, iframe, form, input, button)
+
 ### News/Announcements Feature
 - **Public News List**: Grid layout at `/announcements` with clickable news cards showing featured images
 - **Article Detail Page**: Full article view at `/news/:id` with RTL-compatible layout and back navigation
