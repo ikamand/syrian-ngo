@@ -1,9 +1,11 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText, ChevronDown, ChevronUp, Download } from "lucide-react";
+import { ChevronDown, ChevronUp, Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import lawPdfUrl from "@assets/Law_No_93_of_1958_on_Private_Associations_and_Institutions_and_1769115081775.pdf";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 interface CollapsibleSectionProps {
   title: string;
@@ -33,6 +35,8 @@ function CollapsibleSection({ title, children, defaultOpen = false }: Collapsibl
 }
 
 export default function AssociationLaw() {
+  const { data: executiveRegulations, isLoading: isLoadingRegulations } = useSiteContent("executive_regulations");
+
   return (
     <div className="min-h-screen bg-gray-50/50">
       <Navbar />
@@ -259,6 +263,25 @@ export default function AssociationLaw() {
                       <p><span className="font-bold text-primary">مادة 55-</span> تؤول أموال المؤسسة الخاصة عند انحلالها إلى الجهة المنصوص عليها في نظامها، فإذا لم توجد جهة محددة أو كانت الجهة غير موجودة، تؤول الأموال إلى وزارة الشؤون الاجتماعية والعمل لتخصيصها لغرض مماثل.</p>
                     </div>
                   </div>
+                </CollapsibleSection>
+
+                {/* Executive Regulations Section */}
+                <CollapsibleSection title="اللائحة التنفيذية">
+                  {isLoadingRegulations ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    </div>
+                  ) : executiveRegulations?.content ? (
+                    <div 
+                      className="prose prose-slate max-w-none prose-headings:text-primary prose-p:text-foreground prose-li:text-foreground"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(executiveRegulations.content) }}
+                    />
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>لم يتم إضافة محتوى اللائحة التنفيذية بعد</p>
+                      <p className="text-sm mt-2">يمكن للمسؤول إضافة المحتوى من لوحة التحكم</p>
+                    </div>
+                  )}
                 </CollapsibleSection>
               </div>
             </CardContent>
