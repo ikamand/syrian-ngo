@@ -17,6 +17,7 @@ import Announcements from "@/pages/Announcements";
 import AnnouncementDetail from "@/pages/AnnouncementDetail";
 import Opportunities from "@/pages/Opportunities";
 import OpportunityDetail from "@/pages/OpportunityDetail";
+import Notices from "@/pages/Notices";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/ngos" component={NgoList} />
       <Route path="/legal/association-law" component={AssociationLaw} />
       <Route path="/legal/other-laws" component={OtherLaws} />
+      <Route path="/legal/notices" component={Notices} />
       <Route path="/news/:id" component={AnnouncementDetail} />
       <Route path="/announcements" component={Announcements} />
       <Route path="/opportunities/:id" component={OpportunityDetail} />

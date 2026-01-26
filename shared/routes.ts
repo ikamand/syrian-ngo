@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertNgoSchema, insertUserSchema, insertAnnouncementSchema, insertSiteContentSchema, ngos, users, announcements, siteContent } from './schema';
+import { insertNgoSchema, insertUserSchema, insertAnnouncementSchema, insertSiteContentSchema, insertNoticeSchema, ngos, users, announcements, siteContent, notices } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -254,6 +254,59 @@ export const api = {
       input: insertSiteContentSchema.omit({ key: true }),
       responses: {
         200: z.custom<typeof siteContent.$inferSelect>(),
+        401: errorSchemas.unauthorized,
+      },
+    },
+  },
+  notices: {
+    list: {
+      method: 'GET' as const,
+      path: '/api/notices',
+      responses: {
+        200: z.array(z.custom<typeof notices.$inferSelect>()),
+      },
+    },
+    listPublic: {
+      method: 'GET' as const,
+      path: '/api/notices/public',
+      responses: {
+        200: z.array(z.custom<typeof notices.$inferSelect>()),
+      },
+    },
+    get: {
+      method: 'GET' as const,
+      path: '/api/notices/:id',
+      responses: {
+        200: z.custom<typeof notices.$inferSelect>(),
+        404: errorSchemas.notFound,
+      },
+    },
+    create: {
+      method: 'POST' as const,
+      path: '/api/notices',
+      input: insertNoticeSchema,
+      responses: {
+        201: z.custom<typeof notices.$inferSelect>(),
+        400: errorSchemas.validation,
+        401: errorSchemas.unauthorized,
+      },
+    },
+    update: {
+      method: 'PUT' as const,
+      path: '/api/notices/:id',
+      input: insertNoticeSchema.partial(),
+      responses: {
+        200: z.custom<typeof notices.$inferSelect>(),
+        404: errorSchemas.notFound,
+        401: errorSchemas.unauthorized,
+      },
+    },
+    delete: {
+      method: 'DELETE' as const,
+      path: '/api/notices/:id',
+      responses: {
+        200: z.object({ success: z.boolean() }),
+        404: errorSchemas.notFound,
         401: errorSchemas.unauthorized,
       },
     },

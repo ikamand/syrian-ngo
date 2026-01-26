@@ -323,10 +323,21 @@ export const siteContent = pgTable("site_content", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const notices = pgTable("notices", {
+  id: serial("id").primaryKey(),
+  noticeNumber: text("notice_number").notNull(),
+  noticeDate: text("notice_date").notNull(),
+  title: text("title"),
+  pdfUrl: text("pdf_url").notNull(),
+  createdBy: integer("created_by").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
 export const insertNgoSchema = createInsertSchema(ngos).omit({ id: true, status: true, createdBy: true, createdAt: true });
 export const insertAnnouncementSchema = createInsertSchema(announcements).omit({ id: true, createdBy: true, createdAt: true, updatedAt: true });
 export const insertSiteContentSchema = createInsertSchema(siteContent).omit({ id: true, updatedBy: true, updatedAt: true });
+export const insertNoticeSchema = createInsertSchema(notices).omit({ id: true, createdBy: true, createdAt: true });
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -339,3 +350,6 @@ export type InsertAnnouncement = z.infer<typeof insertAnnouncementSchema>;
 
 export type SiteContent = typeof siteContent.$inferSelect;
 export type InsertSiteContent = z.infer<typeof insertSiteContentSchema>;
+
+export type Notice = typeof notices.$inferSelect;
+export type InsertNotice = z.infer<typeof insertNoticeSchema>;

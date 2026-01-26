@@ -1,4 +1,4 @@
-import { users, ngos, announcements, siteContent, type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent } from "@shared/schema";
+import { users, ngos, announcements, siteContent, notices, type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent, type Notice, type InsertNotice } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import connectPgSimple from "connect-pg-simple";
@@ -34,6 +34,12 @@ export interface IStorage {
   getSiteContent(key: string): Promise<SiteContent | undefined>;
   getAllSiteContent(): Promise<SiteContent[]>;
   upsertSiteContent(key: string, content: Omit<InsertSiteContent, 'key'> & { updatedBy: number }): Promise<SiteContent>;
+
+  createNotice(notice: InsertNotice & { createdBy: number }): Promise<Notice>;
+  getNotice(id: number): Promise<Notice | undefined>;
+  getNotices(): Promise<Notice[]>;
+  updateNotice(id: number, updates: Partial<InsertNotice>): Promise<Notice | undefined>;
+  deleteNotice(id: number): Promise<boolean>;
 
   sessionStore: session.Store;
 }
@@ -192,6 +198,33 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return created;
     }
+  }
+
+  async createNotice(notice: InsertNotice & { createdBy: number }): Promise<Notice> {
+    const [created] = await db.insert(notices).values(notice).returning();
+    return created;
+  }
+
+  async getNotice(id: number): Promise<Notice | undefined> {
+    const [notice] = await db.select().from(notices).where(eq(notices.id, id));
+    return notice;
+  }
+
+  async getNotices(): Promise<Notice[]> {
+    return db.select().from(notices).orderBy(desc(notices.createdAt));
+  }
+
+  async updateNotice(id: number, updates: Partial<InsertNotice>): Promise<Notice | undefined> {
+    const [updated] = await db.update(notices)
+      .set(updates)
+      .where(eq(notices.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteNotice(id: number): Promise<boolean> {
+    const result = await db.delete(notices).where(eq(notices.id, id)).returning();
+    return result.length > 0;
   }
 }
 

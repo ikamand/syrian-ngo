@@ -26,11 +26,12 @@ Preferred communication style: Simple, everyday language.
 
 ### Data Layer
 - **ORM**: Drizzle ORM with PostgreSQL dialect
-- **Schema**: Defined in `shared/schema.ts` with four main tables:
+- **Schema**: Defined in `shared/schema.ts` with five main tables:
   - `users`: User accounts with username, password, and role
   - `ngos`: NGO registrations with approval workflow (Pending/Approved/Rejected status)
   - `announcements`: News and announcements with title, content, imageUrl (optional), published status, and author tracking
   - `siteContent`: Editable website content with key-based lookup for page elements (homepage title, descriptions, etc.)
+  - `notices`: Official government notices/circulars (التعاميم) with noticeNumber, noticeDate, title (optional), pdfUrl
 
 ### News/Announcements Feature
 - **Public News List**: Grid layout at `/announcements` with clickable news cards showing featured images

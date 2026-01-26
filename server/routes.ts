@@ -681,6 +681,56 @@ export async function registerRoutes(
     }
   });
 
+  // Notices (التعاميم) endpoints
+  app.get(api.notices.list.path, requireAdmin, async (req, res) => {
+    const allNotices = await storage.getNotices();
+    res.json(allNotices);
+  });
+
+  app.get(api.notices.listPublic.path, async (req, res) => {
+    const allNotices = await storage.getNotices();
+    res.json(allNotices);
+  });
+
+  app.get(api.notices.get.path, async (req, res) => {
+    const id = parseInt(req.params.id as string);
+    const notice = await storage.getNotice(id);
+    if (!notice) return res.status(404).json({ message: "Notice not found" });
+    res.json(notice);
+  });
+
+  app.post(api.notices.create.path, requireAdmin, async (req, res) => {
+    try {
+      const input = api.notices.create.input.parse(req.body);
+      const notice = await storage.createNotice({ ...input, createdBy: req.session.userId! });
+      res.status(201).json(notice);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: err.errors[0].message });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.put(api.notices.update.path, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id as string);
+      const input = api.notices.update.input.parse(req.body);
+      const updated = await storage.updateNotice(id, input);
+      if (!updated) return res.status(404).json({ message: "Notice not found" });
+      res.json(updated);
+    } catch (err) {
+      res.status(400).json({ message: "Invalid request" });
+    }
+  });
+
+  app.delete(api.notices.delete.path, requireAdmin, async (req, res) => {
+    const id = parseInt(req.params.id as string);
+    const success = await storage.deleteNotice(id);
+    if (!success) return res.status(404).json({ message: "Notice not found" });
+    res.json({ success: true });
+  });
+
   // Seeding
   if ((await storage.getNgos()).length === 0) {
     console.log("Seeding database...");

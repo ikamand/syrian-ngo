@@ -76,6 +76,11 @@ export function Navbar() {
                   القوانين والمراسيم المرتبطة بعمل المنظمات غير الحكومية
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/legal/notices" className="cursor-pointer text-right w-full justify-end">
+                  التعاميم
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -241,6 +246,14 @@ export function Navbar() {
                       <div className="flex items-center gap-3 w-full">
                         <FileText className="h-4 w-4 shrink-0" />
                         <span className="text-sm">القوانين والمراسيم الأخرى</span>
+                      </div>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/legal/notices" className="cursor-pointer text-right w-full" onClick={() => { setMobileMenuOpen(false); setLegalMenuOpen(false); }}>
+                      <div className="flex items-center gap-3 w-full">
+                        <FileText className="h-4 w-4 shrink-0" />
+                        <span className="text-sm">التعاميم</span>
                       </div>
                     </Link>
                   </DropdownMenuItem>

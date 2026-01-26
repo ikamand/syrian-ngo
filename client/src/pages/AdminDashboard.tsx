@@ -2,6 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { useAuth } from "@/hooks/use-auth";
 import { useNgos, useUpdateNgoStatus, useDeleteNgo } from "@/hooks/use-ngos";
 import { useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement, useDeleteAnnouncement } from "@/hooks/use-announcements";
+import { useNotices, useCreateNotice, useUpdateNotice, useDeleteNotice } from "@/hooks/use-notices";
 import { useAllSiteContent, useUpsertSiteContent } from "@/hooks/use-site-content";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
@@ -102,6 +103,15 @@ export default function AdminDashboard() {
   const [editingAnnouncement, setEditingAnnouncement] = useState<any>(null);
   const [announcementForm, setAnnouncementForm] = useState({ title: "", content: "", imageUrl: "", published: true });
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  const { data: noticesData, isLoading: isNoticesLoading } = useNotices();
+  const { mutate: createNotice, isPending: isNoticeCreating } = useCreateNotice();
+  const { mutate: updateNotice, isPending: isNoticeUpdating } = useUpdateNotice();
+  const { mutate: deleteNotice } = useDeleteNotice();
+  const [noticeDialogOpen, setNoticeDialogOpen] = useState(false);
+  const [editingNotice, setEditingNotice] = useState<any>(null);
+  const [noticeForm, setNoticeForm] = useState({ noticeNumber: "", noticeDate: "", title: "", pdfUrl: "" });
+  const [isUploadingPdf, setIsUploadingPdf] = useState(false);
 
   const { data: siteContent, isLoading: isSiteContentLoading } = useAllSiteContent();
   const { mutate: upsertSiteContent, isPending: isSiteContentUpdating } = useUpsertSiteContent();
@@ -267,6 +277,130 @@ export default function AdminDashboard() {
     }
   };
 
+  const openCreateNotice = () => {
+    setEditingNotice(null);
+    setNoticeForm({ noticeNumber: "", noticeDate: "", title: "", pdfUrl: "" });
+    setNoticeDialogOpen(true);
+  };
+
+  const openEditNotice = (notice: any) => {
+    setEditingNotice(notice);
+    setNoticeForm({
+      noticeNumber: notice.noticeNumber,
+      noticeDate: notice.noticeDate,
+      title: notice.title || "",
+      pdfUrl: notice.pdfUrl
+    });
+    setNoticeDialogOpen(true);
+  };
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      toast({
+        title: "خطأ",
+        description: "يرجى اختيار ملف PDF صالح",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast({
+        title: "خطأ",
+        description: "حجم الملف يتجاوز 10 ميغابايت",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUploadingPdf(true);
+    try {
+      const requestUrlResponse = await fetch("/api/uploads/request-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: file.name,
+          size: file.size,
+          contentType: file.type
+        }),
+      });
+
+      if (!requestUrlResponse.ok) {
+        throw new Error("فشل الحصول على رابط الرفع");
+      }
+
+      const { uploadURL, objectPath } = await requestUrlResponse.json();
+
+      const uploadResponse = await fetch(uploadURL, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("فشل رفع الملف");
+      }
+
+      setNoticeForm(prev => ({ ...prev, pdfUrl: objectPath }));
+      toast({
+        title: "تم الرفع",
+        description: "تم رفع ملف PDF بنجاح"
+      });
+    } catch (error) {
+      toast({
+        title: "خطأ",
+        description: "فشل رفع الملف، يرجى المحاولة مرة أخرى",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploadingPdf(false);
+    }
+  };
+
+  const handleNoticeSave = () => {
+    if (!noticeForm.noticeNumber.trim() || !noticeForm.noticeDate.trim() || !noticeForm.pdfUrl.trim()) {
+      toast({
+        title: "خطأ",
+        description: "يرجى ملء رقم التعميم وتاريخه ورفع ملف PDF",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (editingNotice) {
+      updateNotice({
+        id: editingNotice.id,
+        data: noticeForm
+      }, {
+        onSuccess: () => {
+          toast({ title: "تم التحديث", description: "تم تحديث التعميم بنجاح" });
+          setNoticeDialogOpen(false);
+        }
+      });
+    } else {
+      createNotice(noticeForm, {
+        onSuccess: () => {
+          toast({ title: "تم الإنشاء", description: "تم إنشاء التعميم بنجاح" });
+          setNoticeDialogOpen(false);
+        }
+      });
+    }
+  };
+
+  const handleNoticeDelete = (id: number) => {
+    if (window.confirm("هل أنت متأكد من حذف هذا التعميم؟")) {
+      deleteNotice(id, {
+        onSuccess: () => {
+          toast({ title: "تم الحذف", description: "تم حذف التعميم بنجاح" });
+        }
+      });
+    }
+  };
+
   const openEditContent = (content: any) => {
     setEditingContent(content);
     setContentForm({
@@ -320,12 +454,15 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="ngos" className="space-y-6">
-          <TabsList className="grid w-full max-w-2xl grid-cols-4">
+          <TabsList className="grid w-full max-w-3xl grid-cols-5">
             <TabsTrigger value="ngos" data-testid="tab-ngos">
               المنظمات
             </TabsTrigger>
             <TabsTrigger value="announcements" data-testid="tab-announcements">
               الإعلانات
+            </TabsTrigger>
+            <TabsTrigger value="notices" data-testid="tab-notices">
+              التعاميم
             </TabsTrigger>
             <TabsTrigger value="users" data-testid="tab-users">
               المستخدمين
@@ -534,6 +671,74 @@ export default function AdminDashboard() {
                     <Button variant="outline" className="mt-4" onClick={openCreateAnnouncement}>
                       <Plus className="w-4 h-4 ml-2" />
                       إنشاء أول إعلان
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="notices">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold">إدارة التعاميم</h2>
+                <Button onClick={openCreateNotice} data-testid="button-create-notice">
+                  <Plus className="w-4 h-4 ml-2" />
+                  إضافة تعميم جديد
+                </Button>
+              </div>
+
+              {isNoticesLoading ? (
+                <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
+              ) : noticesData && noticesData.length > 0 ? (
+                <div className="grid gap-4">
+                  {noticesData.map((notice) => (
+                    <Card key={notice.id} data-testid={`card-notice-${notice.id}`}>
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge variant="outline">رقم التعميم: {notice.noticeNumber}</Badge>
+                              <Badge variant="secondary">{notice.noticeDate}</Badge>
+                            </div>
+                            {notice.title && (
+                              <h3 className="text-lg font-medium mb-1">{notice.title}</h3>
+                            )}
+                            <p className="text-sm text-muted-foreground truncate">
+                              {notice.pdfUrl}
+                            </p>
+                          </div>
+                          <div className="flex gap-2 shrink-0">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openEditNotice(notice)}
+                              data-testid={`button-edit-notice-${notice.id}`}
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => handleNoticeDelete(notice.id)}
+                              data-testid={`button-delete-notice-${notice.id}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <Card className="border-dashed">
+                  <CardContent className="py-12 text-center">
+                    <p className="text-muted-foreground">لا توجد تعاميم حالياً</p>
+                    <Button variant="outline" className="mt-4" onClick={openCreateNotice}>
+                      <Plus className="w-4 h-4 ml-2" />
+                      إضافة أول تعميم
                     </Button>
                   </CardContent>
                 </Card>
@@ -795,6 +1000,105 @@ export default function AdminDashboard() {
             >
               <Save className="w-4 h-4 ml-2" />
               {editingAnnouncement ? "حفظ التغييرات" : "إنشاء الخبر"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Notices Dialog */}
+      <Dialog open={noticeDialogOpen} onOpenChange={setNoticeDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{editingNotice ? "تعديل التعميم" : "تعميم جديد"}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="noticeNumber">رقم التعميم</Label>
+              <Input
+                id="noticeNumber"
+                value={noticeForm.noticeNumber}
+                onChange={(e) => setNoticeForm({ ...noticeForm, noticeNumber: e.target.value })}
+                placeholder="أدخل رقم التعميم"
+                data-testid="input-notice-number"
+              />
+            </div>
+            
+            <div className="grid gap-2">
+              <Label htmlFor="noticeDate">تاريخ التعميم</Label>
+              <Input
+                id="noticeDate"
+                type="date"
+                value={noticeForm.noticeDate}
+                onChange={(e) => setNoticeForm({ ...noticeForm, noticeDate: e.target.value })}
+                data-testid="input-notice-date"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="noticeTitle">عنوان التعميم (اختياري)</Label>
+              <Input
+                id="noticeTitle"
+                value={noticeForm.title}
+                onChange={(e) => setNoticeForm({ ...noticeForm, title: e.target.value })}
+                placeholder="أدخل عنوان التعميم"
+                data-testid="input-notice-title"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label>ملف PDF</Label>
+              <div className="space-y-3">
+                {noticeForm.pdfUrl ? (
+                  <div className="flex items-center justify-between p-3 border rounded-lg bg-muted/30">
+                    <div className="flex items-center gap-2 truncate">
+                      <Upload className="w-4 h-4 text-primary" />
+                      <span className="text-sm truncate">{noticeForm.pdfUrl}</span>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => setNoticeForm(prev => ({ ...prev, pdfUrl: "" }))}
+                      data-testid="button-remove-pdf"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer bg-muted/30 hover:bg-muted/50 transition-colors">
+                    <div className="flex flex-col items-center justify-center py-4">
+                      {isUploadingPdf ? (
+                        <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                          <p className="text-sm text-muted-foreground">اضغط لرفع ملف PDF</p>
+                          <p className="text-xs text-muted-foreground mt-1">حتى 10MB</p>
+                        </>
+                      )}
+                    </div>
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept=".pdf,application/pdf"
+                      onChange={handlePdfUpload}
+                      disabled={isUploadingPdf}
+                      data-testid="input-notice-pdf"
+                    />
+                  </label>
+                )}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNoticeDialogOpen(false)}>إلغاء</Button>
+            <Button 
+              onClick={handleNoticeSave} 
+              disabled={isNoticeCreating || isNoticeUpdating || isUploadingPdf}
+              data-testid="button-save-notice"
+            >
+              <Save className="w-4 h-4 ml-2" />
+              {editingNotice ? "حفظ التغييرات" : "إضافة التعميم"}
             </Button>
           </DialogFooter>
         </DialogContent>
