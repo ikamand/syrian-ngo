@@ -560,7 +560,17 @@ export default function AdminDashboard() {
                 <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
               ) : (
                 <div className="bg-white rounded-xl border shadow-sm overflow-x-auto">
-                  <Table>
+                  <Table className="table-fixed w-full">
+                    <colgroup>
+                      <col className="w-[100px]" />
+                      <col className="w-[120px]" />
+                      <col className="w-[160px]" />
+                      <col className="w-[100px]" />
+                      <col className="w-[100px]" />
+                      <col className="w-[80px]" />
+                      <col className="w-[80px]" />
+                      <col className="w-[180px]" />
+                    </colgroup>
                     <TableHeader>
                       <TableRow>
                         <TableHead className="text-right">اسم المستخدم</TableHead>
@@ -568,32 +578,32 @@ export default function AdminDashboard() {
                         <TableHead className="text-right">المنظمة</TableHead>
                         <TableHead className="text-right">المحافظة</TableHead>
                         <TableHead className="text-right">رقم الإشهار</TableHead>
-                        <TableHead className="text-right">الدور</TableHead>
-                        <TableHead className="text-right">الحالة</TableHead>
+                        <TableHead className="text-center">الدور</TableHead>
+                        <TableHead className="text-center">الحالة</TableHead>
                         <TableHead className="text-right">الإجراءات</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {allUsers?.map((u) => (
                         <TableRow key={u.id} data-testid={`row-user-${u.id}`}>
-                          <TableCell className="font-medium font-mono text-left" dir="ltr">{u.username}</TableCell>
-                          <TableCell>
+                          <TableCell className="font-medium font-mono text-right" dir="ltr" style={{ unicodeBidi: "isolate" }}>{u.username}</TableCell>
+                          <TableCell className="text-right truncate">
                             {u.firstName || u.lastName ? `${u.firstName || ""} ${u.lastName || ""}`.trim() : "-"}
                           </TableCell>
-                          <TableCell>{u.organizationName || "-"}</TableCell>
-                          <TableCell>{u.governorate || "-"}</TableCell>
-                          <TableCell>{u.registrationNumber || "-"}</TableCell>
-                          <TableCell>
+                          <TableCell className="text-right truncate">{u.organizationName || "-"}</TableCell>
+                          <TableCell className="text-right">{u.governorate || "-"}</TableCell>
+                          <TableCell className="text-right" dir="ltr" style={{ unicodeBidi: "isolate" }}>{u.registrationNumber || "-"}</TableCell>
+                          <TableCell className="text-center">
                             <Badge variant={u.role === "admin" ? "default" : "secondary"}>
                               {u.role === "admin" ? "مدير" : "مستخدم"}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="text-center">
                             <Badge variant={u.status === "suspended" ? "destructive" : "outline"}>
                               {u.status === "suspended" ? "متوقف" : "فعّال"}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="text-right">
                             <div className="flex gap-2 flex-wrap">
                               <Button
                                 size="sm"
