@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { usePublishedAnnouncements } from "@/hooks/use-announcements";
 import { Card } from "@/components/ui/card";
-import { Calendar, Loader2, ArrowLeft, Newspaper } from "lucide-react";
+import { Calendar, Loader2, ArrowLeft, Megaphone, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
