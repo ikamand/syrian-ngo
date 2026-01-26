@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { usePublishedAnnouncements } from "@/hooks/use-announcements";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Megaphone, Calendar, Loader2, ArrowLeft, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
@@ -10,34 +10,49 @@ export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
 
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen bg-gray-50/50">
       <Navbar />
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-5xl mx-auto space-y-8">
-          <div className="text-center space-y-3">
-            <div className="flex items-center justify-center gap-3 text-primary">
-              <Newspaper className="w-8 h-8" />
-              <h1 className="text-xl md:text-3xl font-bold">الأخبار والإعلانات</h1>
-            </div>
-            <p className="text-sm md:text-base text-muted-foreground">
-              آخر الأخبار والإعلانات الصادرة عن وزارة الشؤون الاجتماعية والعمل
-            </p>
+      
+      <div className="bg-primary text-white py-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Newspaper className="w-10 h-10" />
+            <h1 className="text-3xl font-bold">الأخبار والإعلانات</h1>
           </div>
+          <p className="text-white/80 max-w-2xl mx-auto">
+            آخر الأخبار والإعلانات الصادرة عن وزارة الشؤون الاجتماعية والعمل
+          </p>
+        </div>
+      </div>
 
-          {isLoading ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <main className="container mx-auto px-4 py-10">
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white rounded-xl shadow-sm p-4 animate-pulse">
+                <div className="w-full aspect-video bg-gray-200 rounded-lg mb-4" />
+                <div className="h-4 bg-gray-200 rounded w-1/4 mb-3" />
+                <div className="h-5 bg-gray-200 rounded w-3/4 mb-2" />
+                <div className="h-4 bg-gray-200 rounded w-full" />
+              </div>
+            ))}
+          </div>
+        ) : announcements && announcements.length > 0 ? (
+          <>
+            <div className="text-center mb-8">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-bold text-primary">{announcements.length}</span> خبر وإعلان
+              </p>
             </div>
-          ) : announcements && announcements.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" dir="rtl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" dir="rtl">
               {announcements.map((announcement) => (
                 <Link key={announcement.id} href={`/news/${announcement.id}`}>
                   <Card 
-                    className="h-full hover-elevate cursor-pointer group transition-all duration-200 overflow-hidden" 
+                    className="bg-white rounded-xl shadow-sm overflow-visible hover-elevate cursor-pointer group transition-all duration-200 h-full" 
                     data-testid={`announcement-card-${announcement.id}`}
                   >
                     {announcement.imageUrl ? (
-                      <div className="relative w-full aspect-video overflow-hidden bg-muted">
+                      <div className="relative w-full aspect-video overflow-hidden rounded-t-xl bg-gray-100">
                         <img
                           src={announcement.imageUrl}
                           alt={announcement.title}
@@ -45,11 +60,11 @@ export default function Announcements() {
                         />
                       </div>
                     ) : (
-                      <div className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                        <Megaphone className="w-12 h-12 text-primary/30" />
+                      <div className="relative w-full aspect-video overflow-hidden rounded-t-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                        <Megaphone className="w-14 h-14 text-primary/30" />
                       </div>
                     )}
-                    <CardContent className="p-4 space-y-3">
+                    <div className="p-5 space-y-3">
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Calendar className="w-3.5 h-3.5" />
                         <span>
@@ -58,7 +73,7 @@ export default function Announcements() {
                             : ""}
                         </span>
                       </div>
-                      <h2 className="font-bold text-lg text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                      <h2 className="font-bold text-lg text-gray-900 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
                         {announcement.title}
                       </h2>
                       <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">
@@ -68,20 +83,18 @@ export default function Announcements() {
                         <span>اقرأ المزيد</span>
                         <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                       </div>
-                    </CardContent>
+                    </div>
                   </Card>
                 </Link>
               ))}
             </div>
-          ) : (
-            <Card className="border-dashed">
-              <CardContent className="py-12 text-center">
-                <Newspaper className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground">لا توجد أخبار حالياً</p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="text-center py-20 text-muted-foreground">
+            <Newspaper className="w-16 h-16 mx-auto mb-4 opacity-20" />
+            <p className="text-lg">لا توجد أخبار حالياً</p>
+          </div>
+        )}
       </main>
     </div>
   );
