@@ -37,8 +37,21 @@ Preferred communication style: Simple, everyday language.
 All public pages follow a consistent design pattern for visual cohesion:
 - **Hero Banner**: Green bg-primary banner at top with white text, centered icon, title and description
 - **Main Background**: Light gray bg-gray-50/50 for content areas
-- **Cards**: White cards with shadow-sm, rounded-xl styling
+- **Cards**: White cards with shadow-sm, square corners (border-radius: 0 globally)
 - **Layout**: Container with max-width constraints, RTL direction
+- **Visual Theme**: Formal government aesthetic with square corners throughout (all border-radius set to 0)
+
+### Homepage Components
+- **HeroSlideshow**: Auto-rotating hero with 3 slides, 5-second intervals, pause on hover, navigation buttons
+- **FeaturedNewsSlider**: Displays 3 newest announcements in carousel format with images and text excerpts
+- **QuickLinkCard**: Imagery-rich cards for NGO directory, opportunities, events, and campaigns
+
+### News/Announcements Editorial Layout
+The announcements page uses an editorial news-style design:
+- **Featured Article**: Large image with prominent title at top of page
+- **Secondary Articles**: Horizontal layout with image and text side-by-side
+- **Article Grid**: Remaining articles in responsive grid format
+- **Visual Hierarchy**: Dates, badges, and typography create clear information hierarchy
 
 ### Rich Text Editor Feature
 - **Component**: TipTap-based rich text editor at `client/src/components/ui/rich-text-editor.tsx`
