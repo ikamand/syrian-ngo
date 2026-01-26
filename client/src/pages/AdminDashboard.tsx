@@ -120,11 +120,12 @@ export default function AdminDashboard() {
   const [contentDialogOpen, setContentDialogOpen] = useState(false);
   const [editingContent, setEditingContent] = useState<any>(null);
   const [contentForm, setContentForm] = useState({ key: "", title: "", content: "", richText: false });
+  const [isUploadingContentPdf, setIsUploadingContentPdf] = useState(false);
 
   const predefinedContentKeys = [
     { key: "footer_contact", label: "معلومات التواصل", richText: false },
     { key: "registration_instructions", label: "تعليمات التسجيل", richText: false },
-    { key: "executive_regulations", label: "اللائحة التنفيذية (قانون الجمعيات)", richText: true },
+    { key: "executive_regulations", label: "اللائحة التنفيذية (قانون الجمعيات)", richText: true, pdfKey: "executive_regulations_pdf" },
   ];
 
   // Show nothing while loading or if user isn't an admin (useEffect handles redirect)
@@ -446,6 +447,76 @@ export default function AdminDashboard() {
 
   const getContentByKey = (key: string) => {
     return siteContent?.find(c => c.key === key);
+  };
+
+  const handleContentPdfUpload = async (e: React.ChangeEvent<HTMLInputElement>, pdfKey: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      toast({
+        title: "خطأ",
+        description: "يرجى اختيار ملف PDF صالح",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast({
+        title: "خطأ",
+        description: "حجم الملف يتجاوز 10 ميغابايت",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUploadingContentPdf(true);
+    try {
+      const requestUrlResponse = await fetch("/api/uploads/request-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: file.name,
+          size: file.size,
+          contentType: file.type
+        }),
+      });
+
+      if (!requestUrlResponse.ok) {
+        throw new Error("فشل الحصول على رابط الرفع");
+      }
+
+      const { uploadURL, objectPath } = await requestUrlResponse.json();
+
+      const uploadResponse = await fetch(uploadURL, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("فشل رفع الملف");
+      }
+
+      upsertSiteContent({ key: pdfKey, title: pdfKey, content: objectPath }, {
+        onSuccess: () => {
+          toast({
+            title: "تم الرفع",
+            description: "تم رفع ملف PDF بنجاح"
+          });
+        }
+      });
+    } catch (error) {
+      toast({
+        title: "خطأ",
+        description: "فشل رفع الملف، يرجى المحاولة مرة أخرى",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploadingContentPdf(false);
+    }
   };
 
   return (
@@ -859,6 +930,7 @@ export default function AdminDashboard() {
                 <div className="grid gap-4">
                   {predefinedContentKeys.map((item) => {
                     const existingContent = getContentByKey(item.key);
+                    const existingPdf = item.pdfKey ? getContentByKey(item.pdfKey) : null;
                     return (
                       <Card key={item.key} data-testid={`card-content-${item.key}`}>
                         <CardHeader className="pb-3">
@@ -873,24 +945,66 @@ export default function AdminDashboard() {
                                 )}
                               </p>
                             </div>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => existingContent 
-                                ? openEditContent(existingContent, item.richText) 
-                                : openCreateContent(item.key, item.label, item.richText)
-                              }
-                              data-testid={`button-edit-content-${item.key}`}
-                            >
-                              تعديل
-                            </Button>
+                            <div className="flex gap-2">
+                              {item.pdfKey && (
+                                <div className="relative">
+                                  <input
+                                    type="file"
+                                    accept=".pdf"
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    onChange={(e) => handleContentPdfUpload(e, item.pdfKey!)}
+                                    disabled={isUploadingContentPdf}
+                                    data-testid={`input-upload-pdf-${item.key}`}
+                                  />
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    disabled={isUploadingContentPdf}
+                                    data-testid={`button-upload-pdf-${item.key}`}
+                                  >
+                                    {isUploadingContentPdf ? (
+                                      <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                      <>
+                                        <Upload className="w-4 h-4 ml-1" />
+                                        {existingPdf ? "تغيير PDF" : "رفع PDF"}
+                                      </>
+                                    )}
+                                  </Button>
+                                </div>
+                              )}
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => existingContent 
+                                  ? openEditContent(existingContent, item.richText) 
+                                  : openCreateContent(item.key, item.label, item.richText)
+                                }
+                                data-testid={`button-edit-content-${item.key}`}
+                              >
+                                تعديل
+                              </Button>
+                            </div>
                           </div>
                         </CardHeader>
-                        {existingContent && (
-                          <CardContent>
+                        <CardContent className="space-y-2">
+                          {existingContent && (
                             <p className="text-foreground/80 line-clamp-2">{item.richText ? stripHtml(existingContent.content) : existingContent.content}</p>
-                          </CardContent>
-                        )}
+                          )}
+                          {existingPdf && (
+                            <div className="flex items-center gap-2 text-sm text-green-600">
+                              <span>ملف PDF: تم الرفع</span>
+                              <a 
+                                href={`/api/files/${existingPdf.content}`} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary underline"
+                              >
+                                معاينة
+                              </a>
+                            </div>
+                          )}
+                        </CardContent>
                       </Card>
                     );
                   })}
