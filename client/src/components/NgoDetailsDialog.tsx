@@ -10,6 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge";
 import { Check, X } from "lucide-react";
 import type { Ngo } from "@shared/schema";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 interface NgoDetailsDialogProps {
   ngo: Ngo | null;
@@ -113,7 +114,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                     <div className="border-t pt-3">
                       <span className="text-sm font-medium text-muted-foreground block mb-2">نبذة عن المنظمة</span>
                       <div className="bg-muted/30 rounded-lg p-3">
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{ngo.description}</p>
+                        <div className="text-sm leading-relaxed prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground" dangerouslySetInnerHTML={{ __html: sanitizeHtml(ngo.description) }} />
                       </div>
                     </div>
                   )}
@@ -409,7 +410,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                             {job.details && (
                               <div className="mt-3 pt-3 border-t border-muted">
                                 <div className="text-xs font-medium text-muted-foreground mb-1">تفاصيل الوظيفة:</div>
-                                <div className="text-sm whitespace-pre-wrap bg-background/50 rounded p-2">{job.details}</div>
+                                <div className="text-sm bg-background/50 rounded p-2 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHtml(job.details) }} />
                               </div>
                             )}
                           </div>
@@ -429,7 +430,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                             <div className="grid grid-cols-2 gap-2 mt-2 text-xs text-muted-foreground">
                               {vol.volunteerType && <span>نوع التطوع: {vol.volunteerType}</span>}
                             </div>
-                            {vol.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: {vol.details}</div>}
+                            {vol.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: <span className="prose prose-sm max-w-none inline" dangerouslySetInnerHTML={{ __html: sanitizeHtml(vol.details) }} /></div>}
                           </div>
                         ))}
                       </div>
@@ -451,7 +452,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                               {event.startDate && <span>تاريخ البدء: {event.startDate}</span>}
                               {event.endDate && <span>تاريخ الانتهاء: {event.endDate}</span>}
                             </div>
-                            {event.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: {event.details}</div>}
+                            {event.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: <span className="prose prose-sm max-w-none inline" dangerouslySetInnerHTML={{ __html: sanitizeHtml(event.details) }} /></div>}
                           </div>
                         ))}
                       </div>
@@ -473,7 +474,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                               {campaign.startDate && <span>تاريخ البدء: {campaign.startDate}</span>}
                               {campaign.endDate && <span>تاريخ الانتهاء: {campaign.endDate}</span>}
                             </div>
-                            {campaign.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: {campaign.details}</div>}
+                            {campaign.details && <div className="text-xs text-muted-foreground mt-1">التفاصيل: <span className="prose prose-sm max-w-none inline" dangerouslySetInnerHTML={{ __html: sanitizeHtml(campaign.details) }} /></div>}
                           </div>
                         ))}
                       </div>
@@ -524,7 +525,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                               {net.classification && <span>التصنيف: {net.classification}</span>}
                               {net.count && <span>العدد: {net.count}</span>}
                             </div>
-                            {net.description && <div className="text-xs text-muted-foreground mt-1">الوصف: {net.description}</div>}
+                            {net.description && <div className="text-xs text-muted-foreground mt-1">الوصف: <span className="prose prose-sm max-w-none inline" dangerouslySetInnerHTML={{ __html: sanitizeHtml(net.description) }} /></div>}
                           </div>
                         ))}
                       </div>

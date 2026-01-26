@@ -6,6 +6,7 @@ import { Calendar, ArrowRight, Loader2, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { useRoute, Link } from "wouter";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export default function AnnouncementDetail() {
   const [, params] = useRoute("/news/:id");
@@ -71,11 +72,10 @@ export default function AnnouncementDetail() {
               <Card>
                 <CardContent className="py-8">
                   <div 
-                    className="prose prose-lg max-w-none text-foreground/90 leading-loose whitespace-pre-wrap"
+                    className="prose prose-lg max-w-none text-foreground/90 leading-loose prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-ul:list-disc prose-ol:list-decimal prose-a:text-primary prose-a:underline"
                     data-testid="article-content"
-                  >
-                    {announcement.content}
-                  </div>
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(announcement.content) }}
+                  />
                 </CardContent>
               </Card>
 

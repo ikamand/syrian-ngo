@@ -4,6 +4,7 @@ import { useCreateNgo } from "@/hooks/use-ngos";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -676,10 +677,11 @@ export default function CreateNgo() {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Textarea 
-                                  placeholder="اكتب نبذة تعريفية عن المنظمة وأهدافها ورسالتها..." 
-                                  className="min-h-[120px] resize-none"
-                                  {...field} 
+                                <RichTextEditor
+                                  value={field.value || ""}
+                                  onChange={field.onChange}
+                                  placeholder="اكتب نبذة تعريفية عن المنظمة وأهدافها ورسالتها..."
+                                  minHeight="150px"
                                   data-testid="textarea-description"
                                 />
                               </FormControl>
@@ -1975,7 +1977,7 @@ export default function CreateNgo() {
                               <FormField control={form.control} name={`jobOpportunities.${index}.skills`} render={({ field }) => (<FormItem><FormLabel>المهارات</FormLabel><FormControl><Input {...field} data-testid={`input-job-skills-${index}`} /></FormControl></FormItem>)} />
                               <FormField control={form.control} name={`jobOpportunities.${index}.experience`} render={({ field }) => (<FormItem><FormLabel>الخبرة</FormLabel><FormControl><Input {...field} data-testid={`input-job-experience-${index}`} /></FormControl></FormItem>)} />
                             </div>
-                            <FormField control={form.control} name={`jobOpportunities.${index}.details`} render={({ field }) => (<FormItem className="col-span-full"><FormLabel>تفاصيل الوظيفة</FormLabel><FormControl><Textarea {...field} rows={6} placeholder="أدخل تفاصيل الوظيفة الكاملة هنا..." data-testid={`textarea-job-details-${index}`} /></FormControl></FormItem>)} />
+                            <FormField control={form.control} name={`jobOpportunities.${index}.details`} render={({ field }) => (<FormItem className="col-span-full"><FormLabel>تفاصيل الوظيفة</FormLabel><FormControl><RichTextEditor value={field.value || ""} onChange={field.onChange} placeholder="أدخل تفاصيل الوظيفة الكاملة هنا..." minHeight="150px" data-testid={`textarea-job-details-${index}`} /></FormControl></FormItem>)} />
                           </div>
                         ))}
                       </div>
@@ -2034,7 +2036,7 @@ export default function CreateNgo() {
                               <FormField control={form.control} name={`events.${index}.address`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} data-testid={`input-event-address-${index}`} /></FormControl></FormItem>)} />
                               <FormField control={form.control} name={`events.${index}.startDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ البدء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-event-startDate-${index}`} /></FormControl></FormItem>)} />
                               <FormField control={form.control} name={`events.${index}.endDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ الانتهاء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-event-endDate-${index}`} /></FormControl></FormItem>)} />
-                              <FormField control={form.control} name={`events.${index}.details`} render={({ field }) => (<FormItem className="md:col-span-3"><FormLabel>تفاصيل الفعالية</FormLabel><FormControl><Textarea {...field} data-testid={`textarea-event-details-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`events.${index}.details`} render={({ field }) => (<FormItem className="md:col-span-3"><FormLabel>تفاصيل الفعالية</FormLabel><FormControl><RichTextEditor value={field.value || ""} onChange={field.onChange} placeholder="تفاصيل الفعالية..." minHeight="120px" data-testid={`textarea-event-details-${index}`} /></FormControl></FormItem>)} />
                             </div>
                           </div>
                         ))}
@@ -2062,7 +2064,7 @@ export default function CreateNgo() {
                               <FormField control={form.control} name={`donationCampaigns.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} data-testid={`input-campaign-governorate-${index}`} /></FormControl></FormItem>)} />
                               <FormField control={form.control} name={`donationCampaigns.${index}.startDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ البدء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-campaign-startDate-${index}`} /></FormControl></FormItem>)} />
                               <FormField control={form.control} name={`donationCampaigns.${index}.endDate`} render={({ field }) => (<FormItem><FormLabel>تاريخ الانتهاء</FormLabel><FormControl><Input type="date" {...field} data-testid={`input-campaign-endDate-${index}`} /></FormControl></FormItem>)} />
-                              <FormField control={form.control} name={`donationCampaigns.${index}.details`} render={({ field }) => (<FormItem className="md:col-span-3"><FormLabel>تفاصيل الحملة</FormLabel><FormControl><Textarea {...field} data-testid={`textarea-campaign-details-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`donationCampaigns.${index}.details`} render={({ field }) => (<FormItem className="md:col-span-3"><FormLabel>تفاصيل الحملة</FormLabel><FormControl><RichTextEditor value={field.value || ""} onChange={field.onChange} placeholder="تفاصيل الحملة..." minHeight="120px" data-testid={`textarea-campaign-details-${index}`} /></FormControl></FormItem>)} />
                             </div>
                           </div>
                         ))}
@@ -2152,7 +2154,7 @@ export default function CreateNgo() {
                               <FormField control={form.control} name={`networking.${index}.classification`} render={({ field }) => (<FormItem><FormLabel>التصنيف</FormLabel><FormControl><Input {...field} data-testid={`input-networking-classification-${index}`} /></FormControl></FormItem>)} />
                               <FormField control={form.control} name={`networking.${index}.need`} render={({ field }) => (<FormItem><FormLabel>الاحتياج</FormLabel><FormControl><Input {...field} data-testid={`input-networking-need-${index}`} /></FormControl></FormItem>)} />
                               <FormField control={form.control} name={`networking.${index}.count`} render={({ field }) => (<FormItem><FormLabel>العدد</FormLabel><FormControl><Input {...field} data-testid={`input-networking-count-${index}`} /></FormControl></FormItem>)} />
-                              <FormField control={form.control} name={`networking.${index}.description`} render={({ field }) => (<FormItem className="md:col-span-2"><FormLabel>الوصف</FormLabel><FormControl><Textarea {...field} data-testid={`textarea-networking-description-${index}`} /></FormControl></FormItem>)} />
+                              <FormField control={form.control} name={`networking.${index}.description`} render={({ field }) => (<FormItem className="md:col-span-2"><FormLabel>الوصف</FormLabel><FormControl><RichTextEditor value={field.value || ""} onChange={field.onChange} placeholder="وصف الاحتياج..." minHeight="100px" data-testid={`textarea-networking-description-${index}`} /></FormControl></FormItem>)} />
                             </div>
                           </div>
                         ))}

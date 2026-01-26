@@ -14,6 +14,7 @@ import { EditUserDialog } from "@/components/EditUserDialog";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { useState } from "react";
 import {
   Table,
@@ -971,12 +972,11 @@ export default function AdminDashboard() {
 
             <div className="grid gap-2">
               <Label htmlFor="content">محتوى الخبر</Label>
-              <Textarea
-                id="content"
+              <RichTextEditor
                 value={announcementForm.content}
-                onChange={(e) => setAnnouncementForm({ ...announcementForm, content: e.target.value })}
+                onChange={(content) => setAnnouncementForm({ ...announcementForm, content })}
                 placeholder="أدخل محتوى الخبر"
-                className="min-h-[150px]"
+                minHeight="200px"
                 data-testid="input-announcement-content"
               />
             </div>

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import type { Ngo } from "@shared/schema";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export default function NgoProfile() {
   const [match, params] = useRoute("/ngos/:id");
@@ -115,7 +116,7 @@ export default function NgoProfile() {
                   <div className="mb-6">
                     <h3 className="font-semibold text-foreground mb-2">نبذة عن المنظمة</h3>
                     <div className="bg-muted/30 rounded-lg p-4">
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{ngo.description}</p>
+                      <div className="text-sm leading-relaxed prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground" dangerouslySetInnerHTML={{ __html: sanitizeHtml(ngo.description) }} />
                     </div>
                   </div>
                 )}
@@ -695,7 +696,7 @@ export default function NgoProfile() {
                               {event.address && <div className="col-span-2"><span className="text-muted-foreground">العنوان:</span> {event.address}</div>}
                               {event.startDescription && <div className="col-span-2"><span className="text-muted-foreground">وصف البداية:</span> {event.startDescription}</div>}
                               {event.endDescription && <div className="col-span-2"><span className="text-muted-foreground">وصف النهاية:</span> {event.endDescription}</div>}
-                              {event.details && <div className="col-span-2"><span className="text-muted-foreground">التفاصيل:</span> {event.details}</div>}
+                              {event.details && <div className="col-span-2"><span className="text-muted-foreground">التفاصيل:</span> <span className="prose prose-sm max-w-none inline" dangerouslySetInnerHTML={{ __html: sanitizeHtml(event.details) }} /></div>}
                             </div>
                             {event.image && (
                               <img src={event.image} alt={event.eventName} className="w-full h-32 object-cover rounded-lg mt-2" />
@@ -747,7 +748,7 @@ export default function NgoProfile() {
                               {campaign.startDate && <div><span className="text-muted-foreground">تاريخ البدء:</span> {campaign.startDate}</div>}
                               {campaign.endDate && <div><span className="text-muted-foreground">تاريخ الانتهاء:</span> {campaign.endDate}</div>}
                               {campaign.governorate && <div><span className="text-muted-foreground">المحافظة:</span> {campaign.governorate}</div>}
-                              {campaign.details && <div className="col-span-2"><span className="text-muted-foreground">التفاصيل:</span> {campaign.details}</div>}
+                              {campaign.details && <div className="col-span-2"><span className="text-muted-foreground">التفاصيل:</span> <span className="prose prose-sm max-w-none inline" dangerouslySetInnerHTML={{ __html: sanitizeHtml(campaign.details) }} /></div>}
                             </div>
                             {campaign.image && (
                               <img src={campaign.image} alt={campaign.campaignName} className="w-full h-32 object-cover rounded-lg mt-2" />
@@ -775,7 +776,7 @@ export default function NgoProfile() {
                               {net.classification && <div><span className="text-muted-foreground">التصنيف:</span> {net.classification}</div>}
                               {net.need && <div><span className="text-muted-foreground">الحاجة:</span> {net.need}</div>}
                               {net.count && <div><span className="text-muted-foreground">العدد:</span> {net.count}</div>}
-                              {net.description && <div className="col-span-2"><span className="text-muted-foreground">الوصف:</span> {net.description}</div>}
+                              {net.description && <div className="col-span-2"><span className="text-muted-foreground">الوصف:</span> <span className="prose prose-sm max-w-none inline" dangerouslySetInnerHTML={{ __html: sanitizeHtml(net.description) }} /></div>}
                             </div>
                           </div>
                         ))}
