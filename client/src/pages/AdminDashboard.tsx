@@ -119,11 +119,12 @@ export default function AdminDashboard() {
   const { mutate: upsertSiteContent, isPending: isSiteContentUpdating } = useUpsertSiteContent();
   const [contentDialogOpen, setContentDialogOpen] = useState(false);
   const [editingContent, setEditingContent] = useState<any>(null);
-  const [contentForm, setContentForm] = useState({ key: "", title: "", content: "" });
+  const [contentForm, setContentForm] = useState({ key: "", title: "", content: "", richText: false });
 
   const predefinedContentKeys = [
-    { key: "footer_contact", label: "معلومات التواصل" },
-    { key: "registration_instructions", label: "تعليمات التسجيل" },
+    { key: "footer_contact", label: "معلومات التواصل", richText: false },
+    { key: "registration_instructions", label: "تعليمات التسجيل", richText: false },
+    { key: "executive_regulations", label: "اللائحة التنفيذية (قانون الجمعيات)", richText: true },
   ];
 
   // Show nothing while loading or if user isn't an admin (useEffect handles redirect)
@@ -403,22 +404,24 @@ export default function AdminDashboard() {
     }
   };
 
-  const openEditContent = (content: any) => {
+  const openEditContent = (content: any, richText: boolean = false) => {
     setEditingContent(content);
     setContentForm({
       key: content.key,
       title: content.title,
-      content: content.content
+      content: content.content,
+      richText
     });
     setContentDialogOpen(true);
   };
 
-  const openCreateContent = (key: string, label: string) => {
+  const openCreateContent = (key: string, label: string, richText: boolean = false) => {
     setEditingContent(null);
     setContentForm({
       key,
       title: label,
-      content: ""
+      content: "",
+      richText
     });
     setContentDialogOpen(true);
   };
@@ -874,8 +877,8 @@ export default function AdminDashboard() {
                               size="sm"
                               variant="outline"
                               onClick={() => existingContent 
-                                ? openEditContent(existingContent) 
-                                : openCreateContent(item.key, item.label)
+                                ? openEditContent(existingContent, item.richText) 
+                                : openCreateContent(item.key, item.label, item.richText)
                               }
                               data-testid={`button-edit-content-${item.key}`}
                             >
@@ -885,7 +888,7 @@ export default function AdminDashboard() {
                         </CardHeader>
                         {existingContent && (
                           <CardContent>
-                            <p className="text-foreground/80 line-clamp-2">{existingContent.content}</p>
+                            <p className="text-foreground/80 line-clamp-2">{item.richText ? stripHtml(existingContent.content) : existingContent.content}</p>
                           </CardContent>
                         )}
                       </Card>
@@ -1107,21 +1110,31 @@ export default function AdminDashboard() {
 
       {/* Content Edit Dialog */}
       <Dialog open={contentDialogOpen} onOpenChange={setContentDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>تعديل المحتوى: {contentForm.title}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="content-text">المحتوى</Label>
-              <Textarea
-                id="content-text"
-                value={contentForm.content}
-                onChange={(e) => setContentForm({ ...contentForm, content: e.target.value })}
-                placeholder="أدخل المحتوى"
-                className="min-h-[200px]"
-                data-testid="input-content-text"
-              />
+              {contentForm.richText ? (
+                <RichTextEditor
+                  value={contentForm.content}
+                  onChange={(content) => setContentForm({ ...contentForm, content })}
+                  placeholder="أدخل المحتوى"
+                  minHeight="300px"
+                  data-testid="input-content-richtext"
+                />
+              ) : (
+                <Textarea
+                  id="content-text"
+                  value={contentForm.content}
+                  onChange={(e) => setContentForm({ ...contentForm, content: e.target.value })}
+                  placeholder="أدخل المحتوى"
+                  className="min-h-[200px]"
+                  data-testid="input-content-text"
+                />
+              )}
             </div>
           </div>
           <DialogFooter>
