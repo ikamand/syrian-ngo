@@ -29,7 +29,7 @@ export function Navbar() {
   const isActive = (path: string) => location === path;
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
+    <nav className="sticky top-0 z-50 w-full border-b border-primary/20 bg-primary/90 backdrop-blur-md supports-[backdrop-filter]:bg-primary/80 shadow-md">
       <div className="container mx-auto px-2 h-14 md:h-16 flex items-center justify-between">
         <div className="flex items-center gap-1 md:gap-2">
           <Link href="/">
@@ -38,8 +38,8 @@ export function Navbar() {
                 <img src={logoUrl} alt="Emblem of Syria" className="h-full w-full object-contain" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xs md:text-sm font-bold text-primary">الجمهورية العربية السورية</span>
-                <span className="text-[10px] md:text-xs text-muted-foreground font-medium">وزارة الشؤون الإجتماعية والعمل</span>
+                <span className="text-xs md:text-sm font-bold text-white">الجمهورية العربية السورية</span>
+                <span className="text-[10px] md:text-xs text-white/80 font-medium">وزارة الشؤون الإجتماعية والعمل</span>
               </div>
             </div>
           </Link>
@@ -47,21 +47,21 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-6 text-sm font-medium">
-          <Link href="/" className={`transition-colors hover:text-primary ${isActive("/") ? "text-primary font-bold" : "text-foreground/80"}`}>
+          <Link href="/" className={`transition-colors hover:text-white ${isActive("/") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
             الرئيسية
           </Link>
-          <Link href="/ngos" className={`transition-colors hover:text-primary ${isActive("/ngos") ? "text-primary font-bold" : "text-foreground/80"}`}>
+          <Link href="/ngos" className={`transition-colors hover:text-white ${isActive("/ngos") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
             دليل المنظمات
           </Link>
-          <Link href="/announcements" className={`transition-colors hover:text-primary ${isActive("/announcements") ? "text-primary font-bold" : "text-foreground/80"}`}>
+          <Link href="/announcements" className={`transition-colors hover:text-white ${isActive("/announcements") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
             الأخبار
           </Link>
-          <Link href="/opportunities" className={`transition-colors hover:text-primary ${isActive("/opportunities") ? "text-primary font-bold" : "text-foreground/80"}`}>
+          <Link href="/opportunities" className={`transition-colors hover:text-white ${isActive("/opportunities") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
             فرص العمل والتطوع
           </Link>
           
           <DropdownMenu>
-            <DropdownMenuTrigger className={`flex items-center gap-1 transition-colors hover:text-primary outline-none ${location.startsWith("/legal") ? "text-primary font-bold" : "text-foreground/80"}`}>
+            <DropdownMenuTrigger className={`flex items-center gap-1 transition-colors hover:text-white outline-none ${location.startsWith("/legal") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
               المرجعيات القانونية
               <ChevronDown className="h-4 w-4" />
             </DropdownMenuTrigger>
@@ -85,7 +85,7 @@ export function Navbar() {
           </DropdownMenu>
 
           {user && (
-            <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className={`transition-colors hover:text-primary ${isActive("/dashboard") || isActive("/admin") ? "text-primary font-bold" : "text-foreground/80"}`}>
+            <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className={`transition-colors hover:text-white ${isActive("/dashboard") || isActive("/admin") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
               لوحة التحكم
             </Link>
           )}
@@ -96,8 +96,8 @@ export function Navbar() {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-primary/10 hover:bg-primary/20">
-                  <User className="h-5 w-5 text-primary" />
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-white/20 text-white">
+                  <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -131,10 +131,10 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="flex gap-2">
-              <Button asChild size="sm" variant="outline" className="font-bold">
+              <Button asChild size="sm" variant="outline" className="font-bold border-white/50 text-white">
                 <Link href="/create-ngo">إنشاء منظمة جديدة</Link>
               </Button>
-              <Button asChild size="sm" className="font-bold shadow-lg shadow-primary/20">
+              <Button asChild size="sm" className="font-bold bg-white text-primary shadow-lg">
                 <Link href="/login">تسجيل الدخول</Link>
               </Button>
             </div>
@@ -146,8 +146,8 @@ export function Navbar() {
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative rounded-full bg-primary/10 hover:bg-primary/20">
-                  <User className="h-4 w-4 text-primary" />
+                <Button variant="ghost" size="icon" className="relative rounded-full bg-white/20 text-white">
+                  <User className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -183,7 +183,7 @@ export function Navbar() {
           
           <DropdownMenu open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" data-testid="button-mobile-menu">
+              <Button variant="ghost" size="icon" className="text-white" data-testid="button-mobile-menu">
                 <Menu className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
