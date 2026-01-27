@@ -18,6 +18,8 @@ import AnnouncementDetail from "@/pages/AnnouncementDetail";
 import Opportunities from "@/pages/Opportunities";
 import OpportunityDetail from "@/pages/OpportunityDetail";
 import Notices from "@/pages/Notices";
+import Events from "@/pages/Events";
+import Campaigns from "@/pages/Campaigns";
 
 function Router() {
   return (
@@ -37,6 +39,8 @@ function Router() {
       <Route path="/announcements" component={Announcements} />
       <Route path="/opportunities/:id" component={OpportunityDetail} />
       <Route path="/opportunities" component={Opportunities} />
+      <Route path="/events" component={Events} />
+      <Route path="/campaigns" component={Campaigns} />
       <Route component={NotFound} />
     </Switch>
   );
