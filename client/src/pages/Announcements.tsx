@@ -22,7 +22,6 @@ export default function Announcements() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Newspaper className="w-10 h-10" />
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold">الأخبار والإعلانات</h1>
                 <p className="text-white/80 text-sm">آخر المستجدات من وزارة الشؤون الاجتماعية والعمل</p>

@@ -28,7 +28,6 @@ function QuickLinkCard({ title, description, href, icon, image }: QuickLinkCardP
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
           <div className="flex items-center gap-3 mb-2">
-            {icon}
             <h3 className="text-xl font-bold">{title}</h3>
           </div>
           <p className="text-white/80 text-sm line-clamp-2">{description}</p>
