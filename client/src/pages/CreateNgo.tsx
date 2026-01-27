@@ -123,7 +123,7 @@ export default function CreateNgo() {
                       </li>
                       <li className="p-4 flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>أربع نسخ من عقد تأسيس الجمعية موقع من المؤسسين.</span>
+                        <span>عقد تأسيس الجمعية أو المؤسسة موقع من المؤسسين.</span>
                       </li>
                       <li className="p-4 flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
