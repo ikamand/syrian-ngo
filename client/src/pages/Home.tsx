@@ -125,7 +125,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-secondary">150+</div>
+              <div className="text-4xl font-bold text-secondary">30+</div>
               <div className="text-primary-foreground/80 font-medium">منظمة مسجلة</div>
             </div>
             <div className="space-y-2">
