@@ -9,7 +9,6 @@ export default function CreateNgo() {
   return (
     <div className="min-h-screen bg-gray-50/50 pb-12">
       <Navbar />
-      
       {/* Hero Banner */}
       <div className="bg-primary text-white py-12">
         <div className="container mx-auto px-4">
@@ -21,7 +20,6 @@ export default function CreateNgo() {
           </div>
         </div>
       </div>
-
       <main className="container mx-auto px-4 py-8">
         <Link href="/">
           <Button variant="ghost" className="mb-6 gap-2 text-muted-foreground hover:text-primary" data-testid="button-back-home">
@@ -121,7 +119,7 @@ export default function CreateNgo() {
                       </li>
                       <li className="p-4 flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>محضر انتخاب مجلس الإدارة الأولى للجمعية موقع من المؤسسين / 4 / نسخ.</span>
+                        <span>محضر انتخاب مجلس الإدارة الأمناء.</span>
                       </li>
                       <li className="p-4 flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
