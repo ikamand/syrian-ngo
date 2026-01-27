@@ -27,6 +27,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/ngos/new" component={CreateNgo} />
+      <Route path="/create-ngo" component={CreateNgo} />
       <Route path="/ngos/:id" component={NgoProfile} />
       <Route path="/ngos" component={NgoList} />
       <Route path="/legal/association-law" component={AssociationLaw} />
