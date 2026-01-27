@@ -145,7 +145,7 @@ export default function Home() {
       </section>
       <footer className="bg-slate-900 text-slate-300 py-12">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 border-b border-slate-800 pb-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 border-b border-slate-800 pb-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <img 
@@ -159,6 +159,7 @@ export default function Home() {
                 منصة حكومية رسمية تهدف لتنظيم وتسهيل عمل المنظمات غير الحكومية في الجمهورية العربية السورية.
               </p>
             </div>
+            
             <div>
               <h3 className="text-white font-bold mb-4">روابط سريعة</h3>
               <ul className="space-y-2 text-sm">
@@ -168,6 +169,33 @@ export default function Home() {
                 <li><Link href="/login" className="hover:text-secondary transition-colors">تسجيل الدخول</Link></li>
               </ul>
             </div>
+
+            <div>
+              <h3 className="text-white font-bold mb-4">روابط هامة</h3>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <a href="http://www.mosal.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                    وزارة الشؤون الإجتماعية والعمل
+                  </a>
+                </li>
+                <li>
+                  <a href="http://www.moh.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                    وزارة الصحة
+                  </a>
+                </li>
+                <li>
+                  <a href="http://www.pmo.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                    رئاسة مجلس الوزراء
+                  </a>
+                </li>
+                <li>
+                  <a href="http://moed.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                    وزارة التربية والتعليم
+                  </a>
+                </li>
+              </ul>
+            </div>
+
             <div>
               <h3 className="text-white font-bold mb-4">تواصل معنا</h3>
               <ul className="space-y-2 text-sm">
