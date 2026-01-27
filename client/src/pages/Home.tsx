@@ -133,7 +133,7 @@ export default function Home() {
               <div className="text-primary-foreground/80 font-medium">محافظة</div>
             </div>
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-secondary">24/7</div>
+              <div className="text-4xl font-bold text-secondary">792</div>
               <div className="text-primary-foreground/80 font-medium">عدد المعاملات</div>
             </div>
             <div className="space-y-2">
