@@ -780,6 +780,133 @@ export async function registerRoutes(
     res.json({ success: true });
   });
 
+  // --- Open Graph Meta Tags for Social Media Sharing ---
+  // This middleware injects dynamic meta tags for news article pages
+  app.get("/news/:id", async (req, res, next) => {
+    const userAgent = req.get("user-agent") || "";
+    
+    // Allow testing OG tags via query parameter: /news/1?og=1
+    const forceOg = req.query.og === "1" || req.query.og === "true";
+    
+    // Check if this is a social media crawler/bot or link previewer
+    const socialBots = [
+      "facebookexternalhit",
+      "Facebot",
+      "Twitterbot",
+      "WhatsApp",
+      "LinkedInBot",
+      "TelegramBot",
+      "Slackbot",
+      "Discord",
+      "bot",
+      "crawler",
+      "spider",
+      "preview",
+      "embed",
+      "curl",
+      "wget",
+      "python-requests",
+      "okhttp",
+      "axios",
+      "node-fetch",
+      "Googlebot",
+      "bingbot",
+      "yahoo",
+      "baidu",
+      "yandex",
+      "duckduckgo",
+      "applebot",
+      "pingdom",
+      "lighthouse",
+      "Pinterestbot",
+      "Rogerbot",
+      "Screaming Frog",
+      "ia_archiver",
+      "heritrix",
+      "Syndicator"
+    ];
+    
+    const isSocialBot = socialBots.some(bot => 
+      userAgent.toLowerCase().includes(bot.toLowerCase())
+    );
+    
+    // If not a social bot and not forcing OG, let the SPA handle it
+    if (!isSocialBot && !forceOg) {
+      return next();
+    }
+    
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return next();
+      }
+      
+      const announcement = await storage.getAnnouncement(id);
+      if (!announcement) {
+        return next();
+      }
+      
+      // HTML-escape function to prevent XSS and broken meta tags
+      const escapeHtml = (text: string) => {
+        return text
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      };
+      
+      // Strip HTML tags from content for description
+      const stripHtml = (html: string) => {
+        return html.replace(/<[^>]*>/g, "").substring(0, 200);
+      };
+      
+      const title = escapeHtml(announcement.title);
+      const description = escapeHtml(stripHtml(announcement.content || ""));
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
+      const articleUrl = `${baseUrl}/news/${id}`;
+      
+      // Use article image or fallback to default platform image
+      // Make sure image URL is absolute for social media platforms
+      let imageUrl = announcement.imageUrl || "/favicon.png";
+      if (imageUrl && !imageUrl.startsWith("http")) {
+        imageUrl = `${baseUrl}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+      }
+      
+      // Build Open Graph HTML
+      const html = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${title} - منصة تشارك</title>
+  <meta name="description" content="${description}" />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="${articleUrl}" />
+  <meta property="og:image" content="${imageUrl}" />
+  <meta property="og:site_name" content="منصة تشارك" />
+  <meta property="og:locale" content="ar_SY" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="${imageUrl}" />
+</head>
+<body>
+  <h1>${title}</h1>
+  <p>${description}</p>
+  <a href="${articleUrl}">اقرأ المزيد على منصة تشارك</a>
+</body>
+</html>`;
+      
+      res.status(200).set({ "Content-Type": "text/html" }).send(html);
+    } catch (error) {
+      console.error("Error generating OG meta tags:", error);
+      next();
+    }
+  });
+
   // Seeding
   if ((await storage.getNgos()).length === 0) {
     console.log("Seeding database...");

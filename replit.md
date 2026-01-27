@@ -66,6 +66,11 @@ The announcements page uses an editorial news-style design:
 - **Image Uploads**: Admin can upload images (up to 5MB) when creating/editing announcements using presigned URL pattern via object storage
 - **Admin Management**: Full CRUD for announcements in admin panel with image preview and thumbnail display
 - **Validation**: Drizzle-Zod integration for type-safe schema validation
+- **Social Media Sharing**: Server-side Open Graph meta tag injection for proper link previews on social platforms (Facebook, WhatsApp, Twitter, etc.)
+  - Crawlers receive dynamic og:title, og:description, og:image, og:url meta tags
+  - HTML-escaped content prevents XSS and broken meta tags
+  - Absolute image URLs for compatibility with social platforms
+  - Test meta tags by appending `?og=1` to any news URL (e.g., `/news/1?og=1`)
 
 ### Opportunities Feature
 - **Public Opportunities List**: Grid layout at `/opportunities` showing all job and volunteer opportunities from approved NGOs
