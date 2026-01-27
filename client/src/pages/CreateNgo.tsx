@@ -111,10 +111,6 @@ export default function CreateNgo() {
                     <ul className="divide-y">
                       <li className="p-4 flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>طلب إشهار المنظمة.</span>
-                      </li>
-                      <li className="p-4 flex items-start gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                         <span>قرار تعيين مندوب الجمعية لإتمام إجراءات الشهر.</span>
                       </li>
                       <li className="p-4 flex items-start gap-3">
