@@ -477,10 +477,24 @@ export default function AdminDashboard() {
     setFooterLinkDialogMode("form");
   };
 
+  const openFooterLinksManager = () => {
+    setFooterLinkDialogMode("list");
+    setEditingFooterLink(null);
+    setFooterLinkForm({ title: "", url: "", sortOrder: 0 });
+    setFooterLinkDialogOpen(true);
+  };
+
   const closeFooterLinkDialog = () => {
     setFooterLinkDialogOpen(false);
     setFooterLinkDialogMode("list");
     setEditingFooterLink(null);
+    setFooterLinkForm({ title: "", url: "", sortOrder: 0 });
+  };
+
+  const backToFooterLinkList = () => {
+    setFooterLinkDialogMode("list");
+    setEditingFooterLink(null);
+    setFooterLinkForm({ title: "", url: "", sortOrder: 0 });
   };
 
   const handleFooterLinkSave = () => {
@@ -500,16 +514,14 @@ export default function AdminDashboard() {
       }, {
         onSuccess: () => {
           toast({ title: "تم التحديث", description: "تم تحديث الرابط بنجاح" });
-          setFooterLinkDialogMode("list");
-          setEditingFooterLink(null);
+          backToFooterLinkList();
         }
       });
     } else {
       createFooterLink(footerLinkForm, {
         onSuccess: () => {
           toast({ title: "تم الإنشاء", description: "تم إضافة الرابط بنجاح" });
-          setFooterLinkDialogMode("list");
-          setEditingFooterLink(null);
+          backToFooterLinkList();
         }
       });
     }
@@ -1092,7 +1104,7 @@ export default function AdminDashboard() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => setFooterLinkDialogOpen(true)}
+                          onClick={openFooterLinksManager}
                           data-testid="button-edit-content-footer-links"
                         >
                           تعديل
@@ -1489,7 +1501,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setFooterLinkDialogMode("list")}>رجوع</Button>
+                <Button variant="outline" onClick={backToFooterLinkList}>رجوع</Button>
                 <Button 
                   onClick={handleFooterLinkSave} 
                   disabled={isFooterLinkCreating || isFooterLinkUpdating}
