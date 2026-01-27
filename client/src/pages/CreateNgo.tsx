@@ -139,11 +139,6 @@ export default function CreateNgo() {
                       </li>
                     </ul>
                   </div>
-                  <div className="mt-4 p-4 bg-amber-50 border border-amber-200">
-                    <p className="text-amber-800 font-medium">
-                      ملاحظة: كل نسخة توضع في مصنف على حدة.
-                    </p>
-                  </div>
                 </section>
               </CardContent>
             </TabsContent>
