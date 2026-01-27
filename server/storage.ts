@@ -1,4 +1,4 @@
-import { users, ngos, announcements, siteContent, notices, type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent, type Notice, type InsertNotice } from "@shared/schema";
+import { users, ngos, announcements, siteContent, notices, footerLinks, type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent, type Notice, type InsertNotice, type FooterLink, type InsertFooterLink } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import connectPgSimple from "connect-pg-simple";
@@ -40,6 +40,12 @@ export interface IStorage {
   getNotices(): Promise<Notice[]>;
   updateNotice(id: number, updates: Partial<InsertNotice>): Promise<Notice | undefined>;
   deleteNotice(id: number): Promise<boolean>;
+
+  createFooterLink(link: InsertFooterLink): Promise<FooterLink>;
+  getFooterLink(id: number): Promise<FooterLink | undefined>;
+  getFooterLinks(): Promise<FooterLink[]>;
+  updateFooterLink(id: number, updates: Partial<InsertFooterLink>): Promise<FooterLink | undefined>;
+  deleteFooterLink(id: number): Promise<boolean>;
 
   sessionStore: session.Store;
 }
@@ -224,6 +230,33 @@ export class DatabaseStorage implements IStorage {
 
   async deleteNotice(id: number): Promise<boolean> {
     const result = await db.delete(notices).where(eq(notices.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async createFooterLink(link: InsertFooterLink): Promise<FooterLink> {
+    const [created] = await db.insert(footerLinks).values(link).returning();
+    return created;
+  }
+
+  async getFooterLink(id: number): Promise<FooterLink | undefined> {
+    const [link] = await db.select().from(footerLinks).where(eq(footerLinks.id, id));
+    return link;
+  }
+
+  async getFooterLinks(): Promise<FooterLink[]> {
+    return db.select().from(footerLinks).orderBy(footerLinks.sortOrder);
+  }
+
+  async updateFooterLink(id: number, updates: Partial<InsertFooterLink>): Promise<FooterLink | undefined> {
+    const [updated] = await db.update(footerLinks)
+      .set(updates)
+      .where(eq(footerLinks.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteFooterLink(id: number): Promise<boolean> {
+    const result = await db.delete(footerLinks).where(eq(footerLinks.id, id)).returning();
     return result.length > 0;
   }
 }

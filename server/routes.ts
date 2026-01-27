@@ -731,6 +731,55 @@ export async function registerRoutes(
     res.json({ success: true });
   });
 
+  // --- Footer Links Routes ---
+
+  // Get all footer links (public - used by footer component)
+  app.get("/api/footer-links", async (_req, res) => {
+    const links = await storage.getFooterLinks();
+    res.json(links);
+  });
+
+  // Admin: Get all footer links
+  app.get("/api/admin/footer-links", requireAdmin, async (_req, res) => {
+    const links = await storage.getFooterLinks();
+    res.json(links);
+  });
+
+  // Admin: Create footer link
+  app.post("/api/admin/footer-links", requireAdmin, async (req, res) => {
+    try {
+      const { title, url, sortOrder } = req.body;
+      if (!title || !url) {
+        return res.status(400).json({ message: "العنوان والرابط مطلوبان" });
+      }
+      const link = await storage.createFooterLink({ title, url, sortOrder: sortOrder || 0 });
+      res.status(201).json(link);
+    } catch (err) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Admin: Update footer link
+  app.put("/api/admin/footer-links/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { title, url, sortOrder } = req.body;
+      const updated = await storage.updateFooterLink(id, { title, url, sortOrder });
+      if (!updated) return res.status(404).json({ message: "الرابط غير موجود" });
+      res.json(updated);
+    } catch (err) {
+      res.status(400).json({ message: "Invalid request" });
+    }
+  });
+
+  // Admin: Delete footer link
+  app.delete("/api/admin/footer-links/:id", requireAdmin, async (req, res) => {
+    const id = parseInt(req.params.id);
+    const success = await storage.deleteFooterLink(id);
+    if (!success) return res.status(404).json({ message: "الرابط غير موجود" });
+    res.json({ success: true });
+  });
+
   // Seeding
   if ((await storage.getNgos()).length === 0) {
     console.log("Seeding database...");
