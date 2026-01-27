@@ -61,11 +61,12 @@ export function FeaturedNewsSlider() {
   return (
     <section className="py-16 bg-gray-100">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-primary flex items-center gap-3">
-            <Newspaper className="w-8 h-8" />
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-primary">
             آخر الأخبار
           </h2>
+        </div>
+        <div className="flex justify-end mb-4">
           <Link href="/announcements">
             <Button variant="outline" className="gap-2" data-testid="link-view-all-news">
               عرض جميع الأخبار
