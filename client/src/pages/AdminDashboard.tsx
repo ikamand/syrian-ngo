@@ -4,7 +4,7 @@ import { useNgos, useUpdateNgoStatus, useDeleteNgo } from "@/hooks/use-ngos";
 import { useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement, useDeleteAnnouncement } from "@/hooks/use-announcements";
 import { useNotices, useCreateNotice, useUpdateNotice, useDeleteNotice } from "@/hooks/use-notices";
 import { useAllSiteContent, useUpsertSiteContent } from "@/hooks/use-site-content";
-import { useFooterLinks, useCreateFooterLink, useUpdateFooterLink, useDeleteFooterLink } from "@/hooks/use-footer-links";
+import { usePublicFooterLinks, useCreateFooterLink, useUpdateFooterLink, useDeleteFooterLink } from "@/hooks/use-footer-links";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { Check, X, Trash2, Save, Plus, Key, Users, UserPlus, Pencil, Upload, ImageIcon, Loader2 } from "lucide-react";
@@ -462,7 +462,7 @@ export default function AdminDashboard() {
 
   const openCreateFooterLink = () => {
     setEditingFooterLink(null);
-    const nextOrder = footerLinksData?.length ? Math.max(...footerLinksData.map(l => l.sortOrder)) + 1 : 1;
+    const nextOrder = footerLinksData?.length ? Math.max(...footerLinksData.map((l: any) => l.sortOrder)) + 1 : 1;
     setFooterLinkForm({ title: "", url: "", sortOrder: nextOrder });
     setFooterLinkDialogMode("form");
   };
@@ -1412,7 +1412,7 @@ export default function AdminDashboard() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {footerLinksData?.map((link) => (
+                        {footerLinksData?.map((link: any) => (
                           <TableRow key={link.id}>
                             <TableCell>{link.sortOrder}</TableCell>
                             <TableCell className="font-medium">{link.title}</TableCell>
