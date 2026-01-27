@@ -45,9 +45,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background font-sans">
       <Navbar />
-
       <HeroSlideshow />
-
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -58,7 +56,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
@@ -97,9 +94,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <FeaturedNewsSlider />
-
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -126,7 +121,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <section className="py-16 bg-primary text-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -140,7 +134,7 @@ export default function Home() {
             </div>
             <div className="space-y-2">
               <div className="text-4xl font-bold text-secondary">24/7</div>
-              <div className="text-primary-foreground/80 font-medium">خدمة إلكترونية</div>
+              <div className="text-primary-foreground/80 font-medium">عدد المعاملات</div>
             </div>
             <div className="space-y-2">
               <div className="text-4xl font-bold text-secondary">100%</div>
@@ -149,7 +143,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <footer className="bg-slate-900 text-slate-300 py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 border-b border-slate-800 pb-8 mb-8">
