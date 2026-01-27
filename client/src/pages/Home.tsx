@@ -138,7 +138,7 @@ export default function Home() {
             </div>
             <div className="space-y-2">
               <div className="text-4xl font-bold text-secondary">100%</div>
-              <div className="text-primary-foreground/80 font-medium">امتثال قانوني</div>
+              <div className="text-primary-foreground/80 font-medium">منظمة مشهرة</div>
             </div>
           </div>
         </div>
