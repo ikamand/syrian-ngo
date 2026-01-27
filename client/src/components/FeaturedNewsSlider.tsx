@@ -66,17 +66,9 @@ export function FeaturedNewsSlider() {
             آخر الأخبار
           </h2>
         </div>
-        <div className="flex justify-end mb-4">
-          <Link href="/announcements">
-            <Button variant="outline" className="gap-2" data-testid="link-view-all-news">
-              عرض جميع الأخبار
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-          </Link>
-        </div>
 
         <div 
-          className="relative overflow-hidden bg-white shadow-lg"
+          className="relative overflow-hidden bg-white shadow-lg mb-8"
           dir="ltr"
           onMouseEnter={() => setIsAutoPlaying(false)}
           onMouseLeave={() => setIsAutoPlaying(true)}
@@ -161,6 +153,15 @@ export function FeaturedNewsSlider() {
               </div>
             </>
           )}
+        </div>
+
+        <div className="flex justify-center">
+          <Link href="/announcements">
+            <Button variant="outline" className="gap-2" data-testid="link-view-all-news">
+              عرض جميع الأخبار
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
