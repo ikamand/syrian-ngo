@@ -76,6 +76,7 @@ export function FeaturedNewsSlider() {
 
         <div 
           className="relative overflow-hidden bg-white shadow-lg"
+          dir="ltr"
           onMouseEnter={() => setIsAutoPlaying(false)}
           onMouseLeave={() => setIsAutoPlaying(true)}
         >
@@ -99,7 +100,7 @@ export function FeaturedNewsSlider() {
                       </div>
                     )}
                   </div>
-                  <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-center text-right">
+                  <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-center text-right" dir="rtl">
                     <span className="text-sm text-muted-foreground mb-2">
                       {news.createdAt ? new Date(news.createdAt).toLocaleDateString('ar-SY', {
                         year: 'numeric',
