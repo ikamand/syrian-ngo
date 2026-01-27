@@ -8,6 +8,7 @@ import { FeaturedNewsSlider } from "@/components/FeaturedNewsSlider";
 import { usePublicFooterLinks } from "@/hooks/use-footer-links";
 
 import emblemUrl from "@assets/emblem-of-syria-seeklogo_1769042472182.png";
+import donationCampaignImage from "../assets/images/donation-campaign.jpg";
 
 interface QuickLinkCardProps {
   title: string;
@@ -91,7 +92,7 @@ export default function Home() {
               description="ساهم في دعم المجتمع"
               href="/campaigns"
               icon={<Heart className="w-6 h-6" />}
-              image="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop"
+              image={donationCampaignImage}
             />
           </div>
         </div>
