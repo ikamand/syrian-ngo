@@ -85,9 +85,9 @@ export default function CreateNgo() {
                     <Building2 className="w-5 h-5" />
                     الجهة المقدمة للخدمة
                   </h2>
-                  <div className="bg-primary/5 p-4 border border-primary/20">
-                    <p className="text-foreground font-semibold">وزارة الشؤون الاجتماعية والعمل</p>
-                  </div>
+                  <p className="text-foreground leading-relaxed bg-gray-50 p-4">
+                    وزارة الشؤون الاجتماعية والعمل
+                  </p>
                 </section>
 
                 {/* الجمهور المستفيد من الخدمة */}
