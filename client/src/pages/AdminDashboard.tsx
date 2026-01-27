@@ -128,6 +128,7 @@ export default function AdminDashboard() {
   const { mutate: updateFooterLink, isPending: isFooterLinkUpdating } = useUpdateFooterLink();
   const { mutate: deleteFooterLink } = useDeleteFooterLink();
   const [footerLinkDialogOpen, setFooterLinkDialogOpen] = useState(false);
+  const [footerLinkDialogMode, setFooterLinkDialogMode] = useState<"list" | "form">("list");
   const [editingFooterLink, setEditingFooterLink] = useState<any>(null);
   const [footerLinkForm, setFooterLinkForm] = useState({ title: "", url: "", sortOrder: 0 });
 
@@ -463,7 +464,7 @@ export default function AdminDashboard() {
     setEditingFooterLink(null);
     const nextOrder = footerLinksData?.length ? Math.max(...footerLinksData.map(l => l.sortOrder)) + 1 : 1;
     setFooterLinkForm({ title: "", url: "", sortOrder: nextOrder });
-    setFooterLinkDialogOpen(true);
+    setFooterLinkDialogMode("form");
   };
 
   const openEditFooterLink = (link: any) => {
@@ -473,7 +474,13 @@ export default function AdminDashboard() {
       url: link.url,
       sortOrder: link.sortOrder
     });
-    setFooterLinkDialogOpen(true);
+    setFooterLinkDialogMode("form");
+  };
+
+  const closeFooterLinkDialog = () => {
+    setFooterLinkDialogOpen(false);
+    setFooterLinkDialogMode("list");
+    setEditingFooterLink(null);
   };
 
   const handleFooterLinkSave = () => {
@@ -493,14 +500,16 @@ export default function AdminDashboard() {
       }, {
         onSuccess: () => {
           toast({ title: "تم التحديث", description: "تم تحديث الرابط بنجاح" });
-          setFooterLinkDialogOpen(false);
+          setFooterLinkDialogMode("list");
+          setEditingFooterLink(null);
         }
       });
     } else {
       createFooterLink(footerLinkForm, {
         onSuccess: () => {
           toast({ title: "تم الإنشاء", description: "تم إضافة الرابط بنجاح" });
-          setFooterLinkDialogOpen(false);
+          setFooterLinkDialogMode("list");
+          setEditingFooterLink(null);
         }
       });
     }
@@ -597,7 +606,7 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="ngos" className="space-y-6">
-          <TabsList className="grid w-full max-w-4xl grid-cols-6">
+          <TabsList className="grid w-full max-w-3xl grid-cols-5">
             <TabsTrigger value="ngos" data-testid="tab-ngos">
               المنظمات
             </TabsTrigger>
@@ -612,9 +621,6 @@ export default function AdminDashboard() {
             </TabsTrigger>
             <TabsTrigger value="content" data-testid="tab-content">
               المحتوى
-            </TabsTrigger>
-            <TabsTrigger value="footer-links" data-testid="tab-footer-links">
-              روابط الفوتر
             </TabsTrigger>
           </TabsList>
 
@@ -1078,80 +1084,38 @@ export default function AdminDashboard() {
                       </Card>
                     );
                   })}
+
+                  <Card className="border shadow-sm">
+                    <CardHeader>
+                      <div className="flex flex-row items-center justify-between gap-2">
+                        <CardTitle className="text-lg">روابط هامة</CardTitle>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setFooterLinkDialogOpen(true)}
+                          data-testid="button-edit-content-footer-links"
+                        >
+                          تعديل
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      {isFooterLinksLoading ? (
+                        <p className="text-foreground/80">جاري التحميل...</p>
+                      ) : footerLinksData && footerLinksData.length > 0 ? (
+                        <p className="text-foreground/80">
+                          {footerLinksData.length} روابط مضافة
+                        </p>
+                      ) : (
+                        <p className="text-muted-foreground">لا توجد روابط مضافة</p>
+                      )}
+                    </CardContent>
+                  </Card>
                 </div>
               )}
             </div>
           </TabsContent>
 
-          <TabsContent value="footer-links">
-            <div className="bg-white rounded-xl border shadow-sm">
-              <div className="p-4 border-b flex justify-between items-center">
-                <h2 className="text-lg font-semibold">إدارة روابط الفوتر</h2>
-                <Button onClick={openCreateFooterLink} data-testid="button-add-footer-link">
-                  <Plus className="w-4 h-4 ml-2" />
-                  إضافة رابط
-                </Button>
-              </div>
-
-              {isFooterLinksLoading ? (
-                <div className="p-8 text-center text-muted-foreground">جاري التحميل...</div>
-              ) : footerLinksData?.length === 0 ? (
-                <div className="p-8 text-center text-muted-foreground">لا توجد روابط مضافة</div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>الترتيب</TableHead>
-                        <TableHead>العنوان</TableHead>
-                        <TableHead>الرابط</TableHead>
-                        <TableHead className="text-left">إجراءات</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {footerLinksData?.map((link) => (
-                        <TableRow key={link.id}>
-                          <TableCell>{link.sortOrder}</TableCell>
-                          <TableCell className="font-medium">{link.title}</TableCell>
-                          <TableCell>
-                            <a 
-                              href={link.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline"
-                            >
-                              {link.url}
-                            </a>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex gap-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => openEditFooterLink(link)}
-                                data-testid={`button-edit-footer-link-${link.id}`}
-                              >
-                                <Pencil className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleFooterLinkDelete(link.id)}
-                                className="text-destructive hover:text-destructive"
-                                data-testid={`button-delete-footer-link-${link.id}`}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </div>
-          </TabsContent>
         </Tabs>
       </main>
 
@@ -1405,60 +1369,138 @@ export default function AdminDashboard() {
         </DialogContent>
       </Dialog>
 
-      {/* Footer Link Dialog */}
-      <Dialog open={footerLinkDialogOpen} onOpenChange={setFooterLinkDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>{editingFooterLink ? "تعديل الرابط" : "إضافة رابط جديد"}</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="link-title">العنوان</Label>
-              <Input
-                id="link-title"
-                value={footerLinkForm.title}
-                onChange={(e) => setFooterLinkForm({ ...footerLinkForm, title: e.target.value })}
-                placeholder="مثال: وزارة الشؤون الاجتماعية"
-                data-testid="input-footer-link-title"
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="link-url">الرابط (URL)</Label>
-              <Input
-                id="link-url"
-                type="url"
-                dir="ltr"
-                value={footerLinkForm.url}
-                onChange={(e) => setFooterLinkForm({ ...footerLinkForm, url: e.target.value })}
-                placeholder="https://example.gov.sy"
-                data-testid="input-footer-link-url"
-              />
-            </div>
+      {/* Footer Links Management Dialog */}
+      <Dialog open={footerLinkDialogOpen} onOpenChange={closeFooterLinkDialog}>
+        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
+          {footerLinkDialogMode === "list" ? (
+            <>
+              <DialogHeader>
+                <div className="flex items-center justify-between">
+                  <DialogTitle>إدارة الروابط الهامة</DialogTitle>
+                  <Button onClick={openCreateFooterLink} size="sm" data-testid="button-add-footer-link">
+                    <Plus className="w-4 h-4 ml-2" />
+                    إضافة رابط
+                  </Button>
+                </div>
+              </DialogHeader>
+              <div className="py-4">
+                {isFooterLinksLoading ? (
+                  <div className="p-8 text-center text-muted-foreground">جاري التحميل...</div>
+                ) : footerLinksData?.length === 0 ? (
+                  <div className="p-8 text-center text-muted-foreground">لا توجد روابط مضافة</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>الترتيب</TableHead>
+                          <TableHead>العنوان</TableHead>
+                          <TableHead>الرابط</TableHead>
+                          <TableHead className="text-left">إجراءات</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {footerLinksData?.map((link) => (
+                          <TableRow key={link.id}>
+                            <TableCell>{link.sortOrder}</TableCell>
+                            <TableCell className="font-medium">{link.title}</TableCell>
+                            <TableCell>
+                              <a 
+                                href={link.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline text-sm"
+                              >
+                                {link.url.length > 30 ? link.url.substring(0, 30) + "..." : link.url}
+                              </a>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => openEditFooterLink(link)}
+                                  data-testid={`button-edit-footer-link-${link.id}`}
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleFooterLinkDelete(link.id)}
+                                  className="text-destructive hover:text-destructive"
+                                  data-testid={`button-delete-footer-link-${link.id}`}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={closeFooterLinkDialog}>إغلاق</Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <DialogHeader>
+                <DialogTitle>{editingFooterLink ? "تعديل الرابط" : "إضافة رابط جديد"}</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="link-title">العنوان</Label>
+                  <Input
+                    id="link-title"
+                    value={footerLinkForm.title}
+                    onChange={(e) => setFooterLinkForm({ ...footerLinkForm, title: e.target.value })}
+                    placeholder="مثال: وزارة الشؤون الاجتماعية"
+                    data-testid="input-footer-link-title"
+                  />
+                </div>
+                
+                <div className="grid gap-2">
+                  <Label htmlFor="link-url">الرابط (URL)</Label>
+                  <Input
+                    id="link-url"
+                    type="url"
+                    dir="ltr"
+                    value={footerLinkForm.url}
+                    onChange={(e) => setFooterLinkForm({ ...footerLinkForm, url: e.target.value })}
+                    placeholder="https://example.gov.sy"
+                    data-testid="input-footer-link-url"
+                  />
+                </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="link-order">ترتيب العرض</Label>
-              <Input
-                id="link-order"
-                type="number"
-                min="0"
-                value={footerLinkForm.sortOrder}
-                onChange={(e) => setFooterLinkForm({ ...footerLinkForm, sortOrder: parseInt(e.target.value) || 0 })}
-                data-testid="input-footer-link-order"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setFooterLinkDialogOpen(false)}>إلغاء</Button>
-            <Button 
-              onClick={handleFooterLinkSave} 
-              disabled={isFooterLinkCreating || isFooterLinkUpdating}
-              data-testid="button-save-footer-link"
-            >
-              <Save className="w-4 h-4 ml-2" />
-              {editingFooterLink ? "حفظ التغييرات" : "إضافة الرابط"}
-            </Button>
-          </DialogFooter>
+                <div className="grid gap-2">
+                  <Label htmlFor="link-order">ترتيب العرض</Label>
+                  <Input
+                    id="link-order"
+                    type="number"
+                    min="0"
+                    value={footerLinkForm.sortOrder}
+                    onChange={(e) => setFooterLinkForm({ ...footerLinkForm, sortOrder: parseInt(e.target.value) || 0 })}
+                    data-testid="input-footer-link-order"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setFooterLinkDialogMode("list")}>رجوع</Button>
+                <Button 
+                  onClick={handleFooterLinkSave} 
+                  disabled={isFooterLinkCreating || isFooterLinkUpdating}
+                  data-testid="button-save-footer-link"
+                >
+                  <Save className="w-4 h-4 ml-2" />
+                  {editingFooterLink ? "حفظ التغييرات" : "إضافة الرابط"}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
 
