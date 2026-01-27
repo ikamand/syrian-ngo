@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import { Building2, FileCheck, Users, ArrowLeft, Calendar, Briefcase, Heart, Megaphone } from "lucide-react";
 import { HeroSlideshow } from "@/components/HeroSlideshow";
 import { FeaturedNewsSlider } from "@/components/FeaturedNewsSlider";
+import { usePublicFooterLinks } from "@/hooks/use-footer-links";
 
 import emblemUrl from "@assets/emblem-of-syria-seeklogo_1769042472182.png";
 
@@ -42,6 +43,8 @@ function QuickLinkCard({ title, description, href, icon, image }: QuickLinkCardP
 }
 
 export default function Home() {
+  const { data: footerLinks } = usePublicFooterLinks();
+  
   return (
     <div className="min-h-screen bg-background font-sans">
       <Navbar />
@@ -173,26 +176,43 @@ export default function Home() {
             <div>
               <h3 className="text-white font-bold mb-4">روابط هامة</h3>
               <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="http://www.mosal.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
-                    وزارة الشؤون الإجتماعية والعمل
-                  </a>
-                </li>
-                <li>
-                  <a href="http://www.moh.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
-                    وزارة الصحة
-                  </a>
-                </li>
-                <li>
-                  <a href="http://www.pmo.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
-                    رئاسة مجلس الوزراء
-                  </a>
-                </li>
-                <li>
-                  <a href="http://moed.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
-                    وزارة التربية والتعليم
-                  </a>
-                </li>
+                {footerLinks && footerLinks.length > 0 ? (
+                  footerLinks.map((link) => (
+                    <li key={link.id}>
+                      <a 
+                        href={link.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="hover:text-secondary transition-colors"
+                      >
+                        {link.title}
+                      </a>
+                    </li>
+                  ))
+                ) : (
+                  <>
+                    <li>
+                      <a href="http://www.mosal.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                        وزارة الشؤون الإجتماعية والعمل
+                      </a>
+                    </li>
+                    <li>
+                      <a href="http://www.moh.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                        وزارة الصحة
+                      </a>
+                    </li>
+                    <li>
+                      <a href="http://www.pmo.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                        رئاسة مجلس الوزراء
+                      </a>
+                    </li>
+                    <li>
+                      <a href="http://moed.gov.sy" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                        وزارة التربية والتعليم
+                      </a>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
 
