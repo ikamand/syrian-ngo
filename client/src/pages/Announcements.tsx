@@ -6,7 +6,6 @@ import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
-import { TwitterFeed } from "@/components/TwitterFeed";
 
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
@@ -39,8 +38,6 @@ export default function Announcements() {
       </div>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="flex flex-col xl:flex-row gap-8" dir="rtl">
-          <div className="flex-1 min-w-0">
         {isLoading ? (
           <div className="space-y-6">
             <div className="bg-white p-6 animate-pulse">
@@ -56,7 +53,7 @@ export default function Announcements() {
             </div>
           </div>
         ) : announcements && announcements.length > 0 ? (
-          <div className="space-y-8">
+          <div className="space-y-8" dir="rtl">
             {featuredArticle && (
               <section>
                 <Link href={`/news/${featuredArticle.id}`}>
@@ -210,14 +207,6 @@ export default function Announcements() {
             <p className="text-lg">لا توجد أخبار حالياً</p>
           </div>
         )}
-          </div>
-          
-          <aside className="xl:w-80 flex-shrink-0">
-            <div className="sticky top-4 z-50">
-              <TwitterFeed username="SyMOSAAL" height={700} />
-            </div>
-          </aside>
-        </div>
       </main>
     </div>
   );
