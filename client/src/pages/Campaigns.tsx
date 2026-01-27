@@ -22,9 +22,6 @@ export default function Campaigns() {
       <main className="container mx-auto px-4 py-12">
         <Card className="max-w-2xl mx-auto shadow-lg border-t-4 border-primary">
           <CardContent className="p-12 flex flex-col items-center text-center space-y-6">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
-              <Hammer className="w-10 h-10 text-primary" />
-            </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-bold text-foreground">قيد الإنشاء</h2>
               <p className="text-muted-foreground text-lg">
