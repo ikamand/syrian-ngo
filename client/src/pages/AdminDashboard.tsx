@@ -123,7 +123,7 @@ export default function AdminDashboard() {
   const [contentForm, setContentForm] = useState({ key: "", title: "", content: "", richText: false });
   const [isUploadingContentPdf, setIsUploadingContentPdf] = useState(false);
 
-  const { data: footerLinksData, isLoading: isFooterLinksLoading } = useFooterLinks();
+  const { data: footerLinksData, isLoading: isFooterLinksLoading } = usePublicFooterLinks();
   const { mutate: createFooterLink, isPending: isFooterLinkCreating } = useCreateFooterLink();
   const { mutate: updateFooterLink, isPending: isFooterLinkUpdating } = useUpdateFooterLink();
   const { mutate: deleteFooterLink } = useDeleteFooterLink();
