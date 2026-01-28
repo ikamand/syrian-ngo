@@ -45,7 +45,7 @@ export default function Dashboard() {
             <h1 className="text-3xl font-bold text-gray-900">لوحة التحكم</h1>
             <p className="text-muted-foreground mt-1">إدارة طلبات المنظمات الخاصة بك</p>
           </div>
-          <Link href="/ngos/new">
+          <Link href="/create-ngo">
             <Button className="gap-2 shadow-lg shadow-primary/20">
               <Plus className="w-4 h-4" />
               إنشاء منظمة جديدة
@@ -106,7 +106,7 @@ export default function Dashboard() {
                 </div>
                 <h3 className="text-lg font-medium text-gray-900">لا توجد طلبات</h3>
                 <p className="text-gray-500 mb-6">لم تقم بتقديم أي طلبات لتسجيل منظمات بعد.</p>
-                <Link href="/ngos/new">
+                <Link href="/create-ngo">
                   <Button variant="outline">بدء طلب جديد</Button>
                 </Link>
               </div>
