@@ -436,6 +436,7 @@ export async function registerRoutes(
             skills: vol.skills,
             experience: vol.experience,
             volunteerPurpose: vol.volunteerPurpose,
+            details: vol.details,
           });
         }
       }
@@ -511,6 +512,7 @@ export async function registerRoutes(
           skills: vol.skills,
           experience: vol.experience,
           volunteerPurpose: vol.volunteerPurpose,
+          details: vol.details,
         };
       }
     }

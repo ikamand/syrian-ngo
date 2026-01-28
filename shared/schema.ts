@@ -238,7 +238,8 @@ export const ngos = pgTable("ngos", {
     volunteerPurpose: string,
     qualification: string,
     skills: string,
-    experience: string
+    experience: string,
+    details: string
   }>>(),
   statistics: jsonb("statistics").$type<Array<{
     title: string,
