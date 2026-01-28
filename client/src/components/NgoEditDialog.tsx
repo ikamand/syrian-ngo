@@ -167,7 +167,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
     resolver: zodResolver(formSchema),
     defaultValues: {
       orgIdentifier: "", arabicName: "", englishName: "", legalForm: "", scope: "",
-      orgStatus: "", publicationNumber: "", publicationDate: "", hasPublicBenefit: false,
+      headquartersGovernorate: "", orgStatus: "", publicationNumber: "", publicationDate: "", hasPublicBenefit: false,
       hasInternalRegulations: false, hasWomenPolicy: false, hasVolunteerPolicy: false,
       hasOrgStructure: false, internalRegulationsDoc: "", publicationDecisionDoc: "",
       publicBenefitDoc: "", description: "", logo: "", name: "", city: "", presidentName: "",
@@ -215,6 +215,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
         englishName: ngo.englishName || "",
         legalForm: ngo.legalForm || "",
         scope: ngo.scope || "",
+        headquartersGovernorate: ngo.headquartersGovernorate || "",
         orgStatus: ngo.orgStatus || "",
         publicationNumber: ngo.publicationNumber || "",
         publicationDate: ngo.publicationDate || "",
