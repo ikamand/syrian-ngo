@@ -30,6 +30,7 @@ export const ngos = pgTable("ngos", {
   
   // Section 1: معلومات الإشهار - Publication Info
   scope: text("scope").notNull(),
+  headquartersGovernorate: text("headquarters_governorate"),
   orgStatus: text("org_status"),
   publicationNumber: text("publication_number"),
   publicationDate: text("publication_date"),

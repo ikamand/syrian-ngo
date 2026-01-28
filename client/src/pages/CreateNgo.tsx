@@ -81,6 +81,7 @@ const formSchema = z.object({
   englishName: z.string().optional(),
   legalForm: z.string().min(1, "الشكل القانوني مطلوب"),
   scope: z.string().min(1, "نطاق العمل مطلوب"),
+  headquartersGovernorate: z.string().optional(),
   orgStatus: z.string().optional(),
   publicationNumber: z.string().optional(),
   publicationDate: z.string().optional(),
@@ -547,6 +548,28 @@ export default function CreateNgo() {
                                   <SelectContent>
                                     {scopeOptions.map(s => (
                                       <SelectItem key={s} value={s}>{s}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="headquartersGovernorate"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>المحافظة</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger data-testid="select-headquarters-governorate">
+                                      <SelectValue placeholder="اختر المحافظة" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {governorates.map(gov => (
+                                      <SelectItem key={gov} value={gov}>{gov}</SelectItem>
                                     ))}
                                   </SelectContent>
                                 </Select>

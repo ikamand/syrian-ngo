@@ -103,6 +103,9 @@ export default function NgoProfile() {
                       {ngo.scope && (
                         <Badge variant="secondary">{ngo.scope}</Badge>
                       )}
+                      {ngo.headquartersGovernorate && (
+                        <Badge variant="outline" data-testid="text-headquarters-governorate">{ngo.headquartersGovernorate}</Badge>
+                      )}
                       {ngo.orgStatus && (
                         <Badge className={`no-default-hover-elevate ${
                           ngo.orgStatus === "فعالة" ? "bg-green-100 text-green-700" :

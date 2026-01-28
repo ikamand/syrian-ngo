@@ -68,6 +68,11 @@ export default function NgoList() {
         if (gov) governorates.add(gov);
       }
     }
+    // Check headquartersGovernorate field first (primary source)
+    if (ngo.headquartersGovernorate) {
+      const gov = normalizeGovernorate(ngo.headquartersGovernorate);
+      if (gov) governorates.add(gov);
+    }
     // Fallback to city field only if it matches a valid governorate
     if (governorates.size === 0 && ngo.city) {
       const gov = normalizeGovernorate(ngo.city);
