@@ -151,7 +151,7 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
         />
         <GeoJSON
           ref={geoJsonRef as any}
-          data={syriaGeoJson as GeoJSON.FeatureCollection}
+          data={syriaGeoJson as any}
           style={style}
           onEachFeature={onEachFeature}
         />
