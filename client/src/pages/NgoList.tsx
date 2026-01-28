@@ -180,7 +180,7 @@ export default function NgoList() {
       </div>
 
       <main className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="map" className="w-full" dir="rtl">
+        <Tabs defaultValue="list" className="w-full" dir="rtl">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
             <TabsTrigger value="map" className="flex items-center gap-2" data-testid="tab-map-view">
               <Map className="w-4 h-4" />
