@@ -89,7 +89,7 @@ export default function Home() {
             <QuickLinkCard
               title="حملات التبرع"
               description="ساهم في دعم المجتمع"
-              href="/campaigns"
+              href="/donation-campaigns"
               icon={<Heart className="w-6 h-6" />}
               image="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=2070&auto=format&fit=crop"
             />
