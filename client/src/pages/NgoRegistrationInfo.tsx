@@ -7,7 +7,6 @@ export default function NgoRegistrationInfo() {
   return (
     <div className="min-h-screen bg-gray-50/50">
       <Navbar />
-      
       {/* Hero Banner */}
       <div className="bg-primary text-white py-12">
         <div className="container mx-auto px-4 text-center">
@@ -17,7 +16,6 @@ export default function NgoRegistrationInfo() {
           </p>
         </div>
       </div>
-
       <main className="container mx-auto px-4 py-8">
         <Card className="max-w-5xl mx-auto shadow-lg">
           <CardContent className="p-6">
@@ -140,7 +138,7 @@ export default function NgoRegistrationInfo() {
                       <span className="font-bold text-primary text-lg">6.</span>
                       <div>
                         <h3 className="font-semibold text-foreground">مراسلة الجهات الحكومية الأخرى من قبل الجهة الحكومية المختصة</h3>
-                        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">شعبة الأمن السياسي بالنسبة للأعضاء، محافظة المقر (بالنسبة لحاجة المحافظة لخدمات المنظمة غير الحكومية)، الوزارة الفنية المختصة بعمل المنظمة غير الحكومية (وزارة الصحة - وزارة التربية - وزارة الثقافة)</p>
+                        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">محافظة المقر (بالنسبة لحاجة المحافظة لخدمات المنظمة غير الحكومية)، الوزارة الفنية المختصة بعمل المنظمة غير الحكومية (وزارة الصحة - وزارة التربية - وزارة الثقافة)</p>
                       </div>
                     </div>
                   </li>
