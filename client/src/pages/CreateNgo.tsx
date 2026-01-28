@@ -21,12 +21,17 @@ export default function CreateNgo() {
         </div>
       </div>
       <main className="container mx-auto px-4 py-8">
-        <Link href="/">
-          <Button variant="ghost" className="mb-6 gap-2 text-muted-foreground hover:text-primary" data-testid="button-back-home">
-            <ArrowRight className="w-4 h-4" />
-            العودة للرئيسية
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <Link href="/">
+            <Button variant="ghost" className="gap-2 text-muted-foreground hover:text-primary" data-testid="button-back-home">
+              <ArrowRight className="w-4 h-4" />
+              العودة للرئيسية
+            </Button>
+          </Link>
+          <Button className="w-full md:w-auto px-8 py-6 text-lg font-bold" data-testid="button-start-service">
+            بدء الخدمة
           </Button>
-        </Link>
+        </div>
 
         <Card className="shadow-lg">
           <Tabs defaultValue="service-info" dir="rtl" className="w-full">
