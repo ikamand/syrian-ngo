@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import CreateNgo from "@/pages/CreateNgo";
+import NgoRegistrationInfo from "@/pages/NgoRegistrationInfo";
 import NgoList from "@/pages/NgoList";
 import NgoProfile from "@/pages/NgoProfile";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/login" component={Auth} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/create-ngo" component={NgoRegistrationInfo} />
       <Route path="/ngos/new" component={CreateNgo} />
       <Route path="/ngos/:id" component={NgoProfile} />
       <Route path="/ngos" component={NgoList} />
