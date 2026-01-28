@@ -20,6 +20,7 @@ import OpportunityDetail from "@/pages/OpportunityDetail";
 import Notices from "@/pages/Notices";
 import Events from "@/pages/Events";
 import Campaigns from "@/pages/Campaigns";
+import NgoRegistrationForm from "@/pages/NgoRegistrationForm";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/ngos/new" component={CreateNgo} />
       <Route path="/create-ngo" component={CreateNgo} />
+      <Route path="/register-ngo" component={NgoRegistrationForm} />
       <Route path="/ngos/:id" component={NgoProfile} />
       <Route path="/ngos" component={NgoList} />
       <Route path="/legal/association-law" component={AssociationLaw} />

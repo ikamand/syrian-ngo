@@ -4,8 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { ArrowRight, FileText, ListChecks, Scale, Table2, Building2, Users, MapPin, Target, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 
 export default function CreateNgo() {
+  const [, setLocation] = useLocation();
   return (
     <div className="min-h-screen bg-gray-50/50 pb-12">
       <Navbar />
@@ -28,7 +30,11 @@ export default function CreateNgo() {
               العودة للرئيسية
             </Button>
           </Link>
-          <Button className="w-full md:w-auto px-8 py-6 text-lg font-bold" data-testid="button-start-service">
+          <Button 
+            className="w-full md:w-auto px-8 py-6 text-lg font-bold" 
+            data-testid="button-start-service"
+            onClick={() => setLocation("/register-ngo")}
+          >
             بدء الخدمة
           </Button>
         </div>
