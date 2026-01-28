@@ -56,15 +56,6 @@ export function Navbar() {
           <Link href="/announcements" className={`transition-colors hover:text-white ${isActive("/announcements") ? "text-white font-bold" : "text-white/80"}`}>
             الأخبار
           </Link>
-          <Link href="/opportunities" className={`transition-colors hover:text-white ${isActive("/opportunities") ? "text-white font-bold" : "text-white/80"}`}>
-            فرص العمل والتطوع
-          </Link>
-          <Link href="/events" className={`transition-colors hover:text-white ${isActive("/events") ? "text-white font-bold" : "text-white/80"}`}>
-            الفعاليات
-          </Link>
-          <Link href="/donation-campaigns" className={`transition-colors hover:text-white ${isActive("/donation-campaigns") ? "text-white font-bold" : "text-white/80"}`}>
-            حملات التبرع
-          </Link>
           
           <DropdownMenu>
             <DropdownMenuTrigger className={`flex items-center gap-1 transition-colors hover:text-white outline-none ${location.startsWith("/legal") ? "text-white font-bold" : "text-white/80"}`}>
@@ -209,24 +200,6 @@ export function Navbar() {
               <DropdownMenuItem asChild>
                 <Link href="/announcements" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
                   الأخبار
-                </Link>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem asChild>
-                <Link href="/opportunities" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                  فرص العمل والتطوع
-                </Link>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem asChild>
-                <Link href="/events" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                  الفعاليات
-                </Link>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem asChild>
-                <Link href="/donation-campaigns" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                  حملات التبرع
                 </Link>
               </DropdownMenuItem>
 
