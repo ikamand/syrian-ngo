@@ -47,27 +47,27 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-6 text-sm font-medium">
-          <Link href="/" className={`transition-colors hover:text-white ${isActive("/") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+          <Link href="/" className={`transition-colors hover:text-white ${isActive("/") ? "text-white font-bold" : "text-white/80"}`}>
             الرئيسية
           </Link>
-          <Link href="/ngos" className={`transition-colors hover:text-white ${isActive("/ngos") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+          <Link href="/ngos" className={`transition-colors hover:text-white ${isActive("/ngos") ? "text-white font-bold" : "text-white/80"}`}>
             دليل المنظمات
           </Link>
-          <Link href="/announcements" className={`transition-colors hover:text-white ${isActive("/announcements") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+          <Link href="/announcements" className={`transition-colors hover:text-white ${isActive("/announcements") ? "text-white font-bold" : "text-white/80"}`}>
             الأخبار
           </Link>
-          <Link href="/opportunities" className={`transition-colors hover:text-white ${isActive("/opportunities") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+          <Link href="/opportunities" className={`transition-colors hover:text-white ${isActive("/opportunities") ? "text-white font-bold" : "text-white/80"}`}>
             فرص العمل والتطوع
           </Link>
-          <Link href="/events" className={`transition-colors hover:text-white ${isActive("/events") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+          <Link href="/events" className={`transition-colors hover:text-white ${isActive("/events") ? "text-white font-bold" : "text-white/80"}`}>
             الفعاليات
           </Link>
-          <Link href="/donation-campaigns" className={`transition-colors hover:text-white ${isActive("/donation-campaigns") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+          <Link href="/donation-campaigns" className={`transition-colors hover:text-white ${isActive("/donation-campaigns") ? "text-white font-bold" : "text-white/80"}`}>
             حملات التبرع
           </Link>
           
           <DropdownMenu>
-            <DropdownMenuTrigger className={`flex items-center gap-1 transition-colors hover:text-white outline-none ${location.startsWith("/legal") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+            <DropdownMenuTrigger className={`flex items-center gap-1 transition-colors hover:text-white outline-none ${location.startsWith("/legal") ? "text-white font-bold" : "text-white/80"}`}>
               المرجعيات القانونية
               <ChevronDown className="h-4 w-4" />
             </DropdownMenuTrigger>
@@ -91,7 +91,7 @@ export function Navbar() {
           </DropdownMenu>
 
           {user && (
-            <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className={`transition-colors hover:text-white ${isActive("/dashboard") || isActive("/admin") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+            <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className={`transition-colors hover:text-white ${isActive("/dashboard") || isActive("/admin") ? "text-white font-bold" : "text-white/80"}`}>
               لوحة التحكم
             </Link>
           )}
