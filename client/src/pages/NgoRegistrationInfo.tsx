@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, ListChecks, Scale, Table2, Building2, CheckCircle2, FileCheck, Users, AlertCircle } from "lucide-react";
+import { FileText, ListChecks, Scale, Table2, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function NgoRegistrationInfo() {
   return (
@@ -11,7 +11,6 @@ export default function NgoRegistrationInfo() {
       {/* Hero Banner */}
       <div className="bg-primary text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <Building2 className="w-16 h-16 mx-auto mb-4 opacity-90" />
           <h1 className="text-3xl font-bold mb-3">إنشاء منظمة جديدة</h1>
           <p className="text-lg opacity-90 max-w-2xl mx-auto">
             دليل شامل لتأسيس المنظمات غير الحكومية في الجمهورية العربية السورية
@@ -45,10 +44,7 @@ export default function NgoRegistrationInfo() {
               {/* Tab 1: معلومات الخدمة */}
               <TabsContent value="service-info" className="space-y-6" data-testid="content-service-info">
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-6">
-                  <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-                    <FileText className="w-6 h-6" />
-                    وصف الخدمة
-                  </h2>
+                  <h2 className="text-xl font-bold text-primary mb-4">وصف الخدمة</h2>
                   <p className="text-foreground leading-relaxed">
                     يمكن من خلال منصة تشارك تقديم طلب خاص بتأسيس منظمة غير حكومية والإطلاع على المتطلبات واستكمال كافة الأوراق الثبوتية مما يسهل الإجراءات ويختصر الكثير من الوقت.
                   </p>
@@ -56,18 +52,12 @@ export default function NgoRegistrationInfo() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="bg-white border rounded-lg p-5">
-                    <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
-                      <Building2 className="w-5 h-5" />
-                      الجهة المقدمة للخدمة
-                    </h3>
+                    <h3 className="font-semibold text-primary mb-3">الجهة المقدمة للخدمة</h3>
                     <p className="text-foreground">وزارة الشؤون الاجتماعية والعمل</p>
                   </div>
 
                   <div className="bg-white border rounded-lg p-5">
-                    <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
-                      <Users className="w-5 h-5" />
-                      الجمهور المستفيد من الخدمة
-                    </h3>
+                    <h3 className="font-semibold text-primary mb-3">الجمهور المستفيد من الخدمة</h3>
                     <p className="text-foreground text-sm leading-relaxed">
                       كافة مواطنين الجمهورية العربية السورية والراغبين بتأسيس منظمات أو جمعيات أو اتحادات ممن لا تقل أعمارهم عن (18) ثمانية عشر عاماً ميلادياً وتنطبق عليهم شروط التأسيس
                     </p>
@@ -75,10 +65,7 @@ export default function NgoRegistrationInfo() {
                 </div>
 
                 <div className="bg-white border rounded-lg p-6">
-                  <h3 className="font-semibold text-primary mb-4 flex items-center gap-2">
-                    <FileCheck className="w-5 h-5" />
-                    الوثائق المطلوبة
-                  </h3>
+                  <h3 className="font-semibold text-primary mb-4">الوثائق المطلوبة</h3>
                   <ul className="space-y-3">
                     {[
                       "طلب إشهار المنظمة.",
