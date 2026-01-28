@@ -40,13 +40,30 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
     return data?.count || 0;
   };
 
-  const getColor = (count: number, isSelected: boolean) => {
-    if (isSelected) return "#166534";
-    if (count === 0) return "#e5e7eb";
-    if (count <= 2) return "#bbf7d0";
-    if (count <= 5) return "#86efac";
-    if (count <= 10) return "#4ade80";
-    return "#16a34a";
+  const getColorClass = (count: number, isSelected: boolean): string => {
+    if (isSelected) return "var(--map-selected)";
+    if (count === 0) return "var(--map-empty)";
+    if (count <= 2) return "var(--map-low)";
+    if (count <= 5) return "var(--map-medium)";
+    if (count <= 10) return "var(--map-high)";
+    return "var(--map-very-high)";
+  };
+
+  const getCSSColorValue = (cssVar: string): string => {
+    const root = document.documentElement;
+    const computedStyle = getComputedStyle(root);
+    const hslValue = computedStyle.getPropertyValue(cssVar.replace("var(--", "--").replace(")", "")).trim();
+    if (hslValue) {
+      return `hsl(${hslValue})`;
+    }
+    if (cssVar.includes("map-empty")) return "hsl(220 9% 91%)";
+    if (cssVar.includes("map-low")) return "hsl(141 76% 85%)";
+    if (cssVar.includes("map-medium")) return "hsl(142 70% 73%)";
+    if (cssVar.includes("map-high")) return "hsl(142 70% 55%)";
+    if (cssVar.includes("map-very-high")) return "hsl(142 76% 36%)";
+    if (cssVar.includes("map-selected")) return "hsl(140 60% 20%)";
+    if (cssVar.includes("map-border")) return "hsl(215 14% 45%)";
+    return "#e5e7eb";
   };
 
   const style = (feature: GeoJSON.Feature | undefined) => {
@@ -54,22 +71,31 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
     const name = feature.properties.name;
     const count = getGovernorateCount(name);
     const isSelected = selectedGovernorate === name;
+    const colorVar = getColorClass(count, isSelected);
     
     return {
-      fillColor: getColor(count, isSelected),
+      fillColor: getCSSColorValue(colorVar),
       weight: isSelected ? 3 : 1,
       opacity: 1,
-      color: isSelected ? "#166534" : "#6b7280",
+      color: isSelected ? getCSSColorValue("var(--map-selected)") : getCSSColorValue("var(--map-border)"),
       fillOpacity: isSelected ? 0.9 : 0.7,
     };
   };
 
   const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
     const name = feature.properties?.name || "";
+    const govId = feature.properties?.id || name;
     const count = getGovernorateCount(name);
     
+    if (layer instanceof L.Path) {
+      const pathElement = (layer as any)._path;
+      if (pathElement) {
+        pathElement.setAttribute("data-testid", `map-governorate-${govId}`);
+      }
+    }
+    
     layer.bindTooltip(
-      `<div style="direction: rtl; font-family: Cairo, sans-serif; padding: 4px;">
+      `<div style="direction: rtl; font-family: Cairo, sans-serif; padding: 4px;" data-testid="tooltip-${govId}">
         <strong>${name}</strong><br/>
         ${count} منظمة
       </div>`,
@@ -98,10 +124,19 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
         onGovernorateClick(name);
       }
     });
+    
+    layer.on("add", () => {
+      if (layer instanceof L.Path) {
+        const pathElement = (layer as any)._path;
+        if (pathElement) {
+          pathElement.setAttribute("data-testid", `map-governorate-${govId}`);
+        }
+      }
+    });
   };
 
   return (
-    <div className="relative w-full" dir="ltr">
+    <div className="relative w-full" dir="ltr" data-testid="syria-map-wrapper">
       <MapContainer
         center={[35.0, 38.5]}
         zoom={6}
@@ -123,25 +158,25 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
         <MapController selectedGovernorate={selectedGovernorate} />
       </MapContainer>
       
-      <div className="mt-4 flex items-center justify-center gap-4 text-sm text-muted-foreground flex-wrap" dir="rtl">
+      <div className="mt-4 flex items-center justify-center gap-4 text-sm text-muted-foreground flex-wrap" dir="rtl" data-testid="map-legend">
         <div className="flex items-center gap-2" data-testid="legend-no-orgs">
-          <div className="w-4 h-4 rounded" style={{ backgroundColor: "#e5e7eb" }} />
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: "hsl(var(--map-empty))" }} />
           <span>لا توجد منظمات</span>
         </div>
         <div className="flex items-center gap-2" data-testid="legend-1-2">
-          <div className="w-4 h-4 rounded" style={{ backgroundColor: "#bbf7d0" }} />
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: "hsl(var(--map-low))" }} />
           <span>1-2</span>
         </div>
         <div className="flex items-center gap-2" data-testid="legend-3-5">
-          <div className="w-4 h-4 rounded" style={{ backgroundColor: "#86efac" }} />
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: "hsl(var(--map-medium))" }} />
           <span>3-5</span>
         </div>
         <div className="flex items-center gap-2" data-testid="legend-6-10">
-          <div className="w-4 h-4 rounded" style={{ backgroundColor: "#4ade80" }} />
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: "hsl(var(--map-high))" }} />
           <span>6-10</span>
         </div>
         <div className="flex items-center gap-2" data-testid="legend-10-plus">
-          <div className="w-4 h-4 rounded" style={{ backgroundColor: "#16a34a" }} />
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: "hsl(var(--map-very-high))" }} />
           <span>10+</span>
         </div>
       </div>
@@ -149,7 +184,7 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
       <style>{`
         .leaflet-tooltip-custom {
           background: white;
-          border: 1px solid #e5e7eb;
+          border: 1px solid hsl(var(--border));
           border-radius: 4px;
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
