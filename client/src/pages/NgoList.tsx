@@ -267,42 +267,11 @@ export default function NgoList() {
                     )}
                   </Card>
                 ) : (
-                  <Card className="p-6">
-                    <h2 className="text-lg font-bold text-primary mb-4">إحصائيات المنظمات</h2>
-                    <div className="text-center py-8">
-                      <div className="text-4xl font-bold text-primary mb-2">{ngos?.length || 0}</div>
-                      <p className="text-muted-foreground">منظمة مسجلة</p>
-                    </div>
-                    <div className="border-t pt-4 mt-4">
-                      <p className="text-sm text-muted-foreground text-center">
-                        انقر على أي محافظة في الخريطة لعرض المنظمات المسجلة فيها
-                      </p>
-                    </div>
-                    
-                    <div className="mt-6 space-y-2">
-                      <h3 className="font-semibold text-sm mb-3">التوزيع حسب المحافظة:</h3>
-                      {governoratesData
-                        .filter(g => g.count > 0)
-                        .sort((a, b) => b.count - a.count)
-                        .map(gov => (
-                          <div 
-                            key={gov.name} 
-                            className="flex items-center justify-between text-sm cursor-pointer hover:bg-gray-50 p-2 rounded"
-                            onClick={() => handleGovernorateClick(gov.name)}
-                            data-testid={`governorate-stat-${gov.name}`}
-                          >
-                            <span>{gov.name}</span>
-                            <span className="font-bold text-primary">{gov.count}</span>
-                          </div>
-                        ))
-                      }
-                      {governoratesData.filter(g => g.count > 0).length === 0 && (
-                        <p className="text-sm text-muted-foreground text-center py-4">
-                          لا توجد منظمات مسجلة حالياً
-                        </p>
-                      )}
-                    </div>
-                  </Card>
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">
+                      انقر على أي محافظة في الخريطة لعرض المنظمات المسجلة فيها
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
