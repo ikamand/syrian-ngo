@@ -7,7 +7,7 @@ import { api } from "@shared/routes";
 import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SyriaMap } from "@/components/SyriaMap";
+import { SyriaMapLeaflet } from "@/components/SyriaMapLeaflet";
 import { Button } from "@/components/ui/button";
 
 export default function NgoList() {
@@ -201,7 +201,7 @@ export default function NgoList() {
                     <div className="animate-pulse text-muted-foreground">جاري التحميل...</div>
                   </div>
                 ) : (
-                  <SyriaMap 
+                  <SyriaMapLeaflet 
                     governoratesData={governoratesData}
                     onGovernorateClick={handleGovernorateClick}
                     selectedGovernorate={selectedGovernorate}
