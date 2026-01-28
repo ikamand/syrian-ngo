@@ -1,17 +1,20 @@
 import { Navbar } from "@/components/Navbar";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
-import { Loader2, ArrowRight, Building2, MapPin, Phone, Mail, Globe, Check, X, Calendar, Briefcase, Users, Car, Home, DollarSign, FileText, Target, Award, Building, Landmark } from "lucide-react";
+import { Loader2, ArrowRight, Building2, MapPin, Phone, Mail, Globe, Check, X, Calendar, Briefcase, Users, Car, Home, DollarSign, FileText, Target, Award, Building, Landmark, Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import type { Ngo } from "@shared/schema";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function NgoProfile() {
   const [match, params] = useRoute("/ngos/:id");
   const ngoId = params?.id;
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const { data: ngo, isLoading, error } = useQuery<Ngo>({
     queryKey: ['/api/ngos/public', ngoId],
@@ -454,17 +457,21 @@ export default function NgoProfile() {
                   )}
 
                   {/* Employees Section */}
-                  {hasData(ngo.employees as any[]) && (
-                    <AccordionItem value="employees" className="border rounded-lg px-4">
+                  {isAdmin && hasData(ngo.employees as any[]) && (
+                    <AccordionItem value="employees" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-employees">
                         <span className="flex items-center gap-2">
                           <Users className="w-5 h-5" />
                           الموظفون ({(ngo.employees as any[]).length})
+                          <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
+                            <Lock className="w-3 h-3" />
+                            للمسؤولين فقط
+                          </Badge>
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="space-y-3 pt-2">
                         {(ngo.employees as any[]).map((emp, i) => (
-                          <div key={i} className="p-3 bg-muted/30 rounded-lg">
+                          <div key={i} className="p-3 bg-white/50 border rounded-lg">
                             <div className="font-medium mb-2">{emp.firstName} {emp.lastName}</div>
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               {emp.position && <div><span className="text-muted-foreground">المنصب:</span> {emp.position}</div>}
@@ -479,17 +486,21 @@ export default function NgoProfile() {
                   )}
 
                   {/* Volunteers Section */}
-                  {hasData(ngo.volunteers as any[]) && (
-                    <AccordionItem value="volunteers" className="border rounded-lg px-4">
+                  {isAdmin && hasData(ngo.volunteers as any[]) && (
+                    <AccordionItem value="volunteers" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-volunteers">
                         <span className="flex items-center gap-2">
                           <Users className="w-5 h-5" />
                           المتطوعون ({(ngo.volunteers as any[]).length})
+                          <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
+                            <Lock className="w-3 h-3" />
+                            للمسؤولين فقط
+                          </Badge>
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="space-y-3 pt-2">
                         {(ngo.volunteers as any[]).map((vol, i) => (
-                          <div key={i} className="p-3 bg-muted/30 rounded-lg">
+                          <div key={i} className="p-3 bg-white/50 border rounded-lg">
                             <div className="font-medium mb-2">{vol.firstName} {vol.lastName}</div>
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               {vol.position && <div><span className="text-muted-foreground">المنصب:</span> {vol.position}</div>}
@@ -504,17 +515,21 @@ export default function NgoProfile() {
                   )}
 
                   {/* Bank Accounts Section */}
-                  {hasData(ngo.bankAccounts as any[]) && (
-                    <AccordionItem value="bank-accounts" className="border rounded-lg px-4">
+                  {isAdmin && hasData(ngo.bankAccounts as any[]) && (
+                    <AccordionItem value="bank-accounts" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-bank-accounts">
                         <span className="flex items-center gap-2">
                           <Landmark className="w-5 h-5" />
                           الحسابات البنكية
+                          <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
+                            <Lock className="w-3 h-3" />
+                            للمسؤولين فقط
+                          </Badge>
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="space-y-3 pt-2">
                         {(ngo.bankAccounts as any[]).map((account, i) => (
-                          <div key={i} className="p-3 bg-muted/30 rounded-lg">
+                          <div key={i} className="p-3 bg-white/50 border rounded-lg">
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               {account.bankName && <div><span className="text-muted-foreground">البنك:</span> {account.bankName}</div>}
                               {account.branchName && <div><span className="text-muted-foreground">الفرع:</span> {account.branchName}</div>}
@@ -531,17 +546,21 @@ export default function NgoProfile() {
                   )}
 
                   {/* Vehicles Section */}
-                  {hasData(ngo.vehicles as any[]) && (
-                    <AccordionItem value="vehicles" className="border rounded-lg px-4">
+                  {isAdmin && hasData(ngo.vehicles as any[]) && (
+                    <AccordionItem value="vehicles" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-vehicles">
                         <span className="flex items-center gap-2">
                           <Car className="w-5 h-5" />
                           المركبات
+                          <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
+                            <Lock className="w-3 h-3" />
+                            للمسؤولين فقط
+                          </Badge>
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="space-y-3 pt-2">
                         {(ngo.vehicles as any[]).map((vehicle, i) => (
-                          <div key={i} className="p-3 bg-muted/30 rounded-lg">
+                          <div key={i} className="p-3 bg-white/50 border rounded-lg">
                             <div className="font-medium mb-2">{vehicle.vehicleType} - {vehicle.model}</div>
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               {vehicle.plateNumber && <div><span className="text-muted-foreground">رقم اللوحة:</span> {vehicle.plateNumber}</div>}
@@ -556,17 +575,21 @@ export default function NgoProfile() {
                   )}
 
                   {/* Real Estate Section */}
-                  {hasData(ngo.realEstate as any[]) && (
-                    <AccordionItem value="real-estate" className="border rounded-lg px-4">
+                  {isAdmin && hasData(ngo.realEstate as any[]) && (
+                    <AccordionItem value="real-estate" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-real-estate">
                         <span className="flex items-center gap-2">
                           <Home className="w-5 h-5" />
                           العقارات
+                          <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
+                            <Lock className="w-3 h-3" />
+                            للمسؤولين فقط
+                          </Badge>
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="space-y-3 pt-2">
                         {(ngo.realEstate as any[]).map((property, i) => (
-                          <div key={i} className="p-3 bg-muted/30 rounded-lg">
+                          <div key={i} className="p-3 bg-white/50 border rounded-lg">
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               {property.propertyType && <div><span className="text-muted-foreground">نوع العقار:</span> {property.propertyType}</div>}
                               {property.propertyNumber && <div><span className="text-muted-foreground">رقم العقار:</span> {property.propertyNumber}</div>}
@@ -581,17 +604,21 @@ export default function NgoProfile() {
                   )}
 
                   {/* Financial Data Section */}
-                  {hasData(ngo.financialData as any[]) && (
-                    <AccordionItem value="financial-data" className="border rounded-lg px-4">
+                  {isAdmin && hasData(ngo.financialData as any[]) && (
+                    <AccordionItem value="financial-data" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-financial-data">
                         <span className="flex items-center gap-2">
                           <DollarSign className="w-5 h-5" />
                           البيانات المالية
+                          <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
+                            <Lock className="w-3 h-3" />
+                            للمسؤولين فقط
+                          </Badge>
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="space-y-3 pt-2">
                         {(ngo.financialData as any[]).map((data, i) => (
-                          <div key={i} className="p-3 bg-muted/30 rounded-lg">
+                          <div key={i} className="p-3 bg-white/50 border rounded-lg">
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               {data.year && <div><span className="text-muted-foreground">السنة:</span> {data.year}</div>}
                               {data.closingBudget && <div><span className="text-muted-foreground">الميزانية الختامية:</span> {data.closingBudget}</div>}
@@ -603,17 +630,21 @@ export default function NgoProfile() {
                   )}
 
                   {/* Annual Plans Section */}
-                  {hasData(ngo.annualPlans as any[]) && (
-                    <AccordionItem value="annual-plans" className="border rounded-lg px-4">
+                  {isAdmin && hasData(ngo.annualPlans as any[]) && (
+                    <AccordionItem value="annual-plans" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-annual-plans">
                         <span className="flex items-center gap-2">
                           <Calendar className="w-5 h-5" />
                           الخطط السنوية
+                          <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
+                            <Lock className="w-3 h-3" />
+                            للمسؤولين فقط
+                          </Badge>
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="space-y-3 pt-2">
                         {(ngo.annualPlans as any[]).map((plan, i) => (
-                          <div key={i} className="p-3 bg-muted/30 rounded-lg">
+                          <div key={i} className="p-3 bg-white/50 border rounded-lg">
                             <div className="space-y-2 text-sm">
                               {plan.plan && <div><span className="text-muted-foreground">الخطة:</span> {plan.plan}</div>}
                               {plan.tracking && <div><span className="text-muted-foreground">المتابعة:</span> {plan.tracking}</div>}
