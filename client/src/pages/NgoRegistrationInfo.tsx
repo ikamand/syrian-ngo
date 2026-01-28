@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, ListChecks, Scale, Table2, AlertCircle } from "lucide-react";
+import { FileText, ListChecks, Scale, Table2, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function NgoRegistrationInfo() {
   return (
@@ -66,15 +66,22 @@ export default function NgoRegistrationInfo() {
 
                 <div className="bg-white border rounded-lg p-6">
                   <h3 className="font-semibold text-primary mb-4">الوثائق المطلوبة</h3>
-                  <ul className="list-disc list-inside space-y-2 text-foreground text-sm pr-2">
-                    <li>طلب إشهار المنظمة.</li>
-                    <li>قرار تعيين مندوب الجمعية لإتمام إجراءات الشهر.</li>
-                    <li>محضر انتخاب مجلس الإدارة الأولى للجمعية موقع من المؤسسين / 4 / نسخ.</li>
-                    <li>أربع نسخ من القائمة المتضمنة أسماء المؤسسين وجنسيتهم وسنهم ومهنتهم ومحل إقامتهم ومكان العمل، عنوان الإقامة الدائم والمؤقت، إن وجد المؤهل العلمي، رقم الهاتف موقع من المؤسسين.</li>
-                    <li>أربع نسخ من عقد تأسيس الجمعية موقع من المؤسسين.</li>
-                    <li>أربع نسخ من نظام الجمعية موقع من المؤسسين.</li>
-                    <li>أربع نسخ من نشرة استعلامات + صورة شخصية + صورة هوية.</li>
-                    <li>عقد إيجار بمقر للجمعية أو سند ملكية لمقر الجمعية.</li>
+                  <ul className="space-y-3">
+                    {[
+                      "طلب إشهار المنظمة.",
+                      "قرار تعيين مندوب الجمعية لإتمام إجراءات الشهر.",
+                      "محضر انتخاب مجلس الإدارة الأولى للجمعية موقع من المؤسسين / 4 / نسخ.",
+                      "أربع نسخ من القائمة المتضمنة أسماء المؤسسين وجنسيتهم وسنهم ومهنتهم ومحل إقامتهم ومكان العمل، عنوان الإقامة الدائم والمؤقت، إن وجد المؤهل العلمي، رقم الهاتف موقع من المؤسسين.",
+                      "أربع نسخ من عقد تأسيس الجمعية موقع من المؤسسين.",
+                      "أربع نسخ من نظام الجمعية موقع من المؤسسين.",
+                      "أربع نسخ من نشرة استعلامات + صورة شخصية + صورة هوية.",
+                      "عقد إيجار بمقر للجمعية أو سند ملكية لمقر الجمعية."
+                    ].map((doc, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-foreground">{doc}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </TabsContent>
