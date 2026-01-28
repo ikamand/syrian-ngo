@@ -384,6 +384,9 @@ export async function registerRoutes(
       details?: string;
       jobPurpose?: string;
       volunteerPurpose?: string;
+      employmentType?: string;
+      education?: string;
+      classification?: string;
     }> = [];
 
     for (const ngo of approvedNgos) {
@@ -407,6 +410,9 @@ export async function registerRoutes(
             experience: job.experience,
             details: job.details,
             jobPurpose: job.jobPurpose,
+            employmentType: job.employmentType,
+            education: job.education,
+            classification: job.classification,
           });
         }
       }
@@ -480,6 +486,9 @@ export async function registerRoutes(
           experience: job.experience,
           details: job.details,
           jobPurpose: job.jobPurpose,
+          employmentType: job.employmentType,
+          education: job.education,
+          classification: job.classification,
         };
       }
     } else {

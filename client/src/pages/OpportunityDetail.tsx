@@ -24,6 +24,9 @@ interface OpportunityDetail {
   details?: string;
   jobPurpose?: string;
   volunteerPurpose?: string;
+  employmentType?: string;
+  education?: string;
+  classification?: string;
 }
 
 export default function OpportunityDetail() {
@@ -208,21 +211,44 @@ export default function OpportunityDetail() {
                 </div>
               )}
 
-              {opportunity.experience && (
-                <div className="border-t pt-6" data-testid="section-experience">
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              {(isJob && (opportunity.experience || opportunity.employmentType || opportunity.education || opportunity.classification)) && (
+                <div className="border-t pt-6" data-testid="section-job-details">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <Briefcase className="w-5 h-5 text-primary" />
-                    الخبرة المطلوبة
+                    تفاصيل الوظيفة
                   </h3>
-                  <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap" data-testid="text-experience">
-                    {opportunity.experience}
-                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {opportunity.experience && (
+                      <div className="p-3 bg-muted/50 rounded-lg" data-testid="card-experience">
+                        <p className="text-xs text-muted-foreground mb-1">الخبرة</p>
+                        <p className="font-medium" data-testid="text-experience">{opportunity.experience}</p>
+                      </div>
+                    )}
+                    {opportunity.employmentType && (
+                      <div className="p-3 bg-muted/50 rounded-lg" data-testid="card-employment-type">
+                        <p className="text-xs text-muted-foreground mb-1">نوع التوظيف</p>
+                        <p className="font-medium" data-testid="text-employment-type">{opportunity.employmentType}</p>
+                      </div>
+                    )}
+                    {opportunity.education && (
+                      <div className="p-3 bg-muted/50 rounded-lg" data-testid="card-education">
+                        <p className="text-xs text-muted-foreground mb-1">التعليم</p>
+                        <p className="font-medium" data-testid="text-education">{opportunity.education}</p>
+                      </div>
+                    )}
+                    {opportunity.classification && (
+                      <div className="p-3 bg-muted/50 rounded-lg" data-testid="card-classification">
+                        <p className="text-xs text-muted-foreground mb-1">التصنيف</p>
+                        <p className="font-medium" data-testid="text-classification">{opportunity.classification}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
               {opportunity.details && (
                 <div className="border-t pt-6" data-testid="section-details">
-                  <h3 className="text-lg font-semibold mb-3">تفاصيل إضافية</h3>
+                  <h3 className="text-lg font-semibold mb-3">التفاصيل الإضافية</h3>
                   <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap" data-testid="text-details">
                     {opportunity.details}
                   </p>
