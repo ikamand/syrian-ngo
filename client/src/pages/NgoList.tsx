@@ -193,8 +193,8 @@ export default function NgoList() {
           </TabsList>
 
           <TabsContent value="map" data-testid="content-map-view">
-            <div className="grid lg:grid-cols-2 gap-8">
-              <Card className="p-6">
+            <div className="flex flex-col items-center gap-8">
+              <Card className="p-6 w-full lg:w-[75%] mx-auto">
                 <h2 className="text-lg font-bold text-primary mb-4 text-center">خريطة توزيع المنظمات</h2>
                 {isLoading ? (
                   <div className="h-[400px] flex items-center justify-center">
@@ -209,7 +209,7 @@ export default function NgoList() {
                 )}
               </Card>
 
-              <div>
+              <div className="w-full lg:w-[75%] mx-auto">
                 {selectedGovernorate ? (
                   <Card className="p-6">
                     <div className="flex items-center justify-between mb-4">
