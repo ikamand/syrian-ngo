@@ -23,13 +23,13 @@ export default function CreateNgo() {
         </div>
       </div>
       <main className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-          <Link href="/">
-            <Button variant="ghost" className="gap-2 text-muted-foreground hover:text-primary" data-testid="button-back-home">
-              <ArrowRight className="w-4 h-4" />
-              العودة للرئيسية
-            </Button>
-          </Link>
+        <Link href="/">
+          <Button variant="ghost" className="mb-6 gap-2 text-muted-foreground hover:text-primary" data-testid="button-back-home">
+            <ArrowRight className="w-4 h-4" />
+            العودة للرئيسية
+          </Button>
+        </Link>
+        <div className="flex flex-col md:flex-row justify-end items-start md:items-center mb-6 gap-4">
           <Button 
             className="w-full md:w-auto px-8 py-6 font-bold pl-[24px] pr-[24px] pt-[10px] pb-[10px] text-[14px]" 
             data-testid="button-start-service"
