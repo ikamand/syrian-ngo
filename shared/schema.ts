@@ -221,10 +221,7 @@ export const ngos = pgTable("ngos", {
     jobPurpose: string,
     qualification: string,
     skills: string,
-    experience: string,
-    employmentType: string,
-    education: string,
-    classification: string
+    experience: string
   }>>(),
   volunteerOpportunities: jsonb("volunteer_opportunities").$type<Array<{
     workField: string,

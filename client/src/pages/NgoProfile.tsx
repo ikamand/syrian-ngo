@@ -1,5 +1,4 @@
 import { Navbar } from "@/components/Navbar";
-import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import { Loader2, ArrowRight, Building2, MapPin, Phone, Mail, Globe, Check, X, Calendar, Briefcase, Users, Car, Home, DollarSign, FileText, Target, Award, Building, Landmark } from "lucide-react";
@@ -13,8 +12,6 @@ import { sanitizeHtml } from "@/lib/sanitize";
 export default function NgoProfile() {
   const [match, params] = useRoute("/ngos/:id");
   const ngoId = params?.id;
-  const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
 
   const { data: ngo, isLoading, error } = useQuery<Ngo>({
     queryKey: ['/api/ngos/public', ngoId],
@@ -457,7 +454,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Employees Section */}
-                  {isAdmin && hasData(ngo.employees as any[]) && (
+                  {hasData(ngo.employees as any[]) && (
                     <AccordionItem value="employees" className="border rounded-lg px-4">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-employees">
                         <span className="flex items-center gap-2">
@@ -482,7 +479,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Volunteers Section */}
-                  {isAdmin && hasData(ngo.volunteers as any[]) && (
+                  {hasData(ngo.volunteers as any[]) && (
                     <AccordionItem value="volunteers" className="border rounded-lg px-4">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-volunteers">
                         <span className="flex items-center gap-2">
@@ -507,7 +504,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Bank Accounts Section */}
-                  {isAdmin && hasData(ngo.bankAccounts as any[]) && (
+                  {hasData(ngo.bankAccounts as any[]) && (
                     <AccordionItem value="bank-accounts" className="border rounded-lg px-4">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-bank-accounts">
                         <span className="flex items-center gap-2">
@@ -534,7 +531,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Vehicles Section */}
-                  {isAdmin && hasData(ngo.vehicles as any[]) && (
+                  {hasData(ngo.vehicles as any[]) && (
                     <AccordionItem value="vehicles" className="border rounded-lg px-4">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-vehicles">
                         <span className="flex items-center gap-2">
@@ -559,7 +556,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Real Estate Section */}
-                  {isAdmin && hasData(ngo.realEstate as any[]) && (
+                  {hasData(ngo.realEstate as any[]) && (
                     <AccordionItem value="real-estate" className="border rounded-lg px-4">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-real-estate">
                         <span className="flex items-center gap-2">
@@ -584,7 +581,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Financial Data Section */}
-                  {isAdmin && hasData(ngo.financialData as any[]) && (
+                  {hasData(ngo.financialData as any[]) && (
                     <AccordionItem value="financial-data" className="border rounded-lg px-4">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-financial-data">
                         <span className="flex items-center gap-2">
@@ -606,7 +603,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Annual Plans Section */}
-                  {isAdmin && hasData(ngo.annualPlans as any[]) && (
+                  {hasData(ngo.annualPlans as any[]) && (
                     <AccordionItem value="annual-plans" className="border rounded-lg px-4">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-annual-plans">
                         <span className="flex items-center gap-2">

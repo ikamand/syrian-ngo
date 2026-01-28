@@ -121,12 +121,11 @@ const formSchema = z.object({
     workField: z.string(), vacancyName: z.string(), vacancyNumber: z.string(), governorate: z.string(),
     startDate: z.string(), endDate: z.string(), commitmentNature: z.string(), jobPurpose: z.string(),
     qualification: z.string(), skills: z.string(), experience: z.string(), details: z.string(),
-    employmentType: z.string(), education: z.string(), classification: z.string(),
   })).optional(),
   volunteerOpportunities: z.array(z.object({
     workField: z.string(), vacancyName: z.string(), vacancyNumber: z.string(), governorate: z.string(),
     startDate: z.string(), endDate: z.string(), commitmentNature: z.string(), volunteerPurpose: z.string(),
-    qualification: z.string(), skills: z.string(), experience: z.string(), details: z.string(),
+    qualification: z.string(), skills: z.string(), experience: z.string(),
   })).optional(),
   statistics: z.array(z.object({ title: z.string(), count: z.string(), icon: z.string() })).optional(),
   events: z.array(z.object({
@@ -955,7 +954,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">فرص العمل</h4>
-                    <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "", details: "", employmentType: "", education: "", classification: "" })}>
+                    <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "", details: "" })}>
                       <Plus className="w-4 h-4 ml-1" /> إضافة فرصة
                     </Button>
                   </div>
@@ -968,21 +967,15 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                       <div className="grid grid-cols-3 gap-2">
                         <FormField control={form.control} name={`jobOpportunities.${index}.vacancyName`} render={({ field }) => (<FormItem><FormLabel>اسم الشاغر</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
                         <FormField control={form.control} name={`jobOpportunities.${index}.workField`} render={({ field }) => (<FormItem><FormLabel>مجال العمل</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                        <FormField control={form.control} name={`jobOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><Select onValueChange={field.onChange} value={field.value || ""}><FormControl><SelectTrigger data-testid={`select-job-governorate-${index}`}><SelectValue placeholder="اختر المحافظة" /></SelectTrigger></FormControl><SelectContent>{governorates.map((gov) => (<SelectItem key={gov} value={gov}>{gov}</SelectItem>))}</SelectContent></Select></FormItem>)} />
+                        <FormField control={form.control} name={`jobOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
                       </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        <FormField control={form.control} name={`jobOpportunities.${index}.experience`} render={({ field }) => (<FormItem><FormLabel>الخبرة</FormLabel><FormControl><Input {...field} placeholder="مثال: 3 سنوات" /></FormControl></FormItem>)} />
-                        <FormField control={form.control} name={`jobOpportunities.${index}.employmentType`} render={({ field }) => (<FormItem><FormLabel>التوظيف</FormLabel><FormControl><Input {...field} placeholder="دوام كامل، جزئي..." /></FormControl></FormItem>)} />
-                        <FormField control={form.control} name={`jobOpportunities.${index}.education`} render={({ field }) => (<FormItem><FormLabel>التعليم</FormLabel><FormControl><Input {...field} placeholder="بكالوريوس، ماجستير..." /></FormControl></FormItem>)} />
-                        <FormField control={form.control} name={`jobOpportunities.${index}.classification`} render={({ field }) => (<FormItem><FormLabel>التصنيف</FormLabel><FormControl><Input {...field} placeholder="إداري، تقني..." /></FormControl></FormItem>)} />
-                      </div>
-                      <FormField control={form.control} name={`jobOpportunities.${index}.details`} render={({ field }) => (<FormItem><FormLabel>تفاصيل الوظيفة</FormLabel><FormControl><Textarea {...field} value={field.value || ""} rows={6} placeholder="أدخل تفاصيل الوظيفة الكاملة هنا..." data-testid={`textarea-job-details-${index}`} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`jobOpportunities.${index}.details`} render={({ field }) => (<FormItem><FormLabel>تفاصيل الوظيفة</FormLabel><FormControl><Textarea {...field} rows={6} placeholder="أدخل تفاصيل الوظيفة الكاملة هنا..." /></FormControl></FormItem>)} />
                     </div>
                   ))}
 
                   <div className="flex items-center justify-between mt-6">
                     <h4 className="font-medium">فرص التطوع</h4>
-                    <Button type="button" variant="outline" size="sm" onClick={() => volunteerOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", volunteerPurpose: "", qualification: "", skills: "", experience: "", details: "" })}>
+                    <Button type="button" variant="outline" size="sm" onClick={() => volunteerOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", volunteerPurpose: "", qualification: "", skills: "", experience: "" })}>
                       <Plus className="w-4 h-4 ml-1" /> إضافة فرصة
                     </Button>
                   </div>
@@ -995,9 +988,8 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                       <div className="grid grid-cols-3 gap-2">
                         <FormField control={form.control} name={`volunteerOpportunities.${index}.vacancyName`} render={({ field }) => (<FormItem><FormLabel>اسم الشاغر</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
                         <FormField control={form.control} name={`volunteerOpportunities.${index}.workField`} render={({ field }) => (<FormItem><FormLabel>مجال العمل</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                        <FormField control={form.control} name={`volunteerOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><Select onValueChange={field.onChange} value={field.value || ""}><FormControl><SelectTrigger data-testid={`select-volunteer-governorate-${index}`}><SelectValue placeholder="اختر المحافظة" /></SelectTrigger></FormControl><SelectContent>{governorates.map((gov) => (<SelectItem key={gov} value={gov}>{gov}</SelectItem>))}</SelectContent></Select></FormItem>)} />
+                        <FormField control={form.control} name={`volunteerOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
                       </div>
-                      <FormField control={form.control} name={`volunteerOpportunities.${index}.details`} render={({ field }) => (<FormItem><FormLabel>تفاصيل فرصة التطوع</FormLabel><FormControl><Textarea {...field} value={field.value || ""} rows={6} placeholder="أدخل تفاصيل فرصة التطوع الكاملة هنا..." data-testid={`textarea-volunteer-details-${index}`} /></FormControl></FormItem>)} />
                     </div>
                   ))}
 

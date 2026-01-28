@@ -18,9 +18,6 @@ import AnnouncementDetail from "@/pages/AnnouncementDetail";
 import Opportunities from "@/pages/Opportunities";
 import OpportunityDetail from "@/pages/OpportunityDetail";
 import Notices from "@/pages/Notices";
-import Events from "@/pages/Events";
-import Campaigns from "@/pages/Campaigns";
-import NgoRegistrationForm from "@/pages/NgoRegistrationForm";
 
 function Router() {
   return (
@@ -30,8 +27,6 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/ngos/new" component={CreateNgo} />
-      <Route path="/create-ngo" component={CreateNgo} />
-      <Route path="/register-ngo" component={NgoRegistrationForm} />
       <Route path="/ngos/:id" component={NgoProfile} />
       <Route path="/ngos" component={NgoList} />
       <Route path="/legal/association-law" component={AssociationLaw} />
@@ -41,8 +36,6 @@ function Router() {
       <Route path="/announcements" component={Announcements} />
       <Route path="/opportunities/:id" component={OpportunityDetail} />
       <Route path="/opportunities" component={Opportunities} />
-      <Route path="/events" component={Events} />
-      <Route path="/campaigns" component={Campaigns} />
       <Route component={NotFound} />
     </Switch>
   );
