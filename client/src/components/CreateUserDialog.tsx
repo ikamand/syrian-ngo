@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Copy, RefreshCw, UserPlus } from "lucide-react";
+import { Loader2, Copy, RefreshCw, UserPlus, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 
 interface CreateUserDialogProps {
   open: boolean;
@@ -42,6 +42,8 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
   const [generatedPassword, setGeneratedPassword] = useState(generatePassword());
   const [showCredentials, setShowCredentials] = useState(false);
   const [createdUsername, setCreatedUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+  const [usernameMessage, setUsernameMessage] = useState("");
   
   const [formData, setFormData] = useState({
     username: "",
@@ -54,6 +56,35 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
     registrationNumber: "",
     registrationDate: ""
   });
+
+  const checkUsernameAvailability = useCallback(async (username: string) => {
+    if (!username || username.trim().length < 1) {
+      setUsernameStatus("idle");
+      setUsernameMessage("");
+      return;
+    }
+    
+    setUsernameStatus("checking");
+    try {
+      const res = await fetch(`/api/auth/check-username/${encodeURIComponent(username.trim())}`, {
+        credentials: "include"
+      });
+      const data = await res.json();
+      setUsernameStatus(data.available ? "available" : "taken");
+      setUsernameMessage(data.message);
+    } catch {
+      setUsernameStatus("idle");
+      setUsernameMessage("");
+    }
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      checkUsernameAvailability(formData.username);
+    }, 500);
+    
+    return () => clearTimeout(timeoutId);
+  }, [formData.username, checkUsernameAvailability]);
 
   const createUserMutation = useMutation({
     mutationFn: async (data: typeof formData & { password: string }) => {
@@ -87,6 +118,11 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
       return;
     }
     
+    if (usernameStatus === "taken") {
+      toast({ title: "خطأ", description: "اسم المستخدم مستخدم مسبقاً. يرجى اختيار اسم آخر", variant: "destructive" });
+      return;
+    }
+    
     createUserMutation.mutate({
       ...formData,
       password: generatedPassword
@@ -108,6 +144,8 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
     setGeneratedPassword(generatePassword());
     setShowCredentials(false);
     setCreatedUsername("");
+    setUsernameStatus("idle");
+    setUsernameMessage("");
     onOpenChange(false);
   };
 
@@ -179,15 +217,37 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="username">اسم المستخدم *</Label>
-              <Input
-                id="username"
-                value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                placeholder="username"
-                className="text-left"
-                dir="ltr"
-                data-testid="input-new-username"
-              />
+              <div className="relative">
+                <Input
+                  id="username"
+                  value={formData.username}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  placeholder="username"
+                  className={`text-left pl-10 ${
+                    usernameStatus === "taken" ? "border-destructive focus-visible:ring-destructive" : 
+                    usernameStatus === "available" ? "border-green-500 focus-visible:ring-green-500" : ""
+                  }`}
+                  dir="ltr"
+                  data-testid="input-new-username"
+                />
+                <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                  {usernameStatus === "checking" && (
+                    <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" data-testid="icon-username-checking" />
+                  )}
+                  {usernameStatus === "available" && (
+                    <CheckCircle2 className="w-4 h-4 text-green-500" data-testid="icon-username-available" />
+                  )}
+                  {usernameStatus === "taken" && (
+                    <XCircle className="w-4 h-4 text-destructive" data-testid="icon-username-taken" />
+                  )}
+                </div>
+              </div>
+              {usernameStatus === "taken" && (
+                <p className="text-sm text-destructive" data-testid="text-username-error">{usernameMessage}</p>
+              )}
+              {usernameStatus === "available" && (
+                <p className="text-sm text-green-600" data-testid="text-username-success">{usernameMessage}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label>كلمة المرور (تلقائية)</Label>

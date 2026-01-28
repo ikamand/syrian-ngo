@@ -120,6 +120,25 @@ export async function registerRoutes(
     }
   });
 
+  // Check username availability endpoint
+  app.get("/api/auth/check-username/:username", requireAdmin, async (req, res) => {
+    try {
+      const { username } = req.params;
+      if (!username || username.trim().length < 1) {
+        return res.json({ available: false, message: "اسم المستخدم مطلوب" });
+      }
+      
+      const existing = await storage.getUserByUsername(username.trim());
+      return res.json({ 
+        available: !existing,
+        message: existing ? "اسم المستخدم مستخدم مسبقاً" : "اسم المستخدم متاح"
+      });
+    } catch (error) {
+      console.error("[check-username] Error:", error);
+      return res.status(500).json({ available: false, message: "خطأ في التحقق" });
+    }
+  });
+
   // Admin-only user creation endpoint
   app.post(api.auth.register.path, requireAdmin, async (req, res) => {
     try {
