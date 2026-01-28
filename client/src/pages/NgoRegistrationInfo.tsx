@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, ListChecks, Scale, Table2, Building2, CheckCircle2, FileCheck, Users, Target, AlertCircle } from "lucide-react";
+import { FileText, ListChecks, Scale, Table2, Building2, CheckCircle2, FileCheck, Users, AlertCircle } from "lucide-react";
 
 export default function NgoRegistrationInfo() {
   return (
@@ -101,153 +101,123 @@ export default function NgoRegistrationInfo() {
 
               {/* Tab 2: الإجراءات */}
               <TabsContent value="procedures" className="space-y-4" data-testid="content-procedures">
-                <h2 className="text-xl font-bold text-primary mb-6 flex items-center gap-2">
-                  <ListChecks className="w-6 h-6" />
-                  خطوات تأسيس المنظمة
-                </h2>
+                <h2 className="text-xl font-bold text-primary mb-6">خطوات تأسيس المنظمة</h2>
                 
-                <div className="space-y-4">
-                  {[
-                    {
-                      step: 1,
-                      title: "التقدم بطلب تأسيس",
-                      description: "يتضمن كامل المعلومات المطلوبة آنفاً، عبر بوابة المنظمات غير الحكومية"
-                    },
-                    {
-                      step: 2,
-                      title: "دراسة الطلب من قبل الجهة الحكومية المختصة",
-                      description: "بحسب الصلاحيات الممنوحة ضمن سير المعاملة"
-                    },
-                    {
-                      step: 3,
-                      title: "الموافقة على طلب التأسيس",
-                      description: "بعد إجراء التعديلات اللازمة على الطلب"
-                    },
-                    {
-                      step: 4,
-                      title: "إعداد وثائق التأسيس",
-                      description: "المتضمنة بشكل خاص: النظام الداخلي، نشرات استعلام الأعضاء المؤسسين وأعضاء مجلس الأمناء حيث يمكن أن يؤسس شخص طبيعي أو اعتباري مؤسسة، ويعين مجلس أمناء مستقل عنه، وثيقة إشغال المقر."
-                    },
-                    {
-                      step: 5,
-                      title: "التقدم بالوثائق للجهة الحكومية المختصة",
-                      description: "عبر بوابة المنظمات غير الحكومية"
-                    },
-                    {
-                      step: 6,
-                      title: "مراسلة الجهات الحكومية الأخرى من قبل الجهة الحكومية المختصة",
-                      description: "شعبة الأمن السياسي بالنسبة للأعضاء، محافظة المقر (بالنسبة لحاجة المحافظة لخدمات المنظمة غير الحكومية)، الوزارة الفنية المختصة بعمل المنظمة غير الحكومية (وزارة الصحة - وزارة التربية - وزارة الثقافة)"
-                    },
-                    {
-                      step: 7,
-                      title: "إصدار قرار التأسيس أو رفض التأسيس",
-                      description: "من قبل وزير الشؤون الاجتماعية والعمل حسب نتيجة رأي الجهات الحكومية الشريكة ورأي وزارة الشؤون الاجتماعية والعمل"
-                    }
-                  ].map((item) => (
-                    <div key={item.step} className="flex gap-4 bg-white border rounded-lg p-5">
-                      <div className="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold">
-                        {item.step}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
-                        <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                <ol className="space-y-6 pr-4">
+                  <li className="border-b border-gray-200 pb-4">
+                    <div className="flex gap-3">
+                      <span className="font-bold text-primary text-lg">1.</span>
+                      <div>
+                        <h3 className="font-semibold text-foreground">التقدم بطلب تأسيس</h3>
+                        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">يتضمن كامل المعلومات المطلوبة آنفاً، عبر بوابة المنظمات غير الحكومية</p>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </li>
+                  <li className="border-b border-gray-200 pb-4">
+                    <div className="flex gap-3">
+                      <span className="font-bold text-primary text-lg">2.</span>
+                      <div>
+                        <h3 className="font-semibold text-foreground">دراسة الطلب من قبل الجهة الحكومية المختصة</h3>
+                        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">بحسب الصلاحيات الممنوحة ضمن سير المعاملة</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="border-b border-gray-200 pb-4">
+                    <div className="flex gap-3">
+                      <span className="font-bold text-primary text-lg">3.</span>
+                      <div>
+                        <h3 className="font-semibold text-foreground">الموافقة على طلب التأسيس</h3>
+                        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">بعد إجراء التعديلات اللازمة على الطلب</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="border-b border-gray-200 pb-4">
+                    <div className="flex gap-3">
+                      <span className="font-bold text-primary text-lg">4.</span>
+                      <div>
+                        <h3 className="font-semibold text-foreground">إعداد وثائق التأسيس</h3>
+                        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">المتضمنة بشكل خاص: النظام الداخلي، نشرات استعلام الأعضاء المؤسسين وأعضاء مجلس الأمناء حيث يمكن أن يؤسس شخص طبيعي أو اعتباري مؤسسة، ويعين مجلس أمناء مستقل عنه، وثيقة إشغال المقر.</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="border-b border-gray-200 pb-4">
+                    <div className="flex gap-3">
+                      <span className="font-bold text-primary text-lg">5.</span>
+                      <div>
+                        <h3 className="font-semibold text-foreground">التقدم بالوثائق للجهة الحكومية المختصة</h3>
+                        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">عبر بوابة المنظمات غير الحكومية</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="border-b border-gray-200 pb-4">
+                    <div className="flex gap-3">
+                      <span className="font-bold text-primary text-lg">6.</span>
+                      <div>
+                        <h3 className="font-semibold text-foreground">مراسلة الجهات الحكومية الأخرى من قبل الجهة الحكومية المختصة</h3>
+                        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">شعبة الأمن السياسي بالنسبة للأعضاء، محافظة المقر (بالنسبة لحاجة المحافظة لخدمات المنظمة غير الحكومية)، الوزارة الفنية المختصة بعمل المنظمة غير الحكومية (وزارة الصحة - وزارة التربية - وزارة الثقافة)</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="pb-2">
+                    <div className="flex gap-3">
+                      <span className="font-bold text-primary text-lg">7.</span>
+                      <div>
+                        <h3 className="font-semibold text-foreground">إصدار قرار التأسيس أو رفض التأسيس</h3>
+                        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">من قبل وزير الشؤون الاجتماعية والعمل حسب نتيجة رأي الجهات الحكومية الشريكة ورأي وزارة الشؤون الاجتماعية والعمل</p>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
               </TabsContent>
 
               {/* Tab 3: الأحكام والشروط */}
-              <TabsContent value="terms" className="space-y-6" data-testid="content-terms">
-                <h2 className="text-xl font-bold text-primary mb-6 flex items-center gap-2">
-                  <Scale className="w-6 h-6" />
-                  الأحكام والشروط
-                </h2>
+              <TabsContent value="terms" className="space-y-8" data-testid="content-terms">
+                <h2 className="text-xl font-bold text-primary mb-6">الأحكام والشروط</h2>
 
                 {/* معايير اختيار الاسم */}
-                <div className="bg-white border rounded-lg p-6">
-                  <h3 className="font-semibold text-primary mb-4 flex items-center gap-2">
-                    <Target className="w-5 h-5" />
-                    معايير اختيار الاسم
-                  </h3>
-                  <ul className="space-y-3">
-                    {[
-                      "عدم وجود اسم مشابه سابق ضمن الجمعيات والمؤسسات المشهرة، أو قيد التأسيس السابقة لطلب التأسيس.",
-                      "خلو الاسم المراد اختياره من أي طابع ديني، أو سياسي، أو عنصري.",
-                      "أن يكون الاسم ذو دلالة متلائماً مع أهداف الجمعية أو المؤسسة المراد تأسيسها، ومتوافقاً مع تصنيف مجال العمل.",
-                      "في حال الرغبة في اختيار أسماء أجنبية، يجب أن يرفق الطلب بترجمة محلفة للاسم، وتوضيح مدلولاته، علماً أن الاسم المعتمد سيكون هو الاسم باللغة العربية."
-                    ].map((item, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-foreground text-sm">{item}</span>
-                      </li>
-                    ))}
+                <div className="border-b border-gray-200 pb-6">
+                  <h3 className="font-semibold text-primary mb-4 text-lg">معايير اختيار الاسم</h3>
+                  <ul className="list-disc list-inside space-y-2 text-foreground text-sm pr-2">
+                    <li>عدم وجود اسم مشابه سابق ضمن الجمعيات والمؤسسات المشهرة، أو قيد التأسيس السابقة لطلب التأسيس.</li>
+                    <li>خلو الاسم المراد اختياره من أي طابع ديني، أو سياسي، أو عنصري.</li>
+                    <li>أن يكون الاسم ذو دلالة متلائماً مع أهداف الجمعية أو المؤسسة المراد تأسيسها، ومتوافقاً مع تصنيف مجال العمل.</li>
+                    <li>في حال الرغبة في اختيار أسماء أجنبية، يجب أن يرفق الطلب بترجمة محلفة للاسم، وتوضيح مدلولاته، علماً أن الاسم المعتمد سيكون هو الاسم باللغة العربية.</li>
                   </ul>
                 </div>
 
                 {/* معايير النطاق الجغرافي */}
-                <div className="bg-white border rounded-lg p-6">
-                  <h3 className="font-semibold text-primary mb-4 flex items-center gap-2">
-                    <Target className="w-5 h-5" />
-                    معايير النطاق الجغرافي
-                  </h3>
-                  <ul className="space-y-3">
-                    {[
-                      "الجمعيات والمؤسسات التي تحمل تصنيف (التنمية والإسكان أو البيئة أو القانون والدفاع والحقوق أو الثقافة والرياضة والتسلية والفنون).",
-                      "الجمعيات والمؤسسات العلمية.",
-                      "الجمعيات والمؤسسات التي تُعنى بالأمراض المزمنة (سرطان - سكري - ......).",
-                      "يمكن أن يتم توسيع النشاط لمحافظتين أو ثلاثة كحد أقصى بعد الحصول على موافقة المكاتب التنفيذية لتلك المحافظات من قبل الوزارة، وبعد التأكد من إمكانيات الأعضاء المؤسسين وحاجة المحافظات لتصنيف وخدمات الجمعية أو المؤسسة قيد التأسيس."
-                    ].map((item, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-foreground text-sm">{item}</span>
-                      </li>
-                    ))}
+                <div className="border-b border-gray-200 pb-6">
+                  <h3 className="font-semibold text-primary mb-4 text-lg">معايير النطاق الجغرافي</h3>
+                  <ul className="list-disc list-inside space-y-2 text-foreground text-sm pr-2">
+                    <li>الجمعيات والمؤسسات التي تحمل تصنيف (التنمية والإسكان أو البيئة أو القانون والدفاع والحقوق أو الثقافة والرياضة والتسلية والفنون).</li>
+                    <li>الجمعيات والمؤسسات العلمية.</li>
+                    <li>الجمعيات والمؤسسات التي تُعنى بالأمراض المزمنة (سرطان - سكري - ......).</li>
+                    <li>يمكن أن يتم توسيع النشاط لمحافظتين أو ثلاثة كحد أقصى بعد الحصول على موافقة المكاتب التنفيذية لتلك المحافظات من قبل الوزارة، وبعد التأكد من إمكانيات الأعضاء المؤسسين وحاجة المحافظات لتصنيف وخدمات الجمعية أو المؤسسة قيد التأسيس.</li>
                   </ul>
                 </div>
 
                 {/* معايير الموافقة على الأعضاء المؤسسين */}
-                <div className="bg-white border rounded-lg p-6">
-                  <h3 className="font-semibold text-primary mb-4 flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    معايير الموافقة على الأعضاء المؤسسين
-                  </h3>
-                  <ul className="space-y-3">
-                    {[
-                      "يكون الحد الأدنى لعدد الأعضاء المؤسسين في الجمعية هو 11 عضو مؤسس، على أن يكون مجلس الإدارة مؤلف من 5 أو 7 أو 9 أو 11 عضو. أما بالنسبة للمؤسسة، فيمكن أن يؤسسها شخص طبيعي أو اعتباري واحد أو أكثر، على أن يتم اختيار مجلس أمناء مؤلف من 5 أو 7 أو 9 أمناء.",
-                      "يجب أن تتوافق الأهداف المطروحة مع مؤهلات الأعضاء المؤسسين، وأن تتضمن مجموعة الأعضاء المؤسسين عضوين كحد أدنى يمتلكان المؤهلات العلمية المتناسبة مع تصنيف الجمعية أو المؤسسة قيد التأسيس ومجال عملها، أو أن يتم التعهد من قبل الأعضاء المؤسسين بتأمين الكوادر الاختصاصية.",
-                      "يجب ألّا يتواجد أكثر من عضو واحد من عائلة واحدة في تشكيلة مجلس الإدارة، منعاً من تحويل الجمعيات الأهلية لجمعيات عائلية، وفي حال كان التأسيس ضمن قرى يرتبط أغلب سكانها بعلاقات قربى، يمنع تواجد أكثر من عضوين في مجلس الإدارة من عائلة واحدة.",
-                      "في حال كان أحد الأشخاص المراد اشتراكه بتأسيس الجمعية أو المؤسسة، هو شخص اعتباري (شركة تجارية، شركة مدنية، هيئة، .......)، يجب إرفاق ما يثبت الوضع القانوني للشخص الاعتباري، إضافة إلى قرار صريح من صاحب الصلاحية في الاشتراك بتأسيس الجمعية أو المؤسسة.",
-                      "في حال كان أحد الأشخاص المراد اشتراكه بتأسيس الجمعية أو المؤسسة، هو شخص غير سوري، يجب أن يكون له مقر إقامة دائم في الجمهورية العربية السورية، مع إرفاق سند إقامة مصدق أصولاً.",
-                      "عدم اشتراك رجال الدين في تأسيس الجمعيات أو المؤسسات، منعاً من تأثير مهامهم في العمل الأهلي، تطبيقاً لأحكام قانون الجمعيات والمؤسسات الخاصة رقم 93 لعام 1958.",
-                      "عدم اشتراك العسكريين وعناصر وضباط الشرطة بأي صفة كانت في تأسيس الجمعيات والمؤسسات الخاصة، عملاً بأنظمة الخدمة."
-                    ].map((item, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-foreground text-sm">{item}</span>
-                      </li>
-                    ))}
+                <div className="border-b border-gray-200 pb-6">
+                  <h3 className="font-semibold text-primary mb-4 text-lg">معايير الموافقة على الأعضاء المؤسسين</h3>
+                  <ul className="list-disc list-inside space-y-2 text-foreground text-sm pr-2">
+                    <li>يكون الحد الأدنى لعدد الأعضاء المؤسسين في الجمعية هو 11 عضو مؤسس، على أن يكون مجلس الإدارة مؤلف من 5 أو 7 أو 9 أو 11 عضو. أما بالنسبة للمؤسسة، فيمكن أن يؤسسها شخص طبيعي أو اعتباري واحد أو أكثر، على أن يتم اختيار مجلس أمناء مؤلف من 5 أو 7 أو 9 أمناء.</li>
+                    <li>يجب أن تتوافق الأهداف المطروحة مع مؤهلات الأعضاء المؤسسين، وأن تتضمن مجموعة الأعضاء المؤسسين عضوين كحد أدنى يمتلكان المؤهلات العلمية المتناسبة مع تصنيف الجمعية أو المؤسسة قيد التأسيس ومجال عملها، أو أن يتم التعهد من قبل الأعضاء المؤسسين بتأمين الكوادر الاختصاصية.</li>
+                    <li>يجب ألّا يتواجد أكثر من عضو واحد من عائلة واحدة في تشكيلة مجلس الإدارة، منعاً من تحويل الجمعيات الأهلية لجمعيات عائلية، وفي حال كان التأسيس ضمن قرى يرتبط أغلب سكانها بعلاقات قربى، يمنع تواجد أكثر من عضوين في مجلس الإدارة من عائلة واحدة.</li>
+                    <li>في حال كان أحد الأشخاص المراد اشتراكه بتأسيس الجمعية أو المؤسسة، هو شخص اعتباري (شركة تجارية، شركة مدنية، هيئة، .......)، يجب إرفاق ما يثبت الوضع القانوني للشخص الاعتباري، إضافة إلى قرار صريح من صاحب الصلاحية في الاشتراك بتأسيس الجمعية أو المؤسسة.</li>
+                    <li>في حال كان أحد الأشخاص المراد اشتراكه بتأسيس الجمعية أو المؤسسة، هو شخص غير سوري، يجب أن يكون له مقر إقامة دائم في الجمهورية العربية السورية، مع إرفاق سند إقامة مصدق أصولاً.</li>
+                    <li>عدم اشتراك رجال الدين في تأسيس الجمعيات أو المؤسسات، منعاً من تأثير مهامهم في العمل الأهلي، تطبيقاً لأحكام قانون الجمعيات والمؤسسات الخاصة رقم 93 لعام 1958.</li>
+                    <li>عدم اشتراك العسكريين وعناصر وضباط الشرطة بأي صفة كانت في تأسيس الجمعيات والمؤسسات الخاصة، عملاً بأنظمة الخدمة.</li>
                   </ul>
                 </div>
 
                 {/* معايير اختيار الأهداف */}
-                <div className="bg-white border rounded-lg p-6">
-                  <h3 className="font-semibold text-primary mb-4 flex items-center gap-2">
-                    <Target className="w-5 h-5" />
-                    معايير اختيار الأهداف
-                  </h3>
-                  <ul className="space-y-3">
-                    {[
-                      "أن تكون الأهداف محصورة بتصنيف أساسي واحد فقط بالنسبة للجمعيات، ومجالات التخصص المرتبطة بهذا التصنيف حصراً، أما بالنسبة للمؤسسات الخاصة فيمكن اختيار حتى تصنيفين أساسيين، وفقاً لطبيعة عمل المؤسسة وقدراتها الفنية والمالية.",
-                      "أن تكون الأهداف مصاغة بطريقة عملية، بعيداً عن الإنشائية، وتتصف بالوضوح والمنطقية، القابلية للتحقيق والقياس، وأن تتم صياغتها بشكل بعيد المدى، بالاستئناس باستمارة التصنيف المعياري المعتمد، دون نسخ واستخدام عبارات الاستمارة حرفياً.",
-                      "ألّا يتجاوز عدد بنود الأهداف الأربعة بنود كحد أقصى.",
-                      "عدم الخلط في صياغة الأهداف بين الهدف ووسائل تحقيقه (حيث تعتبر إقامة المحاضرات والندوات - إصدار المنشورات - التعاون مع الجمعيات أو الوزارات ........ وسائل تحقيق أهداف)."
-                    ].map((item, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-foreground text-sm">{item}</span>
-                      </li>
-                    ))}
+                <div className="pb-2">
+                  <h3 className="font-semibold text-primary mb-4 text-lg">معايير اختيار الأهداف</h3>
+                  <ul className="list-disc list-inside space-y-2 text-foreground text-sm pr-2">
+                    <li>أن تكون الأهداف محصورة بتصنيف أساسي واحد فقط بالنسبة للجمعيات، ومجالات التخصص المرتبطة بهذا التصنيف حصراً، أما بالنسبة للمؤسسات الخاصة فيمكن اختيار حتى تصنيفين أساسيين، وفقاً لطبيعة عمل المؤسسة وقدراتها الفنية والمالية.</li>
+                    <li>أن تكون الأهداف مصاغة بطريقة عملية، بعيداً عن الإنشائية، وتتصف بالوضوح والمنطقية، القابلية للتحقيق والقياس، وأن تتم صياغتها بشكل بعيد المدى، بالاستئناس باستمارة التصنيف المعياري المعتمد، دون نسخ واستخدام عبارات الاستمارة حرفياً.</li>
+                    <li>ألّا يتجاوز عدد بنود الأهداف الأربعة بنود كحد أقصى.</li>
+                    <li>عدم الخلط في صياغة الأهداف بين الهدف ووسائل تحقيقه (حيث تعتبر إقامة المحاضرات والندوات - إصدار المنشورات - التعاون مع الجمعيات أو الوزارات ........ وسائل تحقيق أهداف).</li>
                   </ul>
                 </div>
               </TabsContent>
