@@ -18,6 +18,8 @@ import AnnouncementDetail from "@/pages/AnnouncementDetail";
 import Opportunities from "@/pages/Opportunities";
 import OpportunityDetail from "@/pages/OpportunityDetail";
 import Notices from "@/pages/Notices";
+import Events from "@/pages/Events";
+import DonationCampaigns from "@/pages/DonationCampaigns";
 
 function Router() {
   return (
@@ -36,6 +38,8 @@ function Router() {
       <Route path="/announcements" component={Announcements} />
       <Route path="/opportunities/:id" component={OpportunityDetail} />
       <Route path="/opportunities" component={Opportunities} />
+      <Route path="/events" component={Events} />
+      <Route path="/donation-campaigns" component={DonationCampaigns} />
       <Route component={NotFound} />
     </Switch>
   );

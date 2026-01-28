@@ -2,7 +2,7 @@ import logoUrl from "@assets/emblem-of-syria-seeklogo_1769035838735.png";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, LayoutDashboard, LogOut, User, Menu, FileText, Home, Building2, Scale, Megaphone, Key, Briefcase } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, User, Menu, Key } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,6 +58,12 @@ export function Navbar() {
           </Link>
           <Link href="/opportunities" className={`transition-colors hover:text-white ${isActive("/opportunities") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
             فرص العمل والتطوع
+          </Link>
+          <Link href="/events" className={`transition-colors hover:text-white ${isActive("/events") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+            الفعاليات
+          </Link>
+          <Link href="/donation-campaigns" className={`transition-colors hover:text-white ${isActive("/donation-campaigns") ? "text-white font-bold underline underline-offset-4" : "text-white/80"}`}>
+            حملات التبرع
           </Link>
           
           <DropdownMenu>
@@ -190,71 +196,59 @@ export function Navbar() {
             <DropdownMenuContent align="end" className="w-64">
               <DropdownMenuItem asChild>
                 <Link href="/" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                  <div className="flex items-center gap-3 w-full">
-                    <Home className="h-4 w-4" />
-                    <span>الرئيسية</span>
-                  </div>
+                  الرئيسية
                 </Link>
               </DropdownMenuItem>
               
               <DropdownMenuItem asChild>
                 <Link href="/ngos" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                  <div className="flex items-center gap-3 w-full">
-                    <Building2 className="h-4 w-4" />
-                    <span>دليل المنظمات</span>
-                  </div>
+                  دليل المنظمات
                 </Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild>
                 <Link href="/announcements" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                  <div className="flex items-center gap-3 w-full">
-                    <Megaphone className="h-4 w-4" />
-                    <span>الأخبار</span>
-                  </div>
+                  الأخبار
                 </Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild>
                 <Link href="/opportunities" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                  <div className="flex items-center gap-3 w-full">
-                    <Briefcase className="h-4 w-4" />
-                    <span>فرص العمل والتطوع</span>
-                  </div>
+                  فرص العمل والتطوع
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link href="/events" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
+                  الفعاليات
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link href="/donation-campaigns" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
+                  حملات التبرع
                 </Link>
               </DropdownMenuItem>
 
               <Collapsible open={legalMenuOpen} onOpenChange={setLegalMenuOpen}>
                 <CollapsibleTrigger className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded-sm hover:bg-accent cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <Scale className="h-4 w-4" />
-                    <span>المرجعيات القانونية</span>
-                  </div>
+                  <span>المرجعيات القانونية</span>
                   <ChevronDown className={`h-4 w-4 transition-transform ${legalMenuOpen ? 'rotate-180' : ''}`} />
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pr-6 space-y-1 mt-1">
                   <DropdownMenuItem asChild>
                     <Link href="/legal/association-law" className="cursor-pointer text-right w-full" onClick={() => { setMobileMenuOpen(false); setLegalMenuOpen(false); }}>
-                      <div className="flex items-center gap-3 w-full">
-                        <FileText className="h-4 w-4 shrink-0" />
-                        <span className="text-sm">قانون الجمعيات والمؤسسات الخاصة</span>
-                      </div>
+                      <span className="text-sm">قانون الجمعيات والمؤسسات الخاصة</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/legal/other-laws" className="cursor-pointer text-right w-full" onClick={() => { setMobileMenuOpen(false); setLegalMenuOpen(false); }}>
-                      <div className="flex items-center gap-3 w-full">
-                        <FileText className="h-4 w-4 shrink-0" />
-                        <span className="text-sm">القوانين والمراسيم الأخرى</span>
-                      </div>
+                      <span className="text-sm">القوانين والمراسيم الأخرى</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/legal/notices" className="cursor-pointer text-right w-full" onClick={() => { setMobileMenuOpen(false); setLegalMenuOpen(false); }}>
-                      <div className="flex items-center gap-3 w-full">
-                        <FileText className="h-4 w-4 shrink-0" />
-                        <span className="text-sm">التعاميم</span>
-                      </div>
+                      <span className="text-sm">التعاميم</span>
                     </Link>
                   </DropdownMenuItem>
                 </CollapsibleContent>
@@ -263,10 +257,7 @@ export function Navbar() {
               {user && (
                 <DropdownMenuItem asChild>
                   <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                    <div className="flex items-center gap-3 w-full">
-                      <LayoutDashboard className="h-4 w-4" />
-                      <span>لوحة التحكم</span>
-                    </div>
+                    لوحة التحكم
                   </Link>
                 </DropdownMenuItem>
               )}
@@ -276,18 +267,12 @@ export function Navbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/create-ngo" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                      <div className="flex items-center gap-3 w-full">
-                        <Building2 className="h-4 w-4" />
-                        <span>إنشاء منظمة جديدة</span>
-                      </div>
+                      إنشاء منظمة جديدة
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/login" className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
-                      <div className="flex items-center gap-3 w-full text-primary font-medium">
-                        <User className="h-4 w-4" />
-                        <span>تسجيل الدخول</span>
-                      </div>
+                    <Link href="/login" className="cursor-pointer w-full text-primary font-medium" onClick={() => setMobileMenuOpen(false)}>
+                      تسجيل الدخول
                     </Link>
                   </DropdownMenuItem>
                 </>
