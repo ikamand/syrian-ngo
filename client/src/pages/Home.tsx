@@ -8,7 +8,7 @@ import { FeaturedNewsSlider } from "@/components/FeaturedNewsSlider";
 import { usePublicFooterLinks } from "@/hooks/use-footer-links";
 
 import emblemUrl from "@assets/emblem-of-syria-seeklogo_1769042472182.png";
-import donationCampaignImage from "../assets/images/donation-campaign.jpg";
+import donationCampaignImage from "@assets/image_1769558414314.png";
 
 interface QuickLinkCardProps {
   title: string;
