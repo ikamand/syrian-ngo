@@ -31,7 +31,7 @@ export default function CreateNgo() {
             </Button>
           </Link>
           <Button 
-            className="w-full md:w-auto px-8 py-6 text-lg font-bold" 
+            className="w-full md:w-auto px-8 py-6 text-lg font-bold pl-[24px] pr-[24px] pt-[10px] pb-[10px]" 
             data-testid="button-start-service"
             onClick={() => setLocation("/register-ngo")}
           >
