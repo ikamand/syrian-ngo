@@ -121,6 +121,7 @@ const formSchema = z.object({
     workField: z.string(), vacancyName: z.string(), vacancyNumber: z.string(), governorate: z.string(),
     startDate: z.string(), endDate: z.string(), commitmentNature: z.string(), jobPurpose: z.string(),
     qualification: z.string(), skills: z.string(), experience: z.string(), details: z.string(),
+    employmentType: z.string(), education: z.string(), classification: z.string(),
   })).optional(),
   volunteerOpportunities: z.array(z.object({
     workField: z.string(), vacancyName: z.string(), vacancyNumber: z.string(), governorate: z.string(),
@@ -954,12 +955,12 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">فرص العمل</h4>
-                    <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "", details: "" })}>
+                    <Button type="button" variant="outline" size="sm" onClick={() => jobOpportunitiesArray.append({ workField: "", vacancyName: "", vacancyNumber: "", governorate: "", startDate: "", endDate: "", commitmentNature: "", jobPurpose: "", qualification: "", skills: "", experience: "", details: "", employmentType: "", education: "", classification: "" })}>
                       <Plus className="w-4 h-4 ml-1" /> إضافة فرصة
                     </Button>
                   </div>
                   {jobOpportunitiesArray.fields.map((field, index) => (
-                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
+                    <div key={field.id} className="border rounded-lg p-3 space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-sm font-medium">فرصة عمل {index + 1}</span>
                         <Button type="button" variant="ghost" size="icon" onClick={() => jobOpportunitiesArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
@@ -969,7 +970,63 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                         <FormField control={form.control} name={`jobOpportunities.${index}.workField`} render={({ field }) => (<FormItem><FormLabel>مجال العمل</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
                         <FormField control={form.control} name={`jobOpportunities.${index}.governorate`} render={({ field }) => (<FormItem><FormLabel>المحافظة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
                       </div>
-                      <FormField control={form.control} name={`jobOpportunities.${index}.details`} render={({ field }) => (<FormItem><FormLabel>تفاصيل الوظيفة</FormLabel><FormControl><Textarea {...field} rows={6} placeholder="أدخل تفاصيل الوظيفة الكاملة هنا..." /></FormControl></FormItem>)} />
+                      <div className="grid grid-cols-4 gap-2">
+                        <FormField control={form.control} name={`jobOpportunities.${index}.experience`} render={({ field }) => (<FormItem><FormLabel>الخبرة</FormLabel><FormControl><Input {...field} placeholder="مثال: 3 سنوات" /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`jobOpportunities.${index}.employmentType`} render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>نوع التوظيف</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger><SelectValue placeholder="اختر نوع التوظيف" /></SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="دوام كامل">دوام كامل</SelectItem>
+                                <SelectItem value="دوام جزئي">دوام جزئي</SelectItem>
+                                <SelectItem value="عقد مؤقت">عقد مؤقت</SelectItem>
+                                <SelectItem value="عمل حر">عمل حر</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormItem>
+                        )} />
+                        <FormField control={form.control} name={`jobOpportunities.${index}.education`} render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>التعليم</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger><SelectValue placeholder="اختر المستوى التعليمي" /></SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="ثانوية عامة">ثانوية عامة</SelectItem>
+                                <SelectItem value="دبلوم">دبلوم</SelectItem>
+                                <SelectItem value="بكالوريوس">بكالوريوس</SelectItem>
+                                <SelectItem value="ماجستير">ماجستير</SelectItem>
+                                <SelectItem value="دكتوراه">دكتوراه</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormItem>
+                        )} />
+                        <FormField control={form.control} name={`jobOpportunities.${index}.classification`} render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>التصنيف</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger><SelectValue placeholder="اختر التصنيف" /></SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="إداري">إداري</SelectItem>
+                                <SelectItem value="تقني">تقني</SelectItem>
+                                <SelectItem value="ميداني">ميداني</SelectItem>
+                                <SelectItem value="طبي">طبي</SelectItem>
+                                <SelectItem value="تعليمي">تعليمي</SelectItem>
+                                <SelectItem value="مالي">مالي</SelectItem>
+                                <SelectItem value="قانوني">قانوني</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormItem>
+                        )} />
+                      </div>
+                      <FormField control={form.control} name={`jobOpportunities.${index}.skills`} render={({ field }) => (<FormItem><FormLabel>المهارات المطلوبة</FormLabel><FormControl><Textarea {...field} rows={2} placeholder="أدخل المهارات المطلوبة (مفصولة بفواصل)" /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`jobOpportunities.${index}.details`} render={({ field }) => (<FormItem><FormLabel>التفاصيل الإضافية</FormLabel><FormControl><Textarea {...field} rows={4} placeholder="أدخل تفاصيل الوظيفة الكاملة هنا..." /></FormControl></FormItem>)} />
                     </div>
                   ))}
 
