@@ -4,9 +4,19 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { syriaGeoJson, governorateCoordinates } from "@/data/syriaGeoJson";
 
-// Custom marker icon for branch locations
+// Custom marker icon for branch locations (lighter green)
 const branchIcon = new L.Icon({
   iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+// Custom marker icon for headquarters (using black for clear distinction from green branch markers)
+const headquartersIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
@@ -31,11 +41,20 @@ interface BranchLocation {
   offeredServices?: string;
 }
 
+interface HeadquartersLocation {
+  ngoId: number;
+  ngoName: string;
+  governorate: string;
+  latitude: number;
+  longitude: number;
+}
+
 interface SyriaMapProps {
   governoratesData: GovernorateData[];
   onGovernorateClick: (governorate: string) => void;
   selectedGovernorate: string | null;
   branchLocations?: BranchLocation[];
+  headquartersLocations?: HeadquartersLocation[];
 }
 
 function MapController({ selectedGovernorate }: { selectedGovernorate: string | null }) {
@@ -51,7 +70,7 @@ function MapController({ selectedGovernorate }: { selectedGovernorate: string | 
   return null;
 }
 
-export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selectedGovernorate, branchLocations = [] }: SyriaMapProps) {
+export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selectedGovernorate, branchLocations = [], headquartersLocations = [] }: SyriaMapProps) {
   const geoJsonRef = useRef<L.GeoJSON | null>(null);
   
   const getGovernorateCount = (name: string) => {
@@ -177,7 +196,7 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
         />
         <MapController selectedGovernorate={selectedGovernorate} />
         
-        {/* Branch location markers */}
+        {/* Branch location markers (lighter green) */}
         {branchLocations.map((branch, index) => (
           <Marker
             key={`branch-${branch.ngoId}-${index}`}
@@ -193,6 +212,25 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
                   {branch.offeredServices && (
                     <div style={{ marginTop: "4px" }}><strong>الخدمات:</strong> {branch.offeredServices}</div>
                   )}
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+        
+        {/* Headquarters location markers (darker - black) */}
+        {headquartersLocations.map((hq) => (
+          <Marker
+            key={`hq-${hq.ngoId}`}
+            position={[hq.latitude, hq.longitude]}
+            icon={headquartersIcon}
+          >
+            <Popup>
+              <div style={{ direction: "rtl", fontFamily: "Cairo, sans-serif", minWidth: "150px" }}>
+                <strong style={{ color: "#1a1a1a", fontSize: "14px" }}>{hq.ngoName}</strong>
+                <div style={{ marginTop: "4px", fontSize: "12px", color: "#666" }}>
+                  <div><strong>النوع:</strong> المقر الرئيسي</div>
+                  <div><strong>المحافظة:</strong> {hq.governorate || "—"}</div>
                 </div>
               </div>
             </Popup>

@@ -45,6 +45,8 @@ const formSchema = z.object({
   legalForm: z.string().min(1, "الشكل القانوني مطلوب"),
   scope: z.string().min(1, "نطاق العمل مطلوب"),
   headquartersGovernorate: z.string().optional(),
+  headquartersLatitude: z.string().optional(),
+  headquartersLongitude: z.string().optional(),
   orgStatus: z.string().optional(),
   publicationNumber: z.string().optional(),
   publicationDate: z.string().optional(),
@@ -167,7 +169,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
     resolver: zodResolver(formSchema),
     defaultValues: {
       orgIdentifier: "", arabicName: "", englishName: "", legalForm: "", scope: "",
-      headquartersGovernorate: "", orgStatus: "", publicationNumber: "", publicationDate: "", hasPublicBenefit: false,
+      headquartersGovernorate: "", headquartersLatitude: "", headquartersLongitude: "", orgStatus: "", publicationNumber: "", publicationDate: "", hasPublicBenefit: false,
       hasInternalRegulations: false, hasWomenPolicy: false, hasVolunteerPolicy: false,
       hasOrgStructure: false, internalRegulationsDoc: "", publicationDecisionDoc: "",
       publicBenefitDoc: "", description: "", logo: "", name: "", city: "", presidentName: "",
@@ -216,6 +218,8 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
         legalForm: ngo.legalForm || "",
         scope: ngo.scope || "",
         headquartersGovernorate: ngo.headquartersGovernorate || "",
+        headquartersLatitude: ngo.headquartersLatitude || "",
+        headquartersLongitude: ngo.headquartersLongitude || "",
         orgStatus: ngo.orgStatus || "",
         publicationNumber: ngo.publicationNumber || "",
         publicationDate: ngo.publicationDate || "",
@@ -386,6 +390,24 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                               {governorates.map(gov => <SelectItem key={gov} value={gov}>{gov}</SelectItem>)}
                             </SelectContent>
                           </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="headquartersLatitude"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>خط العرض (Latitude)</FormLabel>
+                          <FormControl><Input {...field} placeholder="مثال: 33.5138" data-testid="edit-input-headquarters-latitude" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="headquartersLongitude"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>خط الطول (Longitude)</FormLabel>
+                          <FormControl><Input {...field} placeholder="مثال: 36.2765" data-testid="edit-input-headquarters-longitude" /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

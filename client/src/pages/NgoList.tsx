@@ -135,6 +135,34 @@ export default function NgoList() {
     return locations;
   }, [ngos]);
 
+  // Extract headquarters locations with valid coordinates for map markers
+  const headquartersLocations = useMemo(() => {
+    const locations: {
+      ngoId: number;
+      ngoName: string;
+      governorate: string;
+      latitude: number;
+      longitude: number;
+    }[] = [];
+
+    (ngos || []).forEach(ngo => {
+      const lat = parseFloat(ngo.headquartersLatitude || "");
+      const lng = parseFloat(ngo.headquartersLongitude || "");
+      // Only include NGOs with valid coordinates within Syria's approximate bounds
+      if (!isNaN(lat) && !isNaN(lng) && lat > 32 && lat < 38 && lng > 35 && lng < 43) {
+        locations.push({
+          ngoId: ngo.id,
+          ngoName: ngo.arabicName || ngo.name || "منظمة",
+          governorate: ngo.headquartersGovernorate || "",
+          latitude: lat,
+          longitude: lng
+        });
+      }
+    });
+
+    return locations;
+  }, [ngos]);
+
   const filteredNgos = useMemo(() => {
     let result = ngos || [];
     
@@ -277,6 +305,7 @@ export default function NgoList() {
                       onGovernorateClick={handleGovernorateClick}
                       selectedGovernorate={selectedGovernorate}
                       branchLocations={branchLocations}
+                      headquartersLocations={headquartersLocations}
                     />
                   )}
                 </div>
