@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Download, Loader2 } from "lucide-react";
+import { Calendar, Download, Loader2, ChevronLeft, FileText } from "lucide-react";
 import { usePublicNotices } from "@/hooks/use-notices";
 import { useState } from "react";
 import {
@@ -56,27 +56,32 @@ export default function Notices() {
               {notices.map((notice) => (
                 <Card 
                   key={notice.id} 
-                  className="bg-white rounded-xl shadow-sm overflow-visible hover-elevate cursor-pointer transition-all"
+                  className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] overflow-hidden cursor-pointer transition-all duration-300 group"
                   onClick={() => setSelectedNotice(notice)}
                   data-testid={`card-notice-${notice.id}`}
                 >
-                  <CardContent className="p-5" dir="rtl">
-                    <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <Badge variant="outline" className="text-xs">
-                        رقم التعميم: {notice.noticeNumber}
-                      </Badge>
-                      <Badge variant="secondary" className="text-xs">
-                        {notice.noticeDate}
-                      </Badge>
+                  <CardContent className="p-0" dir="rtl">
+                    <div className="h-2 bg-primary/80 group-hover:bg-primary transition-colors" />
+                    <div className="p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="p-2 bg-primary/5 rounded-lg group-hover:bg-primary/10 transition-colors">
+                          <Calendar className="w-4 h-4 text-primary" />
+                        </div>
+                        <span className="text-xs font-bold text-primary/70">{notice.noticeDate}</span>
+                      </div>
+                      
+                      <div className="mb-4">
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">التعميم رقم {notice.noticeNumber}</span>
+                        <h3 className="text-lg font-bold mt-1 text-gray-900 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                          {notice.title || `تعميم رقم ${notice.noticeNumber}`}
+                        </h3>
+                      </div>
+
+                      <div className="flex items-center text-primary font-bold text-xs gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-y-1 group-hover:translate-y-0">
+                        <span>عرض التفاصيل</span>
+                        <ChevronLeft className="w-4 h-4" />
+                      </div>
                     </div>
-                    {notice.title ? (
-                      <h3 className="text-base font-semibold mb-2 line-clamp-2">{notice.title}</h3>
-                    ) : (
-                      <h3 className="text-base font-semibold mb-2">تعميم رقم {notice.noticeNumber}</h3>
-                    )}
-                    <p className="text-sm text-muted-foreground">
-                      اضغط لعرض التفاصيل وتحميل الملف
-                    </p>
                   </CardContent>
                 </Card>
               ))}
