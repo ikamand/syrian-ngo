@@ -99,6 +99,42 @@ export default function NgoList() {
     });
   }, [ngos]);
 
+  // Extract branch locations with valid coordinates for map markers
+  const branchLocations = useMemo(() => {
+    const locations: {
+      ngoId: number;
+      ngoName: string;
+      branchType: string;
+      governorate: string;
+      latitude: number;
+      longitude: number;
+      offeredServices?: string;
+    }[] = [];
+
+    (ngos || []).forEach(ngo => {
+      if (ngo.branches && Array.isArray(ngo.branches)) {
+        ngo.branches.forEach((branch: any) => {
+          const lat = parseFloat(branch.latitude);
+          const lng = parseFloat(branch.longitude);
+          // Only include branches with valid coordinates within Syria's approximate bounds
+          if (!isNaN(lat) && !isNaN(lng) && lat > 32 && lat < 38 && lng > 35 && lng < 43) {
+            locations.push({
+              ngoId: ngo.id,
+              ngoName: ngo.arabicName || ngo.name || "منظمة",
+              branchType: branch.branchType || "",
+              governorate: branch.licensedGovernorate || "",
+              latitude: lat,
+              longitude: lng,
+              offeredServices: branch.offeredServices || ""
+            });
+          }
+        });
+      }
+    });
+
+    return locations;
+  }, [ngos]);
+
   const filteredNgos = useMemo(() => {
     let result = ngos || [];
     
@@ -240,6 +276,7 @@ export default function NgoList() {
                       governoratesData={governoratesData}
                       onGovernorateClick={handleGovernorateClick}
                       selectedGovernorate={selectedGovernorate}
+                      branchLocations={branchLocations}
                     />
                   )}
                 </div>

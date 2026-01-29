@@ -1,8 +1,18 @@
 import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, useMap, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { syriaGeoJson, governorateCoordinates } from "@/data/syriaGeoJson";
+
+// Custom marker icon for branch locations
+const branchIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 interface GovernorateData {
   id: string;
@@ -11,10 +21,21 @@ interface GovernorateData {
   count: number;
 }
 
+interface BranchLocation {
+  ngoId: number;
+  ngoName: string;
+  branchType: string;
+  governorate: string;
+  latitude: number;
+  longitude: number;
+  offeredServices?: string;
+}
+
 interface SyriaMapProps {
   governoratesData: GovernorateData[];
   onGovernorateClick: (governorate: string) => void;
   selectedGovernorate: string | null;
+  branchLocations?: BranchLocation[];
 }
 
 function MapController({ selectedGovernorate }: { selectedGovernorate: string | null }) {
@@ -30,7 +51,7 @@ function MapController({ selectedGovernorate }: { selectedGovernorate: string | 
   return null;
 }
 
-export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selectedGovernorate }: SyriaMapProps) {
+export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selectedGovernorate, branchLocations = [] }: SyriaMapProps) {
   const geoJsonRef = useRef<L.GeoJSON | null>(null);
   
   const getGovernorateCount = (name: string) => {
@@ -155,6 +176,28 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
           onEachFeature={onEachFeature}
         />
         <MapController selectedGovernorate={selectedGovernorate} />
+        
+        {/* Branch location markers */}
+        {branchLocations.map((branch, index) => (
+          <Marker
+            key={`branch-${branch.ngoId}-${index}`}
+            position={[branch.latitude, branch.longitude]}
+            icon={branchIcon}
+          >
+            <Popup>
+              <div style={{ direction: "rtl", fontFamily: "Cairo, sans-serif", minWidth: "150px" }}>
+                <strong style={{ color: "hsl(142 76% 36%)", fontSize: "14px" }}>{branch.ngoName}</strong>
+                <div style={{ marginTop: "4px", fontSize: "12px", color: "#666" }}>
+                  <div><strong>نوع الفرع:</strong> {branch.branchType || "—"}</div>
+                  <div><strong>المحافظة:</strong> {branch.governorate || "—"}</div>
+                  {branch.offeredServices && (
+                    <div style={{ marginTop: "4px" }}><strong>الخدمات:</strong> {branch.offeredServices}</div>
+                  )}
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
       </MapContainer>
       
       <div className="mt-4 flex items-center justify-center gap-4 text-sm text-muted-foreground flex-wrap" dir="rtl" data-testid="map-legend">
