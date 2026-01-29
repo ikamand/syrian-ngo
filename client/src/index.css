@@ -34,7 +34,7 @@
   --radius: 0;
   
   /* Map choropleth colors */
-  --map-empty: 220 9% 91%;
+  --map-empty: transparent;
   --map-low: 141 76% 85%;
   --map-medium: 142 70% 73%;
   --map-high: 142 70% 55%;
@@ -67,7 +67,7 @@
   --ring: 142 70% 50%;
   
   /* Map choropleth colors - dark mode */
-  --map-empty: 217 20% 25%;
+  --map-empty: transparent;
   --map-low: 141 50% 30%;
   --map-medium: 142 55% 40%;
   --map-high: 142 60% 50%;

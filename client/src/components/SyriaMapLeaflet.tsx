@@ -54,7 +54,8 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
     if (hslValue) {
       return `hsl(${hslValue})`;
     }
-    if (cssVar.includes("map-empty")) return "hsl(220 9% 91%)";
+    if (cssVar === "transparent") return "transparent";
+    if (cssVar.includes("map-empty")) return "transparent";
     if (cssVar.includes("map-low")) return "hsl(141 76% 85%)";
     if (cssVar.includes("map-medium")) return "hsl(142 70% 73%)";
     if (cssVar.includes("map-high")) return "hsl(142 70% 55%)";
