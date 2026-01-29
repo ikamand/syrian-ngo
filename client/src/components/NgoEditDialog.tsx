@@ -316,7 +316,7 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, handleFormError)} className="space-y-4">
-            <Accordion type="multiple" defaultValue={["section-1"]} className="w-full space-y-2">
+            <Accordion type="multiple" defaultValue={[]} className="w-full space-y-2">
               
               {/* Section 1: معلومات التأسيس */}
               <AccordionItem value="section-1" className="border rounded-lg px-4">
@@ -580,65 +580,44 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 3: التصنيفات والخدمات */}
-              <AccordionItem value="section-3" className="border rounded-lg px-4">
-                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-3">
-                  3. التصنيفات والخدمات
+              {/* Section 4: المراكز الخدمية (Moved under section 2) */}
+              <AccordionItem value="section-4" className="border rounded-lg px-4">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-4">
+                  3. المراكز الخدمية
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium">التصنيفات</h4>
-                      <Button type="button" variant="outline" size="sm" onClick={() => classificationsArray.append({ type: "", name: "" })}>
-                        <Plus className="w-4 h-4 ml-1" /> إضافة تصنيف
-                      </Button>
-                    </div>
-                    {classificationsArray.fields.map((field, index) => (
-                      <div key={field.id} className="grid grid-cols-3 gap-2 items-end border-b pb-2">
-                        <FormField control={form.control} name={`classifications.${index}.type`}
-                          render={({ field }) => (<FormItem><FormLabel>نوع التصنيف</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}
-                        />
-                        <FormField control={form.control} name={`classifications.${index}.name`}
-                          render={({ field }) => (<FormItem><FormLabel>اسم التصنيف</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}
-                        />
-                        <Button type="button" variant="ghost" size="icon" onClick={() => classificationsArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
-                      </div>
-                    ))}
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">المراكز الخدمية</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => serviceCentersArray.append({ name: "", centerType: "", licenseNumber: "", longitude: "", latitude: "", detailedAddress: "", division: "", propertyArea: "", propertyNumber: "", licensedGovernorate: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة مركز
+                    </Button>
                   </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium">الخدمات المقدمة</h4>
-                      <Button type="button" variant="outline" size="sm" onClick={() => servicesArray.append({ specialty: "", serviceType: "", targetGroup: "", governorate: "", serviceDescription: "", serviceTiming: "", availabilityStatus: "" })}>
-                        <Plus className="w-4 h-4 ml-1" /> إضافة خدمة
-                      </Button>
-                    </div>
-                    {servicesArray.fields.map((field, index) => (
-                      <div key={field.id} className="border rounded-lg p-3 space-y-2">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium">خدمة {index + 1}</span>
-                          <Button type="button" variant="ghost" size="icon" onClick={() => servicesArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <FormField control={form.control} name={`services.${index}.specialty`} render={({ field }) => (<FormItem><FormLabel>الاختصاص</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                          <FormField control={form.control} name={`services.${index}.serviceType`} render={({ field }) => (<FormItem><FormLabel>نوع الخدمة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                          <FormField control={form.control} name={`services.${index}.targetGroup`} render={({ field }) => (<FormItem><FormLabel>الفئة المستهدفة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                          <FormField control={form.control} name={`services.${index}.governorate`} render={({ field }) => (
-                            <FormItem><FormLabel>المحافظة</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value || ""}><FormControl><SelectTrigger><SelectValue placeholder="اختر" /></SelectTrigger></FormControl><SelectContent>{governorates.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select>
-                            </FormItem>
-                          )} />
-                        </div>
-                        <FormField control={form.control} name={`services.${index}.serviceDescription`} render={({ field }) => (<FormItem><FormLabel>وصف الخدمة</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl></FormItem>)} />
+                  {serviceCentersArray.fields.map((field, index) => (
+                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">مركز {index + 1}</span>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => serviceCentersArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
                       </div>
-                    ))}
-                  </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <FormField control={form.control} name={`serviceCenters.${index}.name`} render={({ field }) => (<FormItem><FormLabel>اسم المركز</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`serviceCenters.${index}.centerType`} render={({ field }) => (<FormItem><FormLabel>نوع المركز</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`serviceCenters.${index}.licenseNumber`} render={({ field }) => (<FormItem><FormLabel>رقم الترخيص</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`serviceCenters.${index}.licensedGovernorate`} render={({ field }) => (
+                          <FormItem><FormLabel>المحافظة</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || ""}><FormControl><SelectTrigger><SelectValue placeholder="اختر" /></SelectTrigger></FormControl><SelectContent>{governorates.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select>
+                          </FormItem>
+                        )} />
+                      </div>
+                      <FormField control={form.control} name={`serviceCenters.${index}.detailedAddress`} render={({ field }) => (<FormItem><FormLabel>العنوان التفصيلي</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl></FormItem>)} />
+                    </div>
+                  ))}
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 4: المراكز الخدمية */}
-              <AccordionItem value="section-4" className="border rounded-lg px-4">
-                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-4">
-                  4. المراكز الخدمية
+              {/* Section 3: التصنيفات والخدمات */}
+              <AccordionItem value="section-3" className="border rounded-lg px-4">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-3">
+                  4. التصنيفات والخدمات
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
