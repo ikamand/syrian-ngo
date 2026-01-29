@@ -548,7 +548,10 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                           </FormItem>
                         )} />
                       </div>
-                      <FormField control={form.control} name={`branches.${index}.address`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <div className="grid grid-cols-2 gap-2">
+                        <FormField control={form.control} name={`branches.${index}.longitude`} render={({ field }) => (<FormItem><FormLabel>خط الطول</FormLabel><FormControl><Input {...field} placeholder="مثال: 36.2765" /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`branches.${index}.latitude`} render={({ field }) => (<FormItem><FormLabel>خط العرض</FormLabel><FormControl><Input {...field} placeholder="مثال: 33.5138" /></FormControl></FormItem>)} />
+                      </div>
                       <FormField control={form.control} name={`branches.${index}.offeredServices`} render={({ field }) => (<FormItem><FormLabel>الخدمات المقدمة</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl></FormItem>)} />
                     </div>
                   ))}
