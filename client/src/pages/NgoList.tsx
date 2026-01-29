@@ -214,87 +214,97 @@ export default function NgoList() {
 
           <TabsContent value="map" data-testid="content-map-view">
             <div className="flex flex-col lg:flex-row gap-8 items-start">
-              <Card className="p-6 flex-1 w-full overflow-hidden">
-                <h2 className="text-lg font-bold text-primary mb-4 text-center">خريطة توزيع المنظمات</h2>
-                {isLoading ? (
-                  <div className="h-[400px] flex items-center justify-center">
-                    <div className="animate-pulse text-muted-foreground">جاري التحميل...</div>
-                  </div>
-                ) : (
-                  <SyriaMapLeaflet 
-                    governoratesData={governoratesData}
-                    onGovernorateClick={handleGovernorateClick}
-                    selectedGovernorate={selectedGovernorate}
-                  />
-                )}
+              <Card className="p-0 flex-1 w-full overflow-hidden border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] bg-white">
+                <div className="h-2 bg-primary/80" />
+                <div className="p-6">
+                  <h2 className="text-lg font-bold text-primary mb-4 text-center">خريطة توزيع المنظمات</h2>
+                  {isLoading ? (
+                    <div className="h-[400px] flex items-center justify-center">
+                      <div className="animate-pulse text-muted-foreground">جاري التحميل...</div>
+                    </div>
+                  ) : (
+                    <SyriaMapLeaflet 
+                      governoratesData={governoratesData}
+                      onGovernorateClick={handleGovernorateClick}
+                      selectedGovernorate={selectedGovernorate}
+                    />
+                  )}
+                </div>
               </Card>
 
               <div className="w-full lg:w-[350px] shrink-0 sticky top-24">
                 {selectedGovernorate ? (
-                  <Card className="p-6 h-full max-h-[600px] flex flex-col">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-bold text-primary">
-                        منظمات {selectedGovernorate}
-                      </h2>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => setSelectedGovernorate(null)}
-                        data-testid="button-clear-selection"
-                      >
-                        إلغاء التحديد
-                      </Button>
-                    </div>
-                    
-                    {governorateNgos.length === 0 ? (
-                      <div className="text-center py-12 text-muted-foreground">
-                        <Building2 className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                        <p>لا توجد منظمات مسجلة في هذه المحافظة</p>
+                  <Card className="p-0 h-full max-h-[600px] flex flex-col border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] bg-white overflow-hidden">
+                    <div className="h-2 bg-primary/80" />
+                    <div className="p-6 flex flex-col h-full">
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-bold text-primary">
+                          منظمات {selectedGovernorate}
+                        </h2>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => setSelectedGovernorate(null)}
+                          data-testid="button-clear-selection"
+                          className="hover:bg-primary/5 text-primary font-bold"
+                        >
+                          إلغاء التحديد
+                        </Button>
                       </div>
-                    ) : (
-                      <div className="space-y-3 overflow-y-auto pr-1">
-                        {governorateNgos.map((ngo) => (
-                          <Link 
-                            key={ngo.id}
-                            href={`/ngos/${ngo.id}`}
-                            className="block"
-                            data-testid={`map-ngo-link-${ngo.id}`}
-                          >
-                            <div className="flex items-center gap-4 p-4 rounded-xl border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_20px_-6px_rgba(0,0,0,0.12)] cursor-pointer bg-white transition-all duration-300 group">
-                              {ngo.logo ? (
-                                <div className="w-12 h-12 p-1 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center shrink-0">
-                                  <img 
-                                    src={ngo.logo} 
-                                    alt={ngo.arabicName || "شعار"} 
-                                    className="max-w-full max-h-full object-contain"
-                                  />
-                                </div>
-                              ) : (
-                                <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
-                                  <Building2 className="w-6 h-6 text-gray-300 group-hover:text-primary/40" />
-                                </div>
-                              )}
-                              <div className="flex-1 min-w-0">
-                                <h3 className="font-bold text-sm text-gray-900 group-hover:text-primary transition-colors truncate">
-                                  {ngo.arabicName || ngo.name || "—"}
-                                </h3>
-                                {ngo.city && (
-                                  <p className="text-[10px] text-muted-foreground font-medium mt-0.5">{ngo.city}</p>
+                      
+                      {governorateNgos.length === 0 ? (
+                        <div className="text-center py-12 text-muted-foreground flex-1 flex flex-col justify-center">
+                          <Building2 className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                          <p>لا توجد منظمات مسجلة في هذه المحافظة</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-3 overflow-y-auto pr-1">
+                          {governorateNgos.map((ngo) => (
+                            <Link 
+                              key={ngo.id}
+                              href={`/ngos/${ngo.id}`}
+                              className="block"
+                              data-testid={`map-ngo-link-${ngo.id}`}
+                            >
+                              <div className="flex items-center gap-4 p-4 rounded-xl border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_20px_-6px_rgba(0,0,0,0.12)] cursor-pointer bg-white transition-all duration-300 group">
+                                {ngo.logo ? (
+                                  <div className="w-12 h-12 p-1 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center shrink-0">
+                                    <img 
+                                      src={ngo.logo} 
+                                      alt={ngo.arabicName || "شعار"} 
+                                      className="max-w-full max-h-full object-contain"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
+                                    <Building2 className="w-6 h-6 text-gray-400 group-hover:text-primary/40" />
+                                  </div>
                                 )}
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-bold text-sm text-gray-900 group-hover:text-primary transition-colors truncate leading-tight">
+                                    {ngo.arabicName || ngo.name || "—"}
+                                  </h3>
+                                  {ngo.city && (
+                                    <p className="text-[10px] text-muted-foreground font-medium mt-0.5">{ngo.city}</p>
+                                  )}
+                                </div>
+                                <ChevronLeft className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-1 group-hover:translate-x-0" />
                               </div>
-                              <ChevronLeft className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-1 group-hover:translate-x-0" />
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </Card>
                 ) : (
-                  <Card className="p-6 text-center py-12">
-                    <Map className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-20" />
-                    <p className="text-sm text-muted-foreground">
-                      انقر على أي محافظة في الخريطة لعرض المنظمات المسجلة فيها
-                    </p>
+                  <Card className="p-0 border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] bg-white overflow-hidden">
+                    <div className="h-2 bg-primary/80" />
+                    <div className="p-6 text-center py-12">
+                      <Map className="w-12 h-12 mx-auto mb-4 text-primary opacity-20" />
+                      <p className="text-sm text-muted-foreground font-medium">
+                        انقر على أي محافظة في الخريطة لعرض المنظمات المسجلة فيها
+                      </p>
+                    </div>
                   </Card>
                 )}
               </div>
