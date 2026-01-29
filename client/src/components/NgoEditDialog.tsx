@@ -522,10 +522,43 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 2: التصنيفات والخدمات */}
+              {/* Section 2: الفروع والمكاتب */}
               <AccordionItem value="section-2" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-2">
-                  2. التصنيفات والخدمات
+                  2. الفروع والمكاتب
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">الفروع</h4>
+                    <Button type="button" variant="outline" size="sm" onClick={() => branchesArray.append({ branchType: "", licensedGovernorate: "", address: "", propertyArea: "", propertyNumber: "", propertyOccupied: false, longitude: "", latitude: "", offeredServices: "" })}>
+                      <Plus className="w-4 h-4 ml-1" /> إضافة فرع
+                    </Button>
+                  </div>
+                  {branchesArray.fields.map((field, index) => (
+                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">فرع {index + 1}</span>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => branchesArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <FormField control={form.control} name={`branches.${index}.branchType`} render={({ field }) => (<FormItem><FormLabel>نوع الفرع</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                        <FormField control={form.control} name={`branches.${index}.licensedGovernorate`} render={({ field }) => (
+                          <FormItem><FormLabel>المحافظة</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || ""}><FormControl><SelectTrigger><SelectValue placeholder="اختر" /></SelectTrigger></FormControl><SelectContent>{governorates.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select>
+                          </FormItem>
+                        )} />
+                      </div>
+                      <FormField control={form.control} name={`branches.${index}.address`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`branches.${index}.offeredServices`} render={({ field }) => (<FormItem><FormLabel>الخدمات المقدمة</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl></FormItem>)} />
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Section 3: التصنيفات والخدمات */}
+              <AccordionItem value="section-3" className="border rounded-lg px-4">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-3">
+                  3. التصنيفات والخدمات
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="space-y-4">
@@ -577,10 +610,10 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 3: المراكز الخدمية */}
-              <AccordionItem value="section-3" className="border rounded-lg px-4">
-                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-3">
-                  3. المراكز الخدمية
+              {/* Section 4: المراكز الخدمية */}
+              <AccordionItem value="section-4" className="border rounded-lg px-4">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-4">
+                  4. المراكز الخدمية
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
@@ -606,39 +639,6 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
                         )} />
                       </div>
                       <FormField control={form.control} name={`serviceCenters.${index}.detailedAddress`} render={({ field }) => (<FormItem><FormLabel>العنوان التفصيلي</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl></FormItem>)} />
-                    </div>
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-
-              {/* Section 4: الفروع والمكاتب */}
-              <AccordionItem value="section-4" className="border rounded-lg px-4">
-                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-4">
-                  4. الفروع والمكاتب
-                </AccordionTrigger>
-                <AccordionContent className="space-y-4 pt-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">الفروع</h4>
-                    <Button type="button" variant="outline" size="sm" onClick={() => branchesArray.append({ branchType: "", licensedGovernorate: "", address: "", propertyArea: "", propertyNumber: "", propertyOccupied: false, longitude: "", latitude: "", offeredServices: "" })}>
-                      <Plus className="w-4 h-4 ml-1" /> إضافة فرع
-                    </Button>
-                  </div>
-                  {branchesArray.fields.map((field, index) => (
-                    <div key={field.id} className="border rounded-lg p-3 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">فرع {index + 1}</span>
-                        <Button type="button" variant="ghost" size="icon" onClick={() => branchesArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <FormField control={form.control} name={`branches.${index}.branchType`} render={({ field }) => (<FormItem><FormLabel>نوع الفرع</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                        <FormField control={form.control} name={`branches.${index}.licensedGovernorate`} render={({ field }) => (
-                          <FormItem><FormLabel>المحافظة</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || ""}><FormControl><SelectTrigger><SelectValue placeholder="اختر" /></SelectTrigger></FormControl><SelectContent>{governorates.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent></Select>
-                          </FormItem>
-                        )} />
-                      </div>
-                      <FormField control={form.control} name={`branches.${index}.address`} render={({ field }) => (<FormItem><FormLabel>العنوان</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                      <FormField control={form.control} name={`branches.${index}.offeredServices`} render={({ field }) => (<FormItem><FormLabel>الخدمات المقدمة</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl></FormItem>)} />
                     </div>
                   ))}
                 </AccordionContent>
