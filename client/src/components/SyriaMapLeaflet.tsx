@@ -23,7 +23,7 @@ function MapController({ selectedGovernorate }: { selectedGovernorate: string | 
   useEffect(() => {
     // Zoom disabled on selection as per user request
     if (!selectedGovernorate) {
-      map.flyTo([35.0, 38.5], 6, { duration: 0.5 });
+      map.flyTo([35.0, 38.5], 6.5, { duration: 0.5 });
     }
   }, [selectedGovernorate, map]);
   
@@ -137,7 +137,7 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
     <div className="relative w-full" dir="ltr" data-testid="syria-map-wrapper">
       <MapContainer
         center={[35.0, 38.5]}
-        zoom={6}
+        zoom={6.5}
         style={{ height: "500px", width: "100%", borderRadius: "0" }}
         scrollWheelZoom={true}
         className="z-0"
