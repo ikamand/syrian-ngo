@@ -193,8 +193,8 @@ export default function NgoList() {
           </TabsList>
 
           <TabsContent value="map" data-testid="content-map-view">
-            <div className="flex flex-col items-center gap-8">
-              <Card className="p-6 w-full lg:w-[75%] mx-auto">
+            <div className="flex flex-col lg:flex-row gap-8 items-start">
+              <Card className="p-6 flex-1 w-full overflow-hidden">
                 <h2 className="text-lg font-bold text-primary mb-4 text-center">خريطة توزيع المنظمات</h2>
                 {isLoading ? (
                   <div className="h-[400px] flex items-center justify-center">
@@ -209,9 +209,9 @@ export default function NgoList() {
                 )}
               </Card>
 
-              <div className="w-full lg:w-[75%] mx-auto">
+              <div className="w-full lg:w-[350px] shrink-0 sticky top-24">
                 {selectedGovernorate ? (
-                  <Card className="p-6">
+                  <Card className="p-6 h-full max-h-[600px] flex flex-col">
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="text-lg font-bold text-primary">
                         منظمات {selectedGovernorate}
@@ -232,7 +232,7 @@ export default function NgoList() {
                         <p>لا توجد منظمات مسجلة في هذه المحافظة</p>
                       </div>
                     ) : (
-                      <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                      <div className="space-y-3 overflow-y-auto pr-1">
                         {governorateNgos.map((ngo) => (
                           <Link 
                             key={ngo.id}
@@ -240,24 +240,24 @@ export default function NgoList() {
                             className="block"
                             data-testid={`map-ngo-link-${ngo.id}`}
                           >
-                            <div className="flex items-center gap-3 p-3 rounded-lg border hover-elevate cursor-pointer">
+                            <div className="flex items-center gap-3 p-3 rounded-lg border hover-elevate cursor-pointer bg-white">
                               {ngo.logo ? (
                                 <img 
                                   src={ngo.logo} 
                                   alt={ngo.arabicName || "شعار"} 
-                                  className="w-12 h-12 object-contain rounded"
+                                  className="w-10 h-10 object-contain rounded"
                                 />
                               ) : (
-                                <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
-                                  <Building2 className="w-6 h-6 text-gray-400" />
+                                <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
+                                  <Building2 className="w-5 h-5 text-gray-400" />
                                 </div>
                               )}
                               <div className="flex-1 min-w-0">
-                                <h3 className="font-semibold text-sm truncate">
+                                <h3 className="font-semibold text-xs truncate">
                                   {ngo.arabicName || ngo.name || "—"}
                                 </h3>
                                 {ngo.city && (
-                                  <p className="text-xs text-muted-foreground">{ngo.city}</p>
+                                  <p className="text-[10px] text-muted-foreground">{ngo.city}</p>
                                 )}
                               </div>
                             </div>
@@ -267,11 +267,12 @@ export default function NgoList() {
                     )}
                   </Card>
                 ) : (
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground">
+                  <Card className="p-6 text-center py-12">
+                    <Map className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-20" />
+                    <p className="text-sm text-muted-foreground">
                       انقر على أي محافظة في الخريطة لعرض المنظمات المسجلة فيها
                     </p>
-                  </div>
+                  </Card>
                 )}
               </div>
             </div>

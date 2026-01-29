@@ -21,10 +21,8 @@ function MapController({ selectedGovernorate }: { selectedGovernorate: string | 
   const map = useMap();
   
   useEffect(() => {
-    if (selectedGovernorate && governorateCoordinates[selectedGovernorate]) {
-      const coords = governorateCoordinates[selectedGovernorate];
-      map.flyTo(coords, 8, { duration: 0.5 });
-    } else {
+    // Zoom disabled on selection as per user request
+    if (!selectedGovernorate) {
       map.flyTo([35.0, 38.5], 6, { duration: 0.5 });
     }
   }, [selectedGovernorate, map]);
