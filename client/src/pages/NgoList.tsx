@@ -260,26 +260,29 @@ export default function NgoList() {
                             className="block"
                             data-testid={`map-ngo-link-${ngo.id}`}
                           >
-                            <div className="flex items-center gap-3 p-3 rounded-lg border hover-elevate cursor-pointer bg-white">
+                            <div className="flex items-center gap-4 p-4 rounded-xl border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_20px_-6px_rgba(0,0,0,0.12)] cursor-pointer bg-white transition-all duration-300 group">
                               {ngo.logo ? (
-                                <img 
-                                  src={ngo.logo} 
-                                  alt={ngo.arabicName || "شعار"} 
-                                  className="w-10 h-10 object-contain rounded"
-                                />
+                                <div className="w-12 h-12 p-1 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center shrink-0">
+                                  <img 
+                                    src={ngo.logo} 
+                                    alt={ngo.arabicName || "شعار"} 
+                                    className="max-w-full max-h-full object-contain"
+                                  />
+                                </div>
                               ) : (
-                                <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
-                                  <Building2 className="w-5 h-5 text-gray-400" />
+                                <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
+                                  <Building2 className="w-6 h-6 text-gray-300 group-hover:text-primary/40" />
                                 </div>
                               )}
                               <div className="flex-1 min-w-0">
-                                <h3 className="font-semibold text-xs truncate">
+                                <h3 className="font-bold text-sm text-gray-900 group-hover:text-primary transition-colors truncate">
                                   {ngo.arabicName || ngo.name || "—"}
                                 </h3>
                                 {ngo.city && (
-                                  <p className="text-[10px] text-muted-foreground">{ngo.city}</p>
+                                  <p className="text-[10px] text-muted-foreground font-medium mt-0.5">{ngo.city}</p>
                                 )}
                               </div>
+                              <ChevronLeft className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-1 group-hover:translate-x-0" />
                             </div>
                           </Link>
                         ))}
