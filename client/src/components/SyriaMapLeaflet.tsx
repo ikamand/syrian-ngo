@@ -40,7 +40,7 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
 
   const getColorClass = (count: number, isSelected: boolean): string => {
     if (isSelected) return "var(--map-selected)";
-    if (count === 0) return "var(--map-empty)";
+    if (count === 0) return "transparent";
     if (count <= 2) return "var(--map-low)";
     if (count <= 5) return "var(--map-medium)";
     if (count <= 10) return "var(--map-high)";
