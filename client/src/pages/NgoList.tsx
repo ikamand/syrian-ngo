@@ -22,6 +22,7 @@ export default function NgoList() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGovernorate, setSelectedGovernorate] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(50);
 
   const VALID_GOVERNORATES = [
     "دمشق", "ريف دمشق", "حلب", "حمص", "حماة", "اللاذقية", 
@@ -126,7 +127,19 @@ export default function NgoList() {
     } else {
       setSelectedGovernorate(governorate);
     }
+    setVisibleCount(50); // Reset visible count when changing selection
   };
+
+  // NGOs to display in sidebar (filtered by governorate or all)
+  const sidebarNgos = useMemo(() => {
+    if (selectedGovernorate) {
+      return governorateNgos;
+    }
+    return ngos || [];
+  }, [ngos, selectedGovernorate, governorateNgos]);
+
+  const visibleNgos = sidebarNgos.slice(0, visibleCount);
+  const hasMore = visibleCount < sidebarNgos.length;
 
   const NgoGrid = ({ ngosList }: { ngosList: typeof ngos }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" dir="rtl">
@@ -233,33 +246,46 @@ export default function NgoList() {
               </Card>
 
               <div className="w-full lg:w-[350px] shrink-0 sticky top-24">
-                {selectedGovernorate ? (
-                  <Card className="p-0 h-full max-h-[600px] flex flex-col border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] bg-white overflow-hidden">
-                    <div className="h-2 bg-primary/80" />
-                    <div className="p-6 flex flex-col h-full">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-bold text-primary">
-                          منظمات {selectedGovernorate}
-                        </h2>
+                <Card className="p-0 h-full max-h-[600px] flex flex-col border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] bg-white overflow-hidden">
+                  <div className="h-2 bg-primary/80" />
+                  <div className="p-6 flex flex-col h-full">
+                    <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                      <h2 className="text-lg font-bold text-primary">
+                        {selectedGovernorate ? `منظمات ${selectedGovernorate}` : "جميع المنظمات"}
+                      </h2>
+                      {selectedGovernorate && (
                         <Button 
                           variant="ghost" 
                           size="sm"
-                          onClick={() => setSelectedGovernorate(null)}
+                          onClick={() => {
+                            setSelectedGovernorate(null);
+                            setVisibleCount(50);
+                          }}
                           data-testid="button-clear-selection"
                           className="hover:bg-primary/5 text-primary font-bold"
                         >
                           إلغاء التحديد
                         </Button>
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-muted-foreground mb-3 font-medium">
+                      عرض <span className="text-primary font-bold">{visibleNgos.length}</span> من أصل <span className="text-primary font-bold">{sidebarNgos.length}</span> منظمة
+                    </p>
+                    
+                    {isLoading ? (
+                      <div className="text-center py-12 text-muted-foreground flex-1 flex flex-col justify-center">
+                        <div className="animate-pulse">جاري التحميل...</div>
                       </div>
-                      
-                      {governorateNgos.length === 0 ? (
-                        <div className="text-center py-12 text-muted-foreground flex-1 flex flex-col justify-center">
-                          <Building2 className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                          <p>لا توجد منظمات مسجلة في هذه المحافظة</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-3 overflow-y-auto pr-1">
-                          {governorateNgos.map((ngo) => (
+                    ) : sidebarNgos.length === 0 ? (
+                      <div className="text-center py-12 text-muted-foreground flex-1 flex flex-col justify-center">
+                        <Building2 className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                        <p>{selectedGovernorate ? "لا توجد منظمات مسجلة في هذه المحافظة" : "لا توجد منظمات مسجلة"}</p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="space-y-3 overflow-y-auto pr-1 flex-1">
+                          {visibleNgos.map((ngo) => (
                             <Link 
                               key={ngo.id}
                               href={`/ngos/${ngo.id}`}
@@ -293,20 +319,21 @@ export default function NgoList() {
                             </Link>
                           ))}
                         </div>
-                      )}
-                    </div>
-                  </Card>
-                ) : (
-                  <Card className="p-0 border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] bg-white overflow-hidden">
-                    <div className="h-2 bg-primary/80" />
-                    <div className="p-6 text-center py-12">
-                      <Map className="w-12 h-12 mx-auto mb-4 text-primary opacity-20" />
-                      <p className="text-sm text-muted-foreground font-medium">
-                        انقر على أي محافظة في الخريطة لعرض المنظمات المسجلة فيها
-                      </p>
-                    </div>
-                  </Card>
-                )}
+                        {hasMore && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setVisibleCount(prev => prev + 50)}
+                            className="mt-4 w-full"
+                            data-testid="button-show-more-ngos"
+                          >
+                            عرض المزيد ({sidebarNgos.length - visibleCount} متبقي)
+                          </Button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </Card>
               </div>
             </div>
           </TabsContent>
