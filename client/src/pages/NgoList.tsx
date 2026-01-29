@@ -1,11 +1,11 @@
 import { Navbar } from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
-import { Search, Building2, Map, List } from "lucide-react";
+import { Search, Building2, Map, List, ChevronLeft } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
 import { Link } from "wouter";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SyriaMapLeaflet } from "@/components/SyriaMapLeaflet";
 import { Button } from "@/components/ui/button";
@@ -129,37 +129,57 @@ export default function NgoList() {
   };
 
   const NgoGrid = ({ ngosList }: { ngosList: typeof ngos }) => (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" dir="rtl">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" dir="rtl">
       {(ngosList || []).map((ngo) => (
         <Link 
           key={ngo.id} 
           href={`/ngos/${ngo.id}`}
           data-testid={`link-ngo-${ngo.id}`}
           aria-label={`عرض ملف ${ngo.arabicName || ngo.name || 'المنظمة'}`}
-          className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
+          className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <Card 
-            className="p-6 overflow-visible hover-elevate cursor-pointer transition-all duration-200 h-full flex flex-col items-center justify-center text-center"
+            className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] overflow-hidden cursor-pointer transition-all duration-300 group h-full flex flex-col"
             data-testid={`card-ngo-${ngo.id}`}
           >
-            {ngo.logo ? (
-              <img 
-                src={ngo.logo} 
-                alt={ngo.arabicName || "شعار المنظمة"} 
-                className="w-20 h-20 object-contain mb-4"
-                data-testid={`img-ngo-logo-${ngo.id}`}
-              />
-            ) : (
-              <div 
-                className="w-20 h-20 border-2 border-dashed rounded-lg bg-gray-50 flex items-center justify-center mb-4"
-                aria-hidden="true"
-              >
-                <Building2 className="w-10 h-10 text-gray-300" />
+            <CardContent className="p-0 flex flex-col h-full">
+              <div className="h-2 bg-primary/80 group-hover:bg-primary transition-colors" />
+              <div className="p-6 flex flex-col items-center flex-1 text-center">
+                {ngo.logo ? (
+                  <div className="w-20 h-20 mb-4 p-2 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center">
+                    <img 
+                      src={ngo.logo} 
+                      alt={ngo.arabicName || "شعار المنظمة"} 
+                      className="max-w-full max-h-full object-contain"
+                      data-testid={`img-ngo-logo-${ngo.id}`}
+                    />
+                  </div>
+                ) : (
+                  <div 
+                    className="w-20 h-20 border-2 border-dashed rounded-lg bg-gray-50 flex items-center justify-center mb-4 group-hover:bg-primary/5 transition-colors"
+                    aria-hidden="true"
+                  >
+                    <Building2 className="w-10 h-10 text-gray-300 group-hover:text-primary/40" />
+                  </div>
+                )}
+                
+                <div className="flex-1 w-full">
+                  <h3 className="text-base font-bold text-gray-900 group-hover:text-primary transition-colors line-clamp-2 leading-tight mb-2">
+                    {ngo.arabicName || ngo.name || "—"}
+                  </h3>
+                  {ngo.city && (
+                    <p className="text-xs text-muted-foreground font-medium">
+                      {ngo.city}
+                    </p>
+                  )}
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-gray-100 w-full flex items-center justify-center text-primary font-bold text-xs gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-y-1 group-hover:translate-y-0">
+                  <span>عرض الملف التعريفي</span>
+                  <ChevronLeft className="w-4 h-4" />
+                </div>
               </div>
-            )}
-            <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2">
-              {ngo.arabicName || ngo.name || "—"}
-            </h3>
+            </CardContent>
           </Card>
         </Link>
       ))}
