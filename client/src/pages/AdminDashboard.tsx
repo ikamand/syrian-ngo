@@ -676,9 +676,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="ngos" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-ngos"> إدارة المنظمات</TabsTrigger>
             <TabsTrigger value="announcements" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-announcements"> إدارة الإعلانات</TabsTrigger>
             <TabsTrigger value="notices" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-notices">إدارة التعاميم</TabsTrigger>
-            <TabsTrigger value="users" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-users">
-              المستخدمين
-            </TabsTrigger>
+            <TabsTrigger value="users" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-users">إدارة المستخدمين</TabsTrigger>
             <TabsTrigger value="content" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-content">
               المحتوى
             </TabsTrigger>
