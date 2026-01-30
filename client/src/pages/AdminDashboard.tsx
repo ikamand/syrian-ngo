@@ -639,7 +639,6 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50/50">
       <Navbar />
-      
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">لوحة الإدارة</h1>
@@ -677,9 +676,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="ngos" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-ngos">
               المنظمات
             </TabsTrigger>
-            <TabsTrigger value="announcements" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-announcements">
-              الإعلانات
-            </TabsTrigger>
+            <TabsTrigger value="announcements" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-announcements"> إدارة الإعلانات</TabsTrigger>
             <TabsTrigger value="notices" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-notices">
               التعاميم
             </TabsTrigger>
@@ -1207,7 +1204,6 @@ export default function AdminDashboard() {
 
         </Tabs>
       </main>
-
       {/* NGO Edit Dialog */}
       <NgoEditDialog
         ngo={editingNgo}
@@ -1226,7 +1222,6 @@ export default function AdminDashboard() {
           }
         }}
       />
-
       {/* Announcement Dialog */}
       <Dialog open={announcementDialogOpen} onOpenChange={(open) => !isDeletingAnnouncement && setAnnouncementDialogOpen(open)}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -1347,7 +1342,6 @@ export default function AdminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       {/* Notices Dialog */}
       <Dialog open={noticeDialogOpen} onOpenChange={(open) => !isDeletingNotice && setNoticeDialogOpen(open)}>
         <DialogContent className="sm:max-w-[500px]">
@@ -1467,7 +1461,6 @@ export default function AdminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       {/* Content Edit Dialog */}
       <Dialog open={contentDialogOpen} onOpenChange={setContentDialogOpen}>
         <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
@@ -1510,7 +1503,6 @@ export default function AdminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       {/* Footer Links Management Dialog */}
       <Dialog open={footerLinkDialogOpen} onOpenChange={closeFooterLinkDialog}>
         <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
@@ -1645,7 +1637,6 @@ export default function AdminDashboard() {
           )}
         </DialogContent>
       </Dialog>
-
       {/* NGO Details Dialog */}
       <NgoDetailsDialog 
         ngo={viewingNgo} 
@@ -1653,14 +1644,12 @@ export default function AdminDashboard() {
         onOpenChange={(open) => !open && setViewingNgo(null)}
         showInternalNotes={true}
       />
-
       {/* Create User Dialog */}
       <CreateUserDialog
         open={createUserOpen}
         onOpenChange={setCreateUserOpen}
         isSuperAdmin={isSuperAdmin}
       />
-
       {/* Edit User Dialog */}
       <EditUserDialog
         open={!!editingUser}
@@ -1688,7 +1677,6 @@ export default function AdminDashboard() {
         }}
         isDeleting={deleteUserMutation.isPending}
       />
-
       {/* Reject NGO Dialog */}
       <RejectNgoDialog
         open={!!rejectingNgo}
