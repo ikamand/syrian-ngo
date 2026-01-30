@@ -358,12 +358,21 @@ export const footerLinks = pgTable("footer_links", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const ngoNotes = pgTable("ngo_notes", {
+  id: serial("id").primaryKey(),
+  ngoId: integer("ngo_id").notNull(),
+  authorId: integer("author_id").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
 export const insertNgoSchema = createInsertSchema(ngos).omit({ id: true, status: true, createdBy: true, createdAt: true });
 export const insertAnnouncementSchema = createInsertSchema(announcements).omit({ id: true, createdBy: true, createdAt: true, updatedAt: true });
 export const insertSiteContentSchema = createInsertSchema(siteContent).omit({ id: true, updatedBy: true, updatedAt: true });
 export const insertNoticeSchema = createInsertSchema(notices).omit({ id: true, createdBy: true, createdAt: true });
 export const insertFooterLinkSchema = createInsertSchema(footerLinks).omit({ id: true, createdAt: true });
+export const insertNgoNoteSchema = createInsertSchema(ngoNotes).omit({ id: true, authorId: true, createdAt: true });
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -382,3 +391,6 @@ export type InsertNotice = z.infer<typeof insertNoticeSchema>;
 
 export type FooterLink = typeof footerLinks.$inferSelect;
 export type InsertFooterLink = z.infer<typeof insertFooterLinkSchema>;
+
+export type NgoNote = typeof ngoNotes.$inferSelect;
+export type InsertNgoNote = z.infer<typeof insertNgoNoteSchema>;
