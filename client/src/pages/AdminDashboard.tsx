@@ -824,6 +824,7 @@ export default function AdminDashboard() {
                                 onClick={() => setEditingNgo(ngo)}
                                 data-testid={`button-edit-ngo-${ngo.id}`}
                               >
+                                <Pencil className="w-4 h-4 ml-1" />
                                 تعديل
                               </Button>
                             </div>
@@ -894,6 +895,7 @@ export default function AdminDashboard() {
                                   onClick={() => openEditAnnouncement(announcement)}
                                   data-testid={`button-edit-announcement-${announcement.id}`}
                                 >
+                                  <Pencil className="w-4 h-4 ml-1" />
                                   تعديل
                                 </Button>
                               </div>
@@ -961,7 +963,8 @@ export default function AdminDashboard() {
                               onClick={() => openEditNotice(notice)}
                               data-testid={`button-edit-notice-${notice.id}`}
                             >
-                              <Pencil className="w-4 h-4" />
+                              <Pencil className="w-4 h-4 ml-1" />
+                              تعديل
                             </Button>
                           </div>
                         </div>
@@ -1141,6 +1144,7 @@ export default function AdminDashboard() {
                                   }
                                   data-testid={`button-edit-content-${item.key}`}
                                 >
+                                  <Pencil className="w-4 h-4 ml-1" />
                                   تعديل
                                 </Button>
                               </div>
@@ -1178,6 +1182,7 @@ export default function AdminDashboard() {
                             onClick={openFooterLinksManager}
                             data-testid="button-edit-content-footer-links"
                           >
+                            <Pencil className="w-4 h-4 ml-1" />
                             تعديل
                           </Button>
                         </div>
