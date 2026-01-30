@@ -7,9 +7,8 @@ import { useAllSiteContent, useUpsertSiteContent } from "@/hooks/use-site-conten
 import { usePublicFooterLinks, useCreateFooterLink, useUpdateFooterLink, useDeleteFooterLink } from "@/hooks/use-footer-links";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Check, X, Trash2, Save, Plus, Key, Users, UserPlus, Pencil, Upload, ImageIcon, Loader2 } from "lucide-react";
+import { Check, X, Trash2, Save, Plus, Users, UserPlus, Pencil, Upload, ImageIcon, Loader2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ResetUserPasswordDialog } from "@/components/ResetUserPasswordDialog";
 import { CreateUserDialog } from "@/components/CreateUserDialog";
 import { EditUserDialog } from "@/components/EditUserDialog";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -102,7 +101,6 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/statistics"],
   });
   
-  const [resetPasswordUser, setResetPasswordUser] = useState<{ id: number; username: string } | null>(null);
   const [createUserOpen, setCreateUserOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   
@@ -1131,19 +1129,6 @@ export default function AdminDashboard() {
                                   تعديل
                                 </Button>
                               )}
-                              {/* Reset password button - regular admins cannot reset super_admin passwords */}
-                              {(isSuperAdmin || u.role !== "super_admin") && (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="hover-elevate"
-                                  onClick={() => setResetPasswordUser({ id: u.id, username: u.username })}
-                                  data-testid={`button-reset-password-${u.id}`}
-                                >
-                                  <Key className="w-4 h-4 ml-1" />
-                                  كلمة المرور
-                                </Button>
-                              )}
                               {/* Delete button - only for super admin and not for self or other super admins */}
                               {isSuperAdmin && u.role !== "super_admin" && u.id !== user?.id && (
                                 <Button
@@ -1690,13 +1675,6 @@ export default function AdminDashboard() {
         ngo={viewingNgo} 
         open={!!viewingNgo} 
         onOpenChange={(open) => !open && setViewingNgo(null)} 
-      />
-
-      {/* Reset User Password Dialog */}
-      <ResetUserPasswordDialog
-        open={!!resetPasswordUser}
-        onOpenChange={(open) => !open && setResetPasswordUser(null)}
-        user={resetPasswordUser}
       />
 
       {/* Create User Dialog */}

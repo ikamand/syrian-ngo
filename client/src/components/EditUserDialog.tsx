@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, UserCog } from "lucide-react";
+import { Loader2, Save, UserCog, Key, Copy, Check, RefreshCw } from "lucide-react";
 
 interface UserData {
   id: number;
@@ -54,6 +54,73 @@ export function EditUserDialog({ open, onOpenChange, user, currentUserId }: Edit
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // Password reset state
+  const [newPassword, setNewPassword] = useState("");
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [passwordResetSuccess, setPasswordResetSuccess] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const generatePassword = () => {
+    const chars = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+    let password = "";
+    for (let i = 0; i < 10; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  };
+
+  const handleResetPassword = async () => {
+    if (!user || !newPassword || newPassword.length < 6) {
+      toast({
+        title: "خطأ",
+        description: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsResettingPassword(true);
+    try {
+      const response = await fetch("/api/admin/reset-user-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          newPassword: newPassword,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "حدث خطأ");
+      }
+
+      setPasswordResetSuccess(true);
+      toast({
+        title: "تم بنجاح",
+        description: "تم إعادة تعيين كلمة المرور بنجاح",
+      });
+    } catch (err: any) {
+      toast({
+        title: "خطأ",
+        description: err.message || "فشل في إعادة تعيين كلمة المرور",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResettingPassword(false);
+    }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(newPassword);
+    setCopied(true);
+    toast({
+      title: "تم النسخ",
+      description: "تم نسخ كلمة المرور إلى الحافظة",
+    });
+    setTimeout(() => setCopied(false), 2000);
+  };
+  
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -66,8 +133,9 @@ export function EditUserDialog({ open, onOpenChange, user, currentUserId }: Edit
     status: "active"
   });
 
+  // Reset form and password state when dialog opens or user changes
   useEffect(() => {
-    if (user) {
+    if (open && user) {
       setFormData({
         firstName: user.firstName || "",
         lastName: user.lastName || "",
@@ -79,8 +147,13 @@ export function EditUserDialog({ open, onOpenChange, user, currentUserId }: Edit
         registrationDate: user.registrationDate || "",
         status: user.status || "active"
       });
+      // Reset password state when dialog opens or user changes
+      setNewPassword("");
+      setPasswordResetSuccess(false);
+      setCopied(false);
+      setIsResettingPassword(false);
     }
-  }, [user]);
+  }, [open, user]);
 
   const updateUserMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -261,8 +334,80 @@ export function EditUserDialog({ open, onOpenChange, user, currentUserId }: Edit
             </div>
           )}
 
+          {/* Password Reset Section - not shown when editing self */}
+          {!isEditingSelf && (
+            <div className="border rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Key className="w-4 h-4 text-muted-foreground" />
+                <Label className="font-medium">إعادة تعيين كلمة المرور</Label>
+              </div>
+              
+              {!passwordResetSuccess ? (
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="كلمة المرور الجديدة"
+                      className="text-left"
+                      dir="ltr"
+                      data-testid="input-new-password"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="icon"
+                      onClick={() => setNewPassword(generatePassword())}
+                      title="توليد كلمة مرور"
+                      data-testid="button-generate-password"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleResetPassword}
+                    disabled={isResettingPassword || !newPassword}
+                    data-testid="button-reset-password"
+                  >
+                    {isResettingPassword ? (
+                      <Loader2 className="w-4 h-4 animate-spin ml-1" />
+                    ) : (
+                      <Key className="w-4 h-4 ml-1" />
+                    )}
+                    تعيين كلمة المرور
+                  </Button>
+                </div>
+              ) : (
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-sm text-green-800 mb-2">تم تعيين كلمة المرور الجديدة:</p>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 bg-white px-3 py-2 rounded border font-mono text-sm" dir="ltr">
+                      {newPassword}
+                    </code>
+                    <Button 
+                      type="button" 
+                      size="icon" 
+                      variant="outline" 
+                      onClick={copyToClipboard}
+                      data-testid="button-copy-password"
+                    >
+                      {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-amber-700 mt-2">
+                    تأكد من إبلاغ المستخدم بكلمة المرور الجديدة
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
           <DialogFooter className="gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-edit-user">
               إلغاء
             </Button>
             <Button type="submit" disabled={updateUserMutation.isPending} data-testid="button-save-user">
