@@ -917,25 +917,27 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="users">
-            <div className="space-y-6">
-              <div className="flex justify-between items-center flex-wrap gap-4">
-                <div>
-                  <h2 className="text-xl font-semibold">إدارة المستخدمين</h2>
-                  <p className="text-muted-foreground text-sm mt-1">
-                    إنشاء وتعديل حسابات المستخدمين وإدارة حالة الحسابات
-                  </p>
+            <div className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] overflow-hidden">
+              <div className="h-2 bg-primary/80"></div>
+              <div className="p-6 space-y-6">
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                  <div>
+                    <h2 className="text-xl font-semibold">إدارة المستخدمين</h2>
+                    <p className="text-muted-foreground text-sm mt-1">
+                      إنشاء وتعديل حسابات المستخدمين وإدارة حالة الحسابات
+                    </p>
+                  </div>
+                  <Button onClick={() => setCreateUserOpen(true)} data-testid="button-create-user">
+                    <UserPlus className="w-4 h-4 ml-2" />
+                    إنشاء حساب جديد
+                  </Button>
                 </div>
-                <Button onClick={() => setCreateUserOpen(true)} data-testid="button-create-user">
-                  <UserPlus className="w-4 h-4 ml-2" />
-                  إنشاء حساب جديد
-                </Button>
-              </div>
 
-              {isUsersLoading ? (
-                <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
-              ) : (
-                <div className="bg-white rounded-xl border shadow-sm overflow-x-auto">
-                  <Table className="table-fixed w-full">
+                {isUsersLoading ? (
+                  <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
+                ) : (
+                  <div className="bg-white rounded-xl border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] overflow-x-auto">
+                    <Table className="table-fixed w-full">
                     <colgroup>
                       <col className="w-[100px]" />
                       <col className="w-[120px]" />
@@ -983,6 +985,7 @@ export default function AdminDashboard() {
                               <Button
                                 size="sm"
                                 variant="outline"
+                                className="hover-elevate"
                                 onClick={() => setEditingUser(u)}
                                 data-testid={`button-edit-user-${u.id}`}
                               >
@@ -992,6 +995,7 @@ export default function AdminDashboard() {
                               <Button
                                 size="sm"
                                 variant="outline"
+                                className="hover-elevate"
                                 onClick={() => setResetPasswordUser({ id: u.id, username: u.username })}
                                 data-testid={`button-reset-password-${u.id}`}
                               >
@@ -1006,131 +1010,135 @@ export default function AdminDashboard() {
                   </Table>
                 </div>
               )}
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="content">
-            <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">إدارة محتوى الموقع</h2>
-              </div>
-              <p className="text-muted-foreground text-sm">
-                يمكنك تعديل النصوص المعروضة في صفحات الموقع المختلفة من هنا
-              </p>
-
-              {isSiteContentLoading ? (
-                <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
-              ) : (
-                <div className="grid gap-4">
-                  {predefinedContentKeys.map((item) => {
-                    const existingContent = getContentByKey(item.key);
-                    const existingPdf = item.pdfKey ? getContentByKey(item.pdfKey) : null;
-                    return (
-                      <Card key={item.key} data-testid={`card-content-${item.key}`}>
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="space-y-1">
-                              <CardTitle className="text-lg">{item.label}</CardTitle>
-                              <p className="text-sm text-muted-foreground">
-                                {existingContent ? (
-                                  <span className="text-green-600">تم التعيين</span>
-                                ) : (
-                                  <span className="text-orange-500">لم يتم التعيين بعد</span>
-                                )}
-                              </p>
-                            </div>
-                            <div className="flex gap-2">
-                              {item.pdfKey && (
-                                <div className="relative">
-                                  <input
-                                    type="file"
-                                    accept=".pdf"
-                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                    onChange={(e) => handleContentPdfUpload(e, item.pdfKey!)}
-                                    disabled={isUploadingContentPdf}
-                                    data-testid={`input-upload-pdf-${item.key}`}
-                                  />
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    disabled={isUploadingContentPdf}
-                                    data-testid={`button-upload-pdf-${item.key}`}
-                                  >
-                                    {isUploadingContentPdf ? (
-                                      <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
-                                      <>
-                                        <Upload className="w-4 h-4 ml-1" />
-                                        {existingPdf ? "تغيير PDF" : "رفع PDF"}
-                                      </>
-                                    )}
-                                  </Button>
-                                </div>
-                              )}
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => existingContent 
-                                  ? openEditContent(existingContent, item.richText) 
-                                  : openCreateContent(item.key, item.label, item.richText)
-                                }
-                                data-testid={`button-edit-content-${item.key}`}
-                              >
-                                تعديل
-                              </Button>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                          {existingContent && (
-                            <p className="text-foreground/80 line-clamp-2">{item.richText ? stripHtml(existingContent.content) : existingContent.content}</p>
-                          )}
-                          {existingPdf && (
-                            <div className="flex items-center gap-2 text-sm text-green-600">
-                              <span>ملف PDF: تم الرفع</span>
-                              <a 
-                                href={`/api/files/${existingPdf.content}`} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-primary underline"
-                              >
-                                معاينة
-                              </a>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-
-                  <Card className="border shadow-sm">
-                    <CardHeader>
-                      <div className="flex flex-row items-center justify-between gap-2">
-                        <CardTitle className="text-lg">روابط هامة</CardTitle>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={openFooterLinksManager}
-                          data-testid="button-edit-content-footer-links"
-                        >
-                          تعديل
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      {isFooterLinksLoading ? (
-                        <p className="text-foreground/80">جاري التحميل...</p>
-                      ) : footerLinksData && footerLinksData.length > 0 ? (
-                        <p className="text-foreground/80">
-                          {footerLinksData.length} روابط مضافة
-                        </p>
-                      ) : (
-                        <p className="text-muted-foreground">لا توجد روابط مضافة</p>
-                      )}
-                    </CardContent>
-                  </Card>
+            <div className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] overflow-hidden">
+              <div className="h-2 bg-primary/80"></div>
+              <div className="p-6 space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-semibold">إدارة محتوى الموقع</h2>
                 </div>
-              )}
+                <p className="text-muted-foreground text-sm">
+                  يمكنك تعديل النصوص المعروضة في صفحات الموقع المختلفة من هنا
+                </p>
+
+                {isSiteContentLoading ? (
+                  <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
+                ) : (
+                  <div className="grid gap-4">
+                    {predefinedContentKeys.map((item) => {
+                      const existingContent = getContentByKey(item.key);
+                      const existingPdf = item.pdfKey ? getContentByKey(item.pdfKey) : null;
+                      return (
+                        <Card key={item.key} className="border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] hover:shadow-[0_6px_20px_-6px_rgba(0,0,0,0.12)] transition-all duration-300" data-testid={`card-content-${item.key}`}>
+                          <CardHeader className="pb-3">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="space-y-1">
+                                <CardTitle className="text-lg">{item.label}</CardTitle>
+                                <p className="text-sm text-muted-foreground">
+                                  {existingContent ? (
+                                    <span className="text-green-600">تم التعيين</span>
+                                  ) : (
+                                    <span className="text-orange-500">لم يتم التعيين بعد</span>
+                                  )}
+                                </p>
+                              </div>
+                              <div className="flex gap-2">
+                                {item.pdfKey && (
+                                  <div className="relative">
+                                    <input
+                                      type="file"
+                                      accept=".pdf"
+                                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                      onChange={(e) => handleContentPdfUpload(e, item.pdfKey!)}
+                                      disabled={isUploadingContentPdf}
+                                      data-testid={`input-upload-pdf-${item.key}`}
+                                    />
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      disabled={isUploadingContentPdf}
+                                      data-testid={`button-upload-pdf-${item.key}`}
+                                    >
+                                      {isUploadingContentPdf ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                      ) : (
+                                        <>
+                                          <Upload className="w-4 h-4 ml-1" />
+                                          {existingPdf ? "تغيير PDF" : "رفع PDF"}
+                                        </>
+                                      )}
+                                    </Button>
+                                  </div>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => existingContent 
+                                    ? openEditContent(existingContent, item.richText) 
+                                    : openCreateContent(item.key, item.label, item.richText)
+                                  }
+                                  data-testid={`button-edit-content-${item.key}`}
+                                >
+                                  تعديل
+                                </Button>
+                              </div>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="space-y-2">
+                            {existingContent && (
+                              <p className="text-foreground/80 line-clamp-2">{item.richText ? stripHtml(existingContent.content) : existingContent.content}</p>
+                            )}
+                            {existingPdf && (
+                              <div className="flex items-center gap-2 text-sm text-green-600">
+                                <span>ملف PDF: تم الرفع</span>
+                                <a 
+                                  href={`/api/files/${existingPdf.content}`} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-primary underline"
+                                >
+                                  معاينة
+                                </a>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+
+                    <Card className="border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] hover:shadow-[0_6px_20px_-6px_rgba(0,0,0,0.12)] transition-all duration-300">
+                      <CardHeader>
+                        <div className="flex flex-row items-center justify-between gap-2">
+                          <CardTitle className="text-lg">روابط هامة</CardTitle>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={openFooterLinksManager}
+                            data-testid="button-edit-content-footer-links"
+                          >
+                            تعديل
+                          </Button>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        {isFooterLinksLoading ? (
+                          <p className="text-foreground/80">جاري التحميل...</p>
+                        ) : footerLinksData && footerLinksData.length > 0 ? (
+                          <p className="text-foreground/80">
+                            {footerLinksData.length} روابط مضافة
+                          </p>
+                        ) : (
+                          <p className="text-muted-foreground">لا توجد روابط مضافة</p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+              </div>
             </div>
           </TabsContent>
 
