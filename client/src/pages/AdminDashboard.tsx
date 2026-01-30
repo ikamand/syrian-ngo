@@ -983,12 +983,7 @@ export default function AdminDashboard() {
               <div className="h-2 bg-primary/80"></div>
               <div className="p-6 space-y-6">
                 <div className="flex justify-between items-center flex-wrap gap-4">
-                  <div>
-                    <h2 className="text-xl font-semibold">إدارة المستخدمين</h2>
-                    <p className="text-muted-foreground text-sm mt-1">
-                      إنشاء وتعديل حسابات المستخدمين وإدارة حالة الحسابات
-                    </p>
-                  </div>
+                  <h2 className="text-xl font-semibold">إدارة المستخدمين</h2>
                   <Button onClick={() => setCreateUserOpen(true)} data-testid="button-create-user">
                     <UserPlus className="w-4 h-4 ml-2" />
                     إنشاء حساب جديد
