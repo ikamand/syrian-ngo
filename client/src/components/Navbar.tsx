@@ -82,7 +82,7 @@ export function Navbar() {
           </DropdownMenu>
 
           {user && (
-            <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className={`transition-colors hover:text-white ${isActive("/dashboard") || isActive("/admin") ? "text-white font-bold" : "text-white/80"}`}>
+            <Link href={user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/dashboard'} className={`transition-colors hover:text-white ${isActive("/dashboard") || isActive("/admin") ? "text-white font-bold" : "text-white/80"}`}>
               لوحة التحكم
             </Link>
           )}
@@ -102,13 +102,13 @@ export function Navbar() {
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user.username}</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {user.role === 'admin' ? 'مدير النظام' : 'مستخدم'}
+                      {user.role === 'super_admin' ? 'المشرف الأعلى' : user.role === 'admin' ? 'مدير النظام' : 'مستخدم'}
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href={user.role === 'admin' ? '/admin' : '/dashboard'}>
+                  <Link href={user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/dashboard'}>
                     <div className="flex w-full items-center cursor-pointer">
                       <LayoutDashboard className="ml-2 h-4 w-4" />
                       لوحة التحكم
@@ -152,13 +152,13 @@ export function Navbar() {
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user.username}</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {user.role === 'admin' ? 'مدير النظام' : 'مستخدم'}
+                      {user.role === 'super_admin' ? 'المشرف الأعلى' : user.role === 'admin' ? 'مدير النظام' : 'مستخدم'}
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href={user.role === 'admin' ? '/admin' : '/dashboard'}>
+                  <Link href={user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/dashboard'}>
                     <div className="flex w-full items-center cursor-pointer">
                       <LayoutDashboard className="ml-2 h-4 w-4" />
                       لوحة التحكم
@@ -229,7 +229,7 @@ export function Navbar() {
 
               {user && (
                 <DropdownMenuItem asChild>
-                  <Link href={user.role === 'admin' ? '/admin' : '/dashboard'} className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href={user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/dashboard'} className="cursor-pointer w-full" onClick={() => setMobileMenuOpen(false)}>
                     لوحة التحكم
                   </Link>
                 </DropdownMenuItem>
