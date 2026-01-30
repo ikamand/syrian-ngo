@@ -1073,9 +1073,6 @@ export default function AdminDashboard() {
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-semibold">إدارة محتوى الموقع</h2>
                 </div>
-                <p className="text-muted-foreground text-sm">
-                  يمكنك تعديل النصوص المعروضة في صفحات الموقع المختلفة من هنا
-                </p>
 
                 {isSiteContentLoading ? (
                   <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
