@@ -1650,7 +1650,8 @@ export default function AdminDashboard() {
       <NgoDetailsDialog 
         ngo={viewingNgo} 
         open={!!viewingNgo} 
-        onOpenChange={(open) => !open && setViewingNgo(null)} 
+        onOpenChange={(open) => !open && setViewingNgo(null)}
+        showInternalNotes={true}
       />
 
       {/* Create User Dialog */}

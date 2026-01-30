@@ -11,14 +11,16 @@ import { Badge } from "@/components/ui/badge";
 import { Check, X } from "lucide-react";
 import type { Ngo } from "@shared/schema";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { NgoInternalNotes } from "@/components/NgoInternalNotes";
 
 interface NgoDetailsDialogProps {
   ngo: Ngo | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  showInternalNotes?: boolean;
 }
 
-export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogProps) {
+export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = false }: NgoDetailsDialogProps) {
   const getFieldValue = (value: string | null | undefined, fallback: string = "غير محدد") => {
     return value && value.trim() ? value : fallback;
   };
@@ -603,6 +605,13 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
                 </AccordionItem>
               )}
             </Accordion>
+
+            {/* Internal Notes Section - Admin Only */}
+            {showInternalNotes && ngo && (
+              <div className="mt-6 pt-6 border-t">
+                <NgoInternalNotes ngoId={ngo.id} />
+              </div>
+            )}
           </>
         ) : (
           <div className="py-8 text-center text-muted-foreground">
