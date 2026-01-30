@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { usePublishedAnnouncements } from "@/hooks/use-announcements";
-import { Card } from "@/components/ui/card";
-import { Calendar, Loader2, ArrowLeft, Megaphone, Newspaper, Clock } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Calendar, Loader2, ArrowLeft, Megaphone, Newspaper, Clock, Search } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
@@ -9,10 +10,19 @@ import { stripHtml } from "@/lib/sanitize";
 
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const featuredArticle = announcements?.[0];
-  const secondaryArticles = announcements?.slice(1, 3) || [];
-  const remainingArticles = announcements?.slice(3) || [];
+  const filteredAnnouncements = announcements?.filter((announcement) => {
+    if (!searchTerm.trim()) return true;
+    const searchLower = searchTerm.toLowerCase();
+    const titleMatch = announcement.title.toLowerCase().includes(searchLower);
+    const contentMatch = stripHtml(announcement.content).toLowerCase().includes(searchLower);
+    return titleMatch || contentMatch;
+  });
+
+  const featuredArticle = filteredAnnouncements?.[0];
+  const secondaryArticles = filteredAnnouncements?.slice(1, 3) || [];
+  const remainingArticles = filteredAnnouncements?.slice(3) || [];
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -37,6 +47,31 @@ export default function Announcements() {
         </div>
       </div>
 
+      <div className="container mx-auto px-4 -mt-4 relative z-10" dir="rtl">
+        <div className="bg-white shadow-md p-4">
+          <div className="relative">
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="ابحث في الأخبار..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pr-10 text-right"
+              data-testid="input-search-announcements"
+            />
+          </div>
+          {searchTerm && (
+            <div className="mt-2 text-sm text-muted-foreground">
+              {filteredAnnouncements?.length === 0 ? (
+                <span>لا توجد نتائج للبحث "{searchTerm}"</span>
+              ) : (
+                <span>تم العثور على {filteredAnnouncements?.length} نتيجة</span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
       <main className="container mx-auto px-4 py-8">
         {isLoading ? (
           <div className="space-y-6">
@@ -52,7 +87,7 @@ export default function Announcements() {
               </div>
             </div>
           </div>
-        ) : announcements && announcements.length > 0 ? (
+        ) : filteredAnnouncements && filteredAnnouncements.length > 0 ? (
           <div className="space-y-8" dir="rtl">
             {featuredArticle && (
               <section>
@@ -202,9 +237,19 @@ export default function Announcements() {
             )}
           </div>
         ) : (
-          <div className="text-center py-20 text-muted-foreground bg-white">
-            <Newspaper className="w-16 h-16 mx-auto mb-4 opacity-20" />
-            <p className="text-lg">لا توجد أخبار حالياً</p>
+          <div className="text-center py-20 text-muted-foreground bg-white" dir="rtl">
+            {searchTerm ? (
+              <>
+                <Search className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                <p className="text-lg">لا توجد نتائج للبحث "{searchTerm}"</p>
+                <p className="text-sm mt-2">جرب البحث بكلمات مختلفة</p>
+              </>
+            ) : (
+              <>
+                <Newspaper className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                <p className="text-lg">لا توجد أخبار حالياً</p>
+              </>
+            )}
           </div>
         )}
       </main>
