@@ -134,7 +134,6 @@ export default function AdminDashboard() {
 
   const predefinedContentKeys = [
     { key: "footer_contact", label: "معلومات التواصل", richText: false },
-    { key: "registration_instructions", label: "تعليمات التسجيل", richText: false },
     { key: "association_law", label: "قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)", richText: true, pdfKey: "association_law_pdf" },
     { key: "executive_regulations", label: "اللائحة التنفيذية (قانون الجمعيات)", richText: true, pdfKey: "executive_regulations_pdf" },
   ];
