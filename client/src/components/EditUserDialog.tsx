@@ -176,58 +176,63 @@ export function EditUserDialog({ open, onOpenChange, user, currentUserId }: Edit
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="organizationName">اسم المنظمة</Label>
-            <Input
-              id="organizationName"
-              value={formData.organizationName}
-              onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
-              placeholder="اسم المنظمة أو الجمعية"
-              data-testid="input-edit-organization-name"
-            />
-          </div>
+          {/* Organization fields - only show for regular users, not admins */}
+          {user.role === "user" && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="organizationName">اسم المنظمة</Label>
+                <Input
+                  id="organizationName"
+                  value={formData.organizationName}
+                  onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
+                  placeholder="اسم المنظمة أو الجمعية"
+                  data-testid="input-edit-organization-name"
+                />
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="governorate">المحافظة</Label>
-              <Select
-                value={formData.governorate}
-                onValueChange={(value) => setFormData({ ...formData, governorate: value })}
-              >
-                <SelectTrigger data-testid="select-edit-governorate">
-                  <SelectValue placeholder="اختر المحافظة" />
-                </SelectTrigger>
-                <SelectContent>
-                  {GOVERNORATES.map((gov) => (
-                    <SelectItem key={gov} value={gov}>{gov}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="registrationNumber">رقم الإشهار</Label>
-              <Input
-                id="registrationNumber"
-                value={formData.registrationNumber}
-                onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
-                placeholder="رقم الإشهار"
-                data-testid="input-edit-registration-number"
-              />
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="governorate">المحافظة</Label>
+                  <Select
+                    value={formData.governorate}
+                    onValueChange={(value) => setFormData({ ...formData, governorate: value })}
+                  >
+                    <SelectTrigger data-testid="select-edit-governorate">
+                      <SelectValue placeholder="اختر المحافظة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {GOVERNORATES.map((gov) => (
+                        <SelectItem key={gov} value={gov}>{gov}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="registrationNumber">رقم الإشهار</Label>
+                  <Input
+                    id="registrationNumber"
+                    value={formData.registrationNumber}
+                    onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
+                    placeholder="رقم الإشهار"
+                    data-testid="input-edit-registration-number"
+                  />
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="registrationDate">تاريخ الإشهار</Label>
-            <Input
-              id="registrationDate"
-              type="date"
-              value={formData.registrationDate}
-              onChange={(e) => setFormData({ ...formData, registrationDate: e.target.value })}
-              className="text-left"
-              dir="ltr"
-              data-testid="input-edit-registration-date"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="registrationDate">تاريخ الإشهار</Label>
+                <Input
+                  id="registrationDate"
+                  type="date"
+                  value={formData.registrationDate}
+                  onChange={(e) => setFormData({ ...formData, registrationDate: e.target.value })}
+                  className="text-left"
+                  dir="ltr"
+                  data-testid="input-edit-registration-date"
+                />
+              </div>
+            </>
+          )}
 
           <div className={`flex items-center justify-between gap-3 p-3 border rounded-lg ${isEditingSelf ? "opacity-50" : ""}`}>
             <div className="space-y-1">
