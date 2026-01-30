@@ -846,8 +846,14 @@ export async function registerRoutes(
       if (!user) return res.status(401).json({ message: "Unauthorized" });
       
       // Ensure user owns the NGO or is admin
-      if (user.role !== "admin" && ngo.createdBy !== user.id) {
+      if (user.role !== "admin" && user.role !== "super_admin" && ngo.createdBy !== user.id) {
         return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      // Regular users cannot edit NGOs under review (Pending or AdminApproved)
+      // Admins and super admins can still edit
+      if (user.role === "user" && (ngo.status === "Pending" || ngo.status === "AdminApproved")) {
+        return res.status(403).json({ message: "لا يمكن تعديل الجمعية أثناء فترة المراجعة" });
       }
 
       const input = api.ngos.update.input.parse(req.body);

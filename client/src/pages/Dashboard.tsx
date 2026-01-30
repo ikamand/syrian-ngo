@@ -127,13 +127,24 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setEditingNgo(ngo)}
-                    >
-                      تعديل
-                    </Button>
+                    {/* Disable edit for NGOs under review (Pending or AdminApproved) */}
+                    {ngo.status === "Pending" || ngo.status === "AdminApproved" ? (
+                      <div 
+                        className="text-xs text-muted-foreground bg-gray-100 px-3 py-1.5 rounded"
+                        data-testid={`text-edit-locked-ngo-${ngo.id}`}
+                      >
+                        قيد المراجعة - لا يمكن التعديل
+                      </div>
+                    ) : (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setEditingNgo(ngo)}
+                        data-testid={`button-edit-ngo-${ngo.id}`}
+                      >
+                        تعديل
+                      </Button>
+                    )}
                     <Button 
                       variant="ghost" 
                       size="sm"
