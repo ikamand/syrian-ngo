@@ -1109,26 +1109,32 @@ export default function AdminDashboard() {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex gap-2 flex-wrap">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="hover-elevate"
-                                onClick={() => setEditingUser(u)}
-                                data-testid={`button-edit-user-${u.id}`}
-                              >
-                                <Pencil className="w-4 h-4 ml-1" />
-                                تعديل
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="hover-elevate"
-                                onClick={() => setResetPasswordUser({ id: u.id, username: u.username })}
-                                data-testid={`button-reset-password-${u.id}`}
-                              >
-                                <Key className="w-4 h-4 ml-1" />
-                                كلمة المرور
-                              </Button>
+                              {/* Edit button - regular admins cannot edit super_admin accounts */}
+                              {(isSuperAdmin || u.role !== "super_admin") && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="hover-elevate"
+                                  onClick={() => setEditingUser(u)}
+                                  data-testid={`button-edit-user-${u.id}`}
+                                >
+                                  <Pencil className="w-4 h-4 ml-1" />
+                                  تعديل
+                                </Button>
+                              )}
+                              {/* Reset password button - regular admins cannot reset super_admin passwords */}
+                              {(isSuperAdmin || u.role !== "super_admin") && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="hover-elevate"
+                                  onClick={() => setResetPasswordUser({ id: u.id, username: u.username })}
+                                  data-testid={`button-reset-password-${u.id}`}
+                                >
+                                  <Key className="w-4 h-4 ml-1" />
+                                  كلمة المرور
+                                </Button>
+                              )}
                               {/* Delete button - only for super admin and not for self or other super admins */}
                               {isSuperAdmin && u.role !== "super_admin" && u.id !== user?.id && (
                                 <Button

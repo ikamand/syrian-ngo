@@ -284,6 +284,7 @@ export async function registerRoutes(
   app.post("/api/admin/reset-user-password", requireAdmin, async (req, res) => {
     try {
       const { userId, newPassword } = req.body;
+      const currentUser = req.user!;
       
       if (!userId || !newPassword) {
         return res.status(400).json({ message: "User ID and new password are required" });
@@ -296,6 +297,11 @@ export async function registerRoutes(
       const targetUser = await storage.getUser(userId);
       if (!targetUser) {
         return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Regular admins cannot reset super_admin passwords
+      if (targetUser.role === "super_admin" && currentUser.role !== "super_admin") {
+        return res.status(403).json({ message: "لا يمكنك تعديل حساب المشرف الأعلى" });
       }
       
       // Hash new password before storing
@@ -337,6 +343,7 @@ export async function registerRoutes(
   app.patch("/api/admin/users/:id", requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
+      const currentUser = req.user!;
       const { 
         firstName, 
         lastName, 
@@ -352,6 +359,11 @@ export async function registerRoutes(
       const targetUser = await storage.getUser(userId);
       if (!targetUser) {
         return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Regular admins cannot modify super_admin accounts
+      if (targetUser.role === "super_admin" && currentUser.role !== "super_admin") {
+        return res.status(403).json({ message: "لا يمكنك تعديل حساب المشرف الأعلى" });
       }
       
       const updatedUser = await storage.updateUser(userId, {
