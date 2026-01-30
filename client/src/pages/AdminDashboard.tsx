@@ -1007,8 +1007,8 @@ export default function AdminDashboard() {
                 {isUsersLoading ? (
                   <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
                 ) : (
-                  <div className="bg-white rounded-xl border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] overflow-x-auto">
-                    <Table className="w-full">
+                  <div className="overflow-x-auto">
+                    <Table className="table-fixed w-full">
                     <colgroup>
                       <col className="w-[120px]" />
                       <col className="w-[180px]" />
@@ -1019,19 +1019,19 @@ export default function AdminDashboard() {
                       <col className="w-[160px]" />
                     </colgroup>
                     <TableHeader>
-                      <TableRow className="hover:bg-transparent">
+                      <TableRow className="bg-primary/5 hover:bg-primary/5">
                         <TableHead className="text-right">اسم المستخدم</TableHead>
                         <TableHead className="text-right">الإسم الكامل</TableHead>
                         <TableHead className="text-right">المنظمة</TableHead>
                         <TableHead className="text-right">المحافظة</TableHead>
                         <TableHead className="text-center">الدور</TableHead>
                         <TableHead className="text-center">الحالة</TableHead>
-                        <TableHead className="text-left">الإجراءات</TableHead>
+                        <TableHead className="text-center">الإجراءات</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {allUsers?.map((u) => (
-                        <TableRow key={u.id} data-testid={`row-user-${u.id}`} className="hover:bg-gray-50/50">
+                        <TableRow key={u.id} data-testid={`row-user-${u.id}`}>
                           <TableCell className="font-medium font-mono text-right" dir="ltr" style={{ unicodeBidi: "isolate" }}>{u.username}</TableCell>
                           <TableCell className="text-right">
                             {u.firstName || u.lastName ? `${u.firstName || ""} ${u.lastName || ""}`.trim() : "-"}
@@ -1048,8 +1048,8 @@ export default function AdminDashboard() {
                               {u.status === "suspended" ? "متوقف" : "فعّال"}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-left">
-                            <div className="flex gap-2 justify-start items-center">
+                          <TableCell className="text-center">
+                            <div className="flex gap-2 justify-center items-center">
                               {/* Edit button - regular admins cannot edit super_admin accounts */}
                               {(isSuperAdmin || u.role !== "super_admin") && (
                                 <Button
