@@ -43,10 +43,10 @@ export function CreateUserDialog({ open, onOpenChange, isSuperAdmin = false }: C
   const [generatedPassword, setGeneratedPassword] = useState(generatePassword());
   const [showCredentials, setShowCredentials] = useState(false);
   const [createdUsername, setCreatedUsername] = useState("");
-  const [createdRole, setCreatedRole] = useState<"user" | "admin">("user");
+  const [createdRole, setCreatedRole] = useState<"user" | "admin" | "super_admin">("user");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [usernameMessage, setUsernameMessage] = useState("");
-  const [selectedRole, setSelectedRole] = useState<"user" | "admin">("user");
+  const [selectedRole, setSelectedRole] = useState<"user" | "admin" | "super_admin">("user");
   
   const [formData, setFormData] = useState({
     username: "",
@@ -90,8 +90,10 @@ export function CreateUserDialog({ open, onOpenChange, isSuperAdmin = false }: C
   }, [formData.username, checkUsernameAvailability]);
 
   const createUserMutation = useMutation({
-    mutationFn: async (data: typeof formData & { password: string; role: "user" | "admin" }) => {
-      const endpoint = data.role === "admin" ? "/api/super-admin/create-admin" : "/api/auth/register";
+    mutationFn: async (data: typeof formData & { password: string; role: "user" | "admin" | "super_admin" }) => {
+      const endpoint = data.role === "admin" || data.role === "super_admin" 
+        ? "/api/super-admin/create-admin" 
+        : "/api/auth/register";
       const res = await apiRequest("POST", endpoint, data);
       const text = await res.text();
       try {
@@ -158,8 +160,16 @@ export function CreateUserDialog({ open, onOpenChange, isSuperAdmin = false }: C
     onOpenChange(false);
   };
 
+  const getRoleDisplayName = (role: "user" | "admin" | "super_admin") => {
+    switch (role) {
+      case "super_admin": return "مشرف أعلى (Super Admin)";
+      case "admin": return "مدير (Admin)";
+      default: return "مستخدم";
+    }
+  };
+
   const copyCredentials = () => {
-    const roleText = createdRole === "admin" ? "مدير" : "مستخدم";
+    const roleText = getRoleDisplayName(createdRole);
     const text = `اسم المستخدم: ${createdUsername}\nكلمة المرور: ${generatedPassword}\nنوع الحساب: ${roleText}`;
     navigator.clipboard.writeText(text);
     toast({ title: "تم النسخ", description: "تم نسخ بيانات الدخول" });
@@ -191,7 +201,7 @@ export function CreateUserDialog({ open, onOpenChange, isSuperAdmin = false }: C
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">نوع الحساب:</span>
-                <span className="font-bold">{createdRole === "admin" ? "مدير" : "مستخدم"}</span>
+                <span className="font-bold">{getRoleDisplayName(createdRole)}</span>
               </div>
             </div>
 
@@ -228,26 +238,28 @@ export function CreateUserDialog({ open, onOpenChange, isSuperAdmin = false }: C
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Role selector - only for super admins */}
-          {isSuperAdmin && (
-            <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
-              <Label htmlFor="role">نوع الحساب</Label>
-              <Select value={selectedRole} onValueChange={(value: "user" | "admin") => setSelectedRole(value)}>
-                <SelectTrigger id="role" data-testid="select-user-role">
-                  <SelectValue placeholder="اختر نوع الحساب" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="user">مستخدم عادي</SelectItem>
-                  <SelectItem value="admin">مدير (Admin)</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">
-                {selectedRole === "admin" 
+          {/* Role selector - always visible to allow creating super_admin */}
+          <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+            <Label htmlFor="role">نوع الحساب</Label>
+            <Select value={selectedRole} onValueChange={(value: "user" | "admin" | "super_admin") => setSelectedRole(value)}>
+              <SelectTrigger id="role" data-testid="select-user-role">
+                <SelectValue placeholder="اختر نوع الحساب" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="user">مستخدم عادي</SelectItem>
+                <SelectItem value="admin">مدير (Admin)</SelectItem>
+                {/* TEMPORARY: Remove this option after creating super_admin account */}
+                <SelectItem value="super_admin">مشرف أعلى (Super Admin)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              {selectedRole === "super_admin"
+                ? "المشرف الأعلى لديه صلاحيات كاملة على النظام"
+                : selectedRole === "admin" 
                   ? "المدير يمكنه الموافقة على المنظمات ومراجعة الطلبات" 
                   : "المستخدم العادي يمكنه تسجيل منظمة وإدارتها"}
-              </p>
-            </div>
-          )}
+            </p>
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">

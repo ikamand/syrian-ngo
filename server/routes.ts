@@ -392,11 +392,14 @@ export async function registerRoutes(
   // --- Super Admin Routes ---
 
   // Super admin creates admin accounts
-  app.post("/api/super-admin/create-admin", requireSuperAdmin, async (req, res) => {
+  // TEMPORARY: Changed to requireAdmin to allow creating super_admin accounts
+  // Change back to requireSuperAdmin after creating your super_admin account
+  app.post("/api/super-admin/create-admin", requireAdmin, async (req, res) => {
     try {
       const { 
         username, 
         password,
+        role,
         firstName,
         lastName,
         email,
@@ -414,6 +417,10 @@ export async function registerRoutes(
       if (password.length < 6) {
         return res.status(400).json({ message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" });
       }
+
+      // Validate role - only allow admin or super_admin
+      const validRoles = ["admin", "super_admin"];
+      const userRole = validRoles.includes(role) ? role : "admin";
       
       const existing = await storage.getUserByUsername(username);
       if (existing) {
@@ -425,7 +432,7 @@ export async function registerRoutes(
       const user = await storage.createUser({
         username,
         password: hashedPassword,
-        role: "admin",
+        role: userRole,
         firstName,
         lastName,
         email,
