@@ -17,7 +17,7 @@ export default function Auth() {
 
   useEffect(() => {
     if (user) {
-      setLocation(user.role === "admin" ? "/admin" : "/dashboard");
+      setLocation(user.role === "admin" || user.role === "super_admin" ? "/admin" : "/dashboard");
     }
   }, [user, setLocation]);
 
