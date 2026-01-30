@@ -1,4 +1,4 @@
-import { users, ngos, announcements, siteContent, notices, footerLinks, type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent, type Notice, type InsertNotice, type FooterLink, type InsertFooterLink } from "@shared/schema";
+import { users, ngos, announcements, siteContent, notices, footerLinks, ngoNotes, type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent, type Notice, type InsertNotice, type FooterLink, type InsertFooterLink, type NgoNote, type InsertNgoNote } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import connectPgSimple from "connect-pg-simple";
@@ -57,6 +57,9 @@ export interface IStorage {
   getFooterLinks(): Promise<FooterLink[]>;
   updateFooterLink(id: number, updates: Partial<InsertFooterLink>): Promise<FooterLink | undefined>;
   deleteFooterLink(id: number): Promise<boolean>;
+
+  createNgoNote(note: InsertNgoNote & { authorId: number }): Promise<NgoNote>;
+  getNgoNotes(ngoId: number): Promise<NgoNote[]>;
 
   sessionStore: session.Store;
 }
@@ -300,6 +303,15 @@ export class DatabaseStorage implements IStorage {
   async deleteFooterLink(id: number): Promise<boolean> {
     const result = await db.delete(footerLinks).where(eq(footerLinks.id, id)).returning();
     return result.length > 0;
+  }
+
+  async createNgoNote(note: InsertNgoNote & { authorId: number }): Promise<NgoNote> {
+    const [created] = await db.insert(ngoNotes).values(note).returning();
+    return created;
+  }
+
+  async getNgoNotes(ngoId: number): Promise<NgoNote[]> {
+    return db.select().from(ngoNotes).where(eq(ngoNotes.ngoId, ngoId)).orderBy(desc(ngoNotes.createdAt));
   }
 }
 

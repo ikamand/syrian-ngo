@@ -1064,6 +1064,74 @@ export async function registerRoutes(
     res.json({ success: true });
   });
 
+  // --- NGO Notes Routes (Internal Admin Notes) ---
+
+  // Get notes for an NGO
+  app.get("/api/admin/ngos/:id/notes", requireAdmin, async (req, res) => {
+    try {
+      const ngoId = parseInt(req.params.id);
+      if (isNaN(ngoId)) {
+        return res.status(400).json({ message: "Invalid NGO ID" });
+      }
+      
+      const notes = await storage.getNgoNotes(ngoId);
+      
+      // Enrich notes with author names
+      const enrichedNotes = await Promise.all(
+        notes.map(async (note) => {
+          const author = await storage.getUser(note.authorId);
+          return {
+            ...note,
+            authorName: author ? `${author.firstName || ''} ${author.lastName || ''}`.trim() || author.username : 'مستخدم محذوف'
+          };
+        })
+      );
+      
+      res.json(enrichedNotes);
+    } catch (err) {
+      console.error("[get-ngo-notes] Error:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Add a note to an NGO
+  app.post("/api/admin/ngos/:id/notes", requireAdmin, async (req, res) => {
+    try {
+      const ngoId = parseInt(req.params.id);
+      const { content } = req.body;
+      const currentUser = req.user!;
+      
+      if (isNaN(ngoId)) {
+        return res.status(400).json({ message: "Invalid NGO ID" });
+      }
+      
+      if (!content || content.trim().length === 0) {
+        return res.status(400).json({ message: "محتوى الملاحظة مطلوب" });
+      }
+      
+      // Verify NGO exists
+      const ngo = await storage.getNgo(ngoId);
+      if (!ngo) {
+        return res.status(404).json({ message: "المنظمة غير موجودة" });
+      }
+      
+      const note = await storage.createNgoNote({
+        ngoId,
+        content: content.trim(),
+        authorId: currentUser.id
+      });
+      
+      // Return enriched note with author name
+      res.status(201).json({
+        ...note,
+        authorName: `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || currentUser.username
+      });
+    } catch (err) {
+      console.error("[create-ngo-note] Error:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // --- Open Graph Meta Tags for Social Media Sharing ---
   // This middleware injects dynamic meta tags for news article pages
   app.get("/news/:id", async (req, res, next) => {
