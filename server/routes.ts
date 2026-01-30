@@ -366,6 +366,11 @@ export async function registerRoutes(
         return res.status(403).json({ message: "لا يمكنك تعديل حساب المشرف الأعلى" });
       }
       
+      // Users cannot suspend their own account
+      if (userId === currentUser.id && status === "suspended") {
+        return res.status(403).json({ message: "لا يمكنك تعطيل حسابك الخاص" });
+      }
+      
       const updatedUser = await storage.updateUser(userId, {
         firstName,
         lastName,

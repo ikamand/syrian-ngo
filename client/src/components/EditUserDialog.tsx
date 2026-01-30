@@ -29,6 +29,7 @@ interface EditUserDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   user: UserData | null;
+  currentUserId?: number;
 }
 
 const GOVERNORATES = [
@@ -48,7 +49,8 @@ const GOVERNORATES = [
   "الحسكة"
 ];
 
-export function EditUserDialog({ open, onOpenChange, user }: EditUserDialogProps) {
+export function EditUserDialog({ open, onOpenChange, user, currentUserId }: EditUserDialogProps) {
+  const isEditingSelf = user?.id === currentUserId;
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -227,13 +229,15 @@ export function EditUserDialog({ open, onOpenChange, user }: EditUserDialogProps
             />
           </div>
 
-          <div className="flex items-center justify-between gap-3 p-3 border rounded-lg">
+          <div className={`flex items-center justify-between gap-3 p-3 border rounded-lg ${isEditingSelf ? "opacity-50" : ""}`}>
             <div className="space-y-1">
-              <Label htmlFor="status" className="cursor-pointer">الحساب فعّال</Label>
+              <Label htmlFor="status" className={isEditingSelf ? "" : "cursor-pointer"}>الحساب فعّال</Label>
               <p className="text-xs text-muted-foreground">
-                {formData.status === "active" 
-                  ? "المستخدم يمكنه تسجيل الدخول" 
-                  : "المستخدم لا يمكنه تسجيل الدخول"}
+                {isEditingSelf 
+                  ? "لا يمكنك تعطيل حسابك الخاص"
+                  : formData.status === "active" 
+                    ? "المستخدم يمكنه تسجيل الدخول" 
+                    : "المستخدم لا يمكنه تسجيل الدخول"}
               </p>
             </div>
             <Switch
@@ -241,6 +245,7 @@ export function EditUserDialog({ open, onOpenChange, user }: EditUserDialogProps
               dir="ltr"
               checked={formData.status === "active"}
               onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? "active" : "suspended" })}
+              disabled={isEditingSelf}
               data-testid="switch-edit-status"
             />
           </div>

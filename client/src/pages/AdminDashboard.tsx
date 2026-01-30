@@ -1711,6 +1711,7 @@ export default function AdminDashboard() {
         open={!!editingUser}
         onOpenChange={(open) => !open && setEditingUser(null)}
         user={editingUser}
+        currentUserId={user?.id}
       />
 
       {/* Reject NGO Dialog */}
