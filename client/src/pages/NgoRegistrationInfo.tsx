@@ -274,12 +274,6 @@ export default function NgoRegistrationInfo() {
                   </table>
                 </div>
 
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                  <p className="text-amber-800 text-sm">
-                    يرجى مراجعة الجهات المختصة للحصول على أحدث المعلومات والتفاصيل الخاصة بتأسيس المنظمات غير الحكومية.
-                  </p>
-                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
