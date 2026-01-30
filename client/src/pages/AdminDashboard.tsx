@@ -673,9 +673,7 @@ export default function AdminDashboard() {
 
         <Tabs defaultValue="ngos" className="space-y-6">
           <TabsList className="grid w-full max-w-3xl grid-cols-5 bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] p-1">
-            <TabsTrigger value="ngos" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-ngos">
-              المنظمات
-            </TabsTrigger>
+            <TabsTrigger value="ngos" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-ngos"> إدارة المنظمات</TabsTrigger>
             <TabsTrigger value="announcements" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-announcements"> إدارة الإعلانات</TabsTrigger>
             <TabsTrigger value="notices" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-notices">
               التعاميم
