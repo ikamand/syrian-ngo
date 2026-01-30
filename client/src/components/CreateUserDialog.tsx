@@ -12,6 +12,7 @@ import { Loader2, Copy, RefreshCw, UserPlus, CheckCircle2, XCircle, AlertCircle 
 interface CreateUserDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  isSuperAdmin?: boolean;
 }
 
 const GOVERNORATES = [
@@ -36,14 +37,16 @@ function generatePassword(length = 10) {
   return Array.from({ length }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join("");
 }
 
-export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) {
+export function CreateUserDialog({ open, onOpenChange, isSuperAdmin = false }: CreateUserDialogProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [generatedPassword, setGeneratedPassword] = useState(generatePassword());
   const [showCredentials, setShowCredentials] = useState(false);
   const [createdUsername, setCreatedUsername] = useState("");
+  const [createdRole, setCreatedRole] = useState<"user" | "admin">("user");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [usernameMessage, setUsernameMessage] = useState("");
+  const [selectedRole, setSelectedRole] = useState<"user" | "admin">("user");
   
   const [formData, setFormData] = useState({
     username: "",
@@ -87,8 +90,9 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
   }, [formData.username, checkUsernameAvailability]);
 
   const createUserMutation = useMutation({
-    mutationFn: async (data: typeof formData & { password: string }) => {
-      const res = await apiRequest("POST", "/api/auth/register", data);
+    mutationFn: async (data: typeof formData & { password: string; role: "user" | "admin" }) => {
+      const endpoint = data.role === "admin" ? "/api/super-admin/create-admin" : "/api/auth/register";
+      const res = await apiRequest("POST", endpoint, data);
       const text = await res.text();
       try {
         return JSON.parse(text);
@@ -98,7 +102,9 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/statistics"] });
       setCreatedUsername(formData.username);
+      setCreatedRole(selectedRole);
       setShowCredentials(true);
     },
     onError: (error: Error) => {
@@ -125,7 +131,8 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
     
     createUserMutation.mutate({
       ...formData,
-      password: generatedPassword
+      password: generatedPassword,
+      role: selectedRole
     });
   };
 
@@ -144,13 +151,16 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
     setGeneratedPassword(generatePassword());
     setShowCredentials(false);
     setCreatedUsername("");
+    setCreatedRole("user");
+    setSelectedRole("user");
     setUsernameStatus("idle");
     setUsernameMessage("");
     onOpenChange(false);
   };
 
   const copyCredentials = () => {
-    const text = `اسم المستخدم: ${createdUsername}\nكلمة المرور: ${generatedPassword}`;
+    const roleText = createdRole === "admin" ? "مدير" : "مستخدم";
+    const text = `اسم المستخدم: ${createdUsername}\nكلمة المرور: ${generatedPassword}\nنوع الحساب: ${roleText}`;
     navigator.clipboard.writeText(text);
     toast({ title: "تم النسخ", description: "تم نسخ بيانات الدخول" });
   };
@@ -178,6 +188,10 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">كلمة المرور:</span>
                 <span className="font-mono font-bold text-primary">{generatedPassword}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">نوع الحساب:</span>
+                <span className="font-bold">{createdRole === "admin" ? "مدير" : "مستخدم"}</span>
               </div>
             </div>
 
@@ -214,6 +228,27 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Role selector - only for super admins */}
+          {isSuperAdmin && (
+            <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+              <Label htmlFor="role">نوع الحساب</Label>
+              <Select value={selectedRole} onValueChange={(value: "user" | "admin") => setSelectedRole(value)}>
+                <SelectTrigger id="role" data-testid="select-user-role">
+                  <SelectValue placeholder="اختر نوع الحساب" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="user">مستخدم عادي</SelectItem>
+                  <SelectItem value="admin">مدير (Admin)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                {selectedRole === "admin" 
+                  ? "المدير يمكنه الموافقة على المنظمات ومراجعة الطلبات" 
+                  : "المستخدم العادي يمكنه تسجيل منظمة وإدارتها"}
+              </p>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="username">اسم المستخدم *</Label>

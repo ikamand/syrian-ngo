@@ -1688,6 +1688,7 @@ export default function AdminDashboard() {
       <CreateUserDialog
         open={createUserOpen}
         onOpenChange={setCreateUserOpen}
+        isSuperAdmin={isSuperAdmin}
       />
 
       {/* Edit User Dialog */}
