@@ -691,13 +691,13 @@ export default function AdminDashboard() {
                     ) : (
                       filteredNgos.map((ngo) => (
                         <TableRow key={ngo.id} data-testid={`row-ngo-${ngo.id}`}>
-                          <TableCell className="font-medium text-primary truncate">{ngo.arabicName || ngo.name || "غير محدد"}</TableCell>
-                          <TableCell className="truncate">{ngo.legalForm || "—"}</TableCell>
-                          <TableCell className="truncate">{ngo.scope || "—"}</TableCell>
+                          <TableCell className="font-medium text-primary text-right truncate">{ngo.arabicName || ngo.name || "غير محدد"}</TableCell>
+                          <TableCell className="text-right truncate">{ngo.legalForm || "—"}</TableCell>
+                          <TableCell className="text-right truncate">{ngo.scope || "—"}</TableCell>
                           <TableCell className="text-center">
                             <StatusBadge status={ngo.status as any} />
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="text-center">
                             <div className="flex justify-center gap-2">
                               {ngo.status === "Pending" && (
                                 <>
