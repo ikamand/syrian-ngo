@@ -248,16 +248,12 @@ export function CreateUserDialog({ open, onOpenChange, isSuperAdmin = false }: C
               <SelectContent>
                 <SelectItem value="user">مستخدم عادي</SelectItem>
                 <SelectItem value="admin">مدير (Admin)</SelectItem>
-                {/* TEMPORARY: Remove this option after creating super_admin account */}
-                <SelectItem value="super_admin">مشرف أعلى (Super Admin)</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">
-              {selectedRole === "super_admin"
-                ? "المشرف الأعلى لديه صلاحيات كاملة على النظام"
-                : selectedRole === "admin" 
-                  ? "المدير يمكنه الموافقة على المنظمات ومراجعة الطلبات" 
-                  : "المستخدم العادي يمكنه تسجيل منظمة وإدارتها"}
+              {selectedRole === "admin" 
+                ? "المدير يمكنه الموافقة على المنظمات ومراجعة الطلبات" 
+                : "المستخدم العادي يمكنه تسجيل منظمة وإدارتها"}
             </p>
           </div>
 
