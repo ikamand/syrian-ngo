@@ -793,7 +793,11 @@ export async function registerRoutes(
           return res.json(updated);
         }
       } else if (user.role === "super_admin") {
-        // Super admin can approve AdminApproved -> Approved or reject
+        // Super admin can only act on AdminApproved NGOs (after admin approval)
+        if (ngo.status === "Pending") {
+          return res.status(400).json({ message: "يجب أن يوافق المشرف العادي على المنظمة أولاً قبل أن تتمكن من اتخاذ إجراء" });
+        }
+        
         if (status === "Approved") {
           if (ngo.status !== "AdminApproved") {
             return res.status(400).json({ message: "يجب أن يوافق المشرف العادي على المنظمة أولاً" });
@@ -804,17 +808,10 @@ export async function registerRoutes(
             approvedBySuperAdminAt: new Date()
           });
           return res.json(updated);
-        } else if (status === "AdminApproved") {
-          // Super admin can also do first-level approval for Pending NGOs
-          if (ngo.status === "Pending") {
-            const updated = await storage.updateNgoApproval(id, {
-              status: "AdminApproved",
-              approvedByAdminId: user.id,
-              approvedByAdminAt: new Date()
-            });
-            return res.json(updated);
-          }
         } else if (status === "Rejected") {
+          if (ngo.status !== "AdminApproved") {
+            return res.status(400).json({ message: "يمكنك فقط رفض المنظمات الموافق عليها من المشرف العادي" });
+          }
           if (!rejectionReason) {
             return res.status(400).json({ message: "يرجى ذكر سبب الرفض" });
           }

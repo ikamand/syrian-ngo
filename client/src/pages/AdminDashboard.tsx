@@ -195,13 +195,18 @@ export default function AdminDashboard() {
   }) || [];
 
   // Admin approves Pending -> AdminApproved
-  // Super Admin approves AdminApproved -> Approved
+  // Super Admin approves AdminApproved -> Approved (cannot act on Pending)
   const handleApprove = (id: number, currentStatus: string) => {
-    if (isSuperAdmin && currentStatus === "AdminApproved") {
-      // Super admin final approval
-      updateStatus({ id, status: "Approved" });
-    } else if (currentStatus === "Pending") {
-      // Admin first-level approval (or super admin doing first-level)
+    if (isSuperAdmin) {
+      // Super admin can only approve AdminApproved NGOs
+      if (currentStatus === "AdminApproved") {
+        updateStatus({ id, status: "Approved" });
+      }
+      // Super admin cannot act on Pending - guard against any UI bypass
+      return;
+    }
+    // Regular admin first-level approval
+    if (currentStatus === "Pending") {
       updateStatus({ id, status: "AdminApproved" });
     }
   };
@@ -793,8 +798,8 @@ export default function AdminDashboard() {
                           </TableCell>
                           <TableCell className="text-center">
                             <div className="flex justify-center gap-2">
-                              {/* Admin can approve Pending NGOs to AdminApproved */}
-                              {ngo.status === "Pending" && (
+                              {/* Admin can approve Pending NGOs to AdminApproved - super_admin cannot act on Pending */}
+                              {ngo.status === "Pending" && !isSuperAdmin && (
                                 <>
                                   <Button 
                                     size="icon" 
@@ -817,6 +822,10 @@ export default function AdminDashboard() {
                                     <X className="w-4 h-4" />
                                   </Button>
                                 </>
+                              )}
+                              {/* Show message for super admin when NGO is Pending */}
+                              {ngo.status === "Pending" && isSuperAdmin && (
+                                <span className="text-xs text-muted-foreground" data-testid={`text-awaiting-admin-approval-${ngo.id}`}>بانتظار موافقة المشرف</span>
                               )}
                               {/* Super Admin can approve AdminApproved NGOs to Approved */}
                               {ngo.status === "AdminApproved" && isSuperAdmin && (
