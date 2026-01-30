@@ -74,7 +74,7 @@ export default function AdminDashboard() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { data: ngos, isLoading: isNgosLoading } = useNgos();
   const { mutate: updateStatus, isPending: isUpdating } = useUpdateNgoStatus();
-  const { mutate: deleteNgo } = useDeleteNgo();
+  const { mutate: deleteNgo, isPending: isDeletingNgo } = useDeleteNgo();
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
   const { data: announcements, isLoading: isAnnouncementsLoading } = useAnnouncements();
   const { mutate: createAnnouncement, isPending: isCreating } = useCreateAnnouncement();
   const { mutate: updateAnnouncement, isPending: isAnnouncementUpdating } = useUpdateAnnouncement();
-  const { mutate: deleteAnnouncement } = useDeleteAnnouncement();
+  const { mutate: deleteAnnouncement, isPending: isDeletingAnnouncement } = useDeleteAnnouncement();
   const [announcementDialogOpen, setAnnouncementDialogOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState<any>(null);
   const [announcementForm, setAnnouncementForm] = useState({ title: "", content: "", imageUrl: "", published: true });
@@ -125,7 +125,7 @@ export default function AdminDashboard() {
   const { data: noticesData, isLoading: isNoticesLoading } = useNotices();
   const { mutate: createNotice, isPending: isNoticeCreating } = useCreateNotice();
   const { mutate: updateNotice, isPending: isNoticeUpdating } = useUpdateNotice();
-  const { mutate: deleteNotice } = useDeleteNotice();
+  const { mutate: deleteNotice, isPending: isDeletingNotice } = useDeleteNotice();
   const [noticeDialogOpen, setNoticeDialogOpen] = useState(false);
   const [editingNotice, setEditingNotice] = useState<any>(null);
   const [noticeForm, setNoticeForm] = useState({ noticeNumber: "", noticeDate: "", title: "", pdfUrl: "" });
