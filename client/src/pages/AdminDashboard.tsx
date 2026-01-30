@@ -678,7 +678,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="notices" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-notices">إدارة التعاميم</TabsTrigger>
             <TabsTrigger value="users" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-users">إدارة المستخدمين</TabsTrigger>
             <TabsTrigger value="content" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-content">
-              المحتوى
+              إدارة المحتوى
             </TabsTrigger>
           </TabsList>
 
