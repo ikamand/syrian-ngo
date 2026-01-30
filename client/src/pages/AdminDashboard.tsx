@@ -665,11 +665,11 @@ export default function AdminDashboard() {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-primary/5 hover:bg-primary/5">
-                      <TableHead className="text-right font-bold text-primary">اسم المنظمة</TableHead>
-                      <TableHead className="text-right font-bold text-primary">الشكل القانوني</TableHead>
-                      <TableHead className="text-right font-bold text-primary">النطاق</TableHead>
-                      <TableHead className="text-center font-bold text-primary">الحالة</TableHead>
-                      <TableHead className="text-center font-bold text-primary">الإجراءات</TableHead>
+                      <TableHead className="text-right">اسم المنظمة</TableHead>
+                      <TableHead className="text-right">الشكل القانوني</TableHead>
+                      <TableHead className="text-right">النطاق</TableHead>
+                      <TableHead className="text-center">الحالة</TableHead>
+                      <TableHead className="text-center">الإجراءات</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
