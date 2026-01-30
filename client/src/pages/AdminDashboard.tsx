@@ -1071,57 +1071,54 @@ export default function AdminDashboard() {
                   <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
                 ) : (
                   <div className="bg-white rounded-xl border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] overflow-x-auto">
-                    <Table className="table-fixed w-full">
+                    <Table className="w-full">
                     <colgroup>
-                      <col className="w-[100px]" />
                       <col className="w-[120px]" />
-                      <col className="w-[160px]" />
-                      <col className="w-[100px]" />
-                      <col className="w-[100px]" />
-                      <col className="w-[80px]" />
-                      <col className="w-[80px]" />
                       <col className="w-[180px]" />
+                      <col className="w-[200px]" />
+                      <col className="w-[120px]" />
+                      <col className="w-[100px]" />
+                      <col className="w-[100px]" />
+                      <col className="w-[160px]" />
                     </colgroup>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="hover:bg-transparent">
                         <TableHead className="text-right">اسم المستخدم</TableHead>
                         <TableHead className="text-right">الإسم الكامل</TableHead>
                         <TableHead className="text-right">المنظمة</TableHead>
                         <TableHead className="text-right">المحافظة</TableHead>
-                        <TableHead className="text-right">رقم الإشهار</TableHead>
                         <TableHead className="text-center">الدور</TableHead>
                         <TableHead className="text-center">الحالة</TableHead>
-                        <TableHead className="text-right">الإجراءات</TableHead>
+                        <TableHead className="text-left">الإجراءات</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {allUsers?.map((u) => (
-                        <TableRow key={u.id} data-testid={`row-user-${u.id}`}>
+                        <TableRow key={u.id} data-testid={`row-user-${u.id}`} className="hover:bg-gray-50/50">
                           <TableCell className="font-medium font-mono text-right" dir="ltr" style={{ unicodeBidi: "isolate" }}>{u.username}</TableCell>
-                          <TableCell className="text-right truncate">
+                          <TableCell className="text-right">
                             {u.firstName || u.lastName ? `${u.firstName || ""} ${u.lastName || ""}`.trim() : "-"}
                           </TableCell>
-                          <TableCell className="text-right truncate">{u.organizationName || "-"}</TableCell>
+                          <TableCell className="text-right">{u.organizationName || "-"}</TableCell>
                           <TableCell className="text-right">{u.governorate || "-"}</TableCell>
-                          <TableCell className="text-right" dir="ltr" style={{ unicodeBidi: "isolate" }}>{u.registrationNumber || "-"}</TableCell>
                           <TableCell className="text-center">
-                            <Badge variant={u.role === "super_admin" ? "destructive" : u.role === "admin" ? "default" : "secondary"}>
+                            <Badge variant={u.role === "super_admin" ? "destructive" : u.role === "admin" ? "default" : "secondary"} className="rounded-none">
                               {u.role === "super_admin" ? "مشرف أعلى" : u.role === "admin" ? "مدير" : "مستخدم"}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-center">
-                            <Badge variant={u.status === "suspended" ? "destructive" : "outline"}>
+                            <Badge variant={u.status === "suspended" ? "destructive" : "outline"} className="rounded-none">
                               {u.status === "suspended" ? "متوقف" : "فعّال"}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex gap-2 flex-wrap">
+                          <TableCell className="text-left">
+                            <div className="flex gap-2 justify-start items-center">
                               {/* Edit button - regular admins cannot edit super_admin accounts */}
                               {(isSuperAdmin || u.role !== "super_admin") && (
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="hover-elevate"
+                                  className="hover-elevate rounded-none"
                                   onClick={() => setEditingUser(u)}
                                   data-testid={`button-edit-user-${u.id}`}
                                 >
@@ -1134,6 +1131,7 @@ export default function AdminDashboard() {
                                 <Button
                                   size="icon"
                                   variant="destructive"
+                                  className="rounded-none"
                                   onClick={() => handleDeleteUser(u.id, u.username, u.role)}
                                   disabled={deleteUserMutation.isPending}
                                   title="حذف المستخدم"
