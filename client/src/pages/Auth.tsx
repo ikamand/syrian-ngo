@@ -6,9 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@shared/routes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2, Home } from "lucide-react";
+import { Loader2, LogIn, ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Auth() {
@@ -29,23 +28,22 @@ export default function Auth() {
   if (user) return null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-geometric p-6 relative overflow-hidden">
-      <div className="relative z-10 w-full max-w-md space-y-8 bg-background/95 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-white/10">
-        <div className="text-center space-y-6">
-          <div className="space-y-4">
-            <h1 className="text-3xl font-bold text-primary">بوابة المنظمات</h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              المنصة الرسمية الموحدة لتسجيل ومتابعة المنظمات غير الحكومية. سجّل دخولك للوصول إلى لوحة التحكم ومتابعة طلباتك.
-            </p>
-          </div>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50/50 p-6">
+      <div className="w-full max-w-sm">
+        <div className="bg-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] overflow-hidden">
+          <div className="h-2 bg-primary/80" />
+          
+          <div className="p-8 space-y-6">
+            <div className="text-center space-y-2">
+              <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <LogIn className="w-7 h-7 text-primary" />
+              </div>
+              <h1 className="text-2xl font-bold text-foreground">تسجيل الدخول</h1>
+              <p className="text-sm text-muted-foreground">
+                أدخل بياناتك للوصول إلى حسابك
+              </p>
+            </div>
 
-        <Card className="border-none shadow-xl">
-          <CardHeader>
-            <CardTitle>مرحباً بعودتك</CardTitle>
-            <CardDescription>أدخل بيانات اعتمادك للدخول إلى النظام</CardDescription>
-          </CardHeader>
-          <CardContent>
             <Form {...loginForm}>
               <form onSubmit={loginForm.handleSubmit((data) => login(data))} className="space-y-4">
                 <FormField
@@ -55,7 +53,12 @@ export default function Auth() {
                     <FormItem>
                       <FormLabel>اسم المستخدم</FormLabel>
                       <FormControl>
-                        <Input placeholder="أدخل اسم المستخدم" data-testid="input-username" {...field} />
+                        <Input 
+                          placeholder="أدخل اسم المستخدم" 
+                          data-testid="input-username" 
+                          className="h-11"
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -68,31 +71,46 @@ export default function Auth() {
                     <FormItem>
                       <FormLabel>كلمة المرور</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" data-testid="input-password" {...field} />
+                        <Input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          data-testid="input-password" 
+                          className="h-11"
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full h-11" disabled={isLoggingIn} data-testid="button-login">
-                  {isLoggingIn ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : "تسجيل الدخول"}
+                <Button 
+                  type="submit" 
+                  className="w-full h-11 mt-2" 
+                  disabled={isLoggingIn} 
+                  data-testid="button-login"
+                >
+                  {isLoggingIn ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "دخول"
+                  )}
                 </Button>
               </form>
             </Form>
-          </CardContent>
-        </Card>
 
-        <p className="text-center text-sm text-muted-foreground">
-          للحصول على حساب جديد، يرجى التواصل مع المسؤول
-        </p>
-
-        <div className="text-center">
-          <Link href="/">
-            <Button variant="ghost" className="gap-2" data-testid="link-home">
-              <Home className="w-4 h-4" />
-              العودة إلى الصفحة الرئيسية
-            </Button>
-          </Link>
+            <div className="pt-4 border-t">
+              <Link href="/">
+                <Button 
+                  variant="ghost" 
+                  className="w-full gap-2 text-muted-foreground hover:text-foreground" 
+                  data-testid="link-home"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  العودة للرئيسية
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
