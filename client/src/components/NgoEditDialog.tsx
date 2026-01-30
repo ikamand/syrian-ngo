@@ -160,9 +160,11 @@ interface NgoEditDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
+  onDelete?: (id: number) => void;
+  isDeleting?: boolean;
 }
 
-export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDialogProps) {
+export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, isDeleting }: NgoEditDialogProps) {
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -1265,13 +1267,26 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess }: NgoEditDia
               </AccordionItem>
             </Accordion>
 
-            <div className="flex justify-end gap-3 pt-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-edit">
-                إلغاء
-              </Button>
-              <Button type="submit" disabled={updateMutation.isPending} data-testid="button-save-edit">
-                {updateMutation.isPending ? <><Loader2 className="w-4 h-4 ml-2 animate-spin" />جاري الحفظ...</> : "حفظ التغييرات"}
-              </Button>
+            <div className="flex justify-between gap-3 pt-4">
+              {onDelete && (
+                <Button 
+                  type="button" 
+                  variant="destructive" 
+                  onClick={() => onDelete(ngo!.id)}
+                  disabled={isDeleting}
+                  data-testid="button-delete-ngo-dialog"
+                >
+                  {isDeleting ? <><Loader2 className="w-4 h-4 ml-2 animate-spin" />جاري الحذف...</> : <><Trash2 className="w-4 h-4 ml-2" />حذف المنظمة</>}
+                </Button>
+              )}
+              <div className="flex gap-3">
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-edit">
+                  إلغاء
+                </Button>
+                <Button type="submit" disabled={updateMutation.isPending} data-testid="button-save-edit">
+                  {updateMutation.isPending ? <><Loader2 className="w-4 h-4 ml-2 animate-spin" />جاري الحفظ...</> : "حفظ التغييرات"}
+                </Button>
+              </div>
             </div>
           </form>
         </Form>

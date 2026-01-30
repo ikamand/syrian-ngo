@@ -216,26 +216,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDelete = (id: number) => {
-    if (window.confirm("هل أنت متأكد من حذف هذه المنظمة؟")) {
-      deleteNgo(id);
-    }
-  };
-
-  const handleDeleteUser = (userId: number, username: string, role: string) => {
-    if (role === "super_admin") {
-      toast({ title: "خطأ", description: "لا يمكن حذف المشرف الأعلى", variant: "destructive" });
-      return;
-    }
-    if (userId === user?.id) {
-      toast({ title: "خطأ", description: "لا يمكن حذف حسابك الحالي", variant: "destructive" });
-      return;
-    }
-    if (window.confirm(`هل أنت متأكد من حذف المستخدم "${username}"؟`)) {
-      deleteUserMutation.mutate(userId);
-    }
-  };
-
   
   const openCreateAnnouncement = () => {
     setEditingAnnouncement(null);
@@ -351,16 +331,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleAnnouncementDelete = (id: number) => {
-    if (window.confirm("هل أنت متأكد من حذف هذا الإعلان؟")) {
-      deleteAnnouncement(id, {
-        onSuccess: () => {
-          toast({ title: "تم الحذف", description: "تم حذف الإعلان بنجاح" });
-        }
-      });
-    }
-  };
-
   const openCreateNotice = () => {
     setEditingNotice(null);
     setNoticeForm({ noticeNumber: "", noticeDate: "", title: "", pdfUrl: "" });
@@ -470,16 +440,6 @@ export default function AdminDashboard() {
         onSuccess: () => {
           toast({ title: "تم الإنشاء", description: "تم إنشاء التعميم بنجاح" });
           setNoticeDialogOpen(false);
-        }
-      });
-    }
-  };
-
-  const handleNoticeDelete = (id: number) => {
-    if (window.confirm("هل أنت متأكد من حذف هذا التعميم؟")) {
-      deleteNotice(id, {
-        onSuccess: () => {
-          toast({ title: "تم الحذف", description: "تم حذف التعميم بنجاح" });
         }
       });
     }
@@ -866,15 +826,6 @@ export default function AdminDashboard() {
                               >
                                 تعديل
                               </Button>
-                              <Button 
-                                size="icon" 
-                                variant="destructive"
-                                onClick={() => handleDelete(ngo.id)}
-                                title="حذف"
-                                data-testid={`button-delete-ngo-${ngo.id}`}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
                             </div>
                           </TableCell>
                         </TableRow>
@@ -945,14 +896,6 @@ export default function AdminDashboard() {
                                 >
                                   تعديل
                                 </Button>
-                                <Button
-                                  size="icon"
-                                  variant="destructive"
-                                  onClick={() => handleAnnouncementDelete(announcement.id)}
-                                  data-testid={`button-delete-announcement-${announcement.id}`}
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
                               </div>
                             </div>
                           </CardHeader>
@@ -1019,15 +962,6 @@ export default function AdminDashboard() {
                               data-testid={`button-edit-notice-${notice.id}`}
                             >
                               <Pencil className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-destructive hover:text-destructive"
-                              onClick={() => handleNoticeDelete(notice.id)}
-                              data-testid={`button-delete-notice-${notice.id}`}
-                            >
-                              <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
                         </div>
@@ -1124,20 +1058,6 @@ export default function AdminDashboard() {
                                 >
                                   <Pencil className="w-4 h-4 ml-1" />
                                   تعديل
-                                </Button>
-                              )}
-                              {/* Delete button - only for super admin and not for self or other super admins */}
-                              {isSuperAdmin && u.role !== "super_admin" && u.id !== user?.id && (
-                                <Button
-                                  size="icon"
-                                  variant="destructive"
-                                  className="rounded-none"
-                                  onClick={() => handleDeleteUser(u.id, u.username, u.role)}
-                                  disabled={deleteUserMutation.isPending}
-                                  title="حذف المستخدم"
-                                  data-testid={`button-delete-user-${u.id}`}
-                                >
-                                  <Trash2 className="w-4 h-4" />
                                 </Button>
                               )}
                             </div>
@@ -1287,12 +1207,23 @@ export default function AdminDashboard() {
       <NgoEditDialog
         ngo={editingNgo}
         open={!!editingNgo}
-        onOpenChange={(open) => !open && setEditingNgo(null)}
+        onOpenChange={(open) => !open && !isDeletingNgo && setEditingNgo(null)}
         onSuccess={() => setEditingNgo(null)}
+        isDeleting={isDeletingNgo}
+        onDelete={(id) => {
+          if (window.confirm("هل أنت متأكد من حذف هذه المنظمة؟")) {
+            deleteNgo(id, {
+              onSuccess: () => {
+                toast({ title: "تم الحذف", description: "تم حذف المنظمة بنجاح" });
+                setEditingNgo(null);
+              }
+            });
+          }
+        }}
       />
 
       {/* Announcement Dialog */}
-      <Dialog open={announcementDialogOpen} onOpenChange={setAnnouncementDialogOpen}>
+      <Dialog open={announcementDialogOpen} onOpenChange={(open) => !isDeletingAnnouncement && setAnnouncementDialogOpen(open)}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingAnnouncement ? "تعديل الخبر" : "خبر جديد"}</DialogTitle>
@@ -1377,22 +1308,43 @@ export default function AdminDashboard() {
               />
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setAnnouncementDialogOpen(false)}>إلغاء</Button>
-            <Button 
-              onClick={handleAnnouncementSave} 
-              disabled={isCreating || isAnnouncementUpdating || isUploadingImage}
-              data-testid="button-save-announcement"
-            >
-              <Save className="w-4 h-4 ml-2" />
-              {editingAnnouncement ? "حفظ التغييرات" : "إنشاء الخبر"}
-            </Button>
+          <DialogFooter className="flex-row-reverse justify-between gap-2">
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setAnnouncementDialogOpen(false)}>إلغاء</Button>
+              <Button 
+                onClick={handleAnnouncementSave} 
+                disabled={isCreating || isAnnouncementUpdating || isUploadingImage}
+                data-testid="button-save-announcement"
+              >
+                <Save className="w-4 h-4 ml-2" />
+                {editingAnnouncement ? "حفظ التغييرات" : "إنشاء الخبر"}
+              </Button>
+            </div>
+            {editingAnnouncement && (
+              <Button 
+                variant="destructive" 
+                onClick={() => {
+                  if (window.confirm("هل أنت متأكد من حذف هذا الإعلان؟")) {
+                    deleteAnnouncement(editingAnnouncement.id, {
+                      onSuccess: () => {
+                        toast({ title: "تم الحذف", description: "تم حذف الإعلان بنجاح" });
+                        setAnnouncementDialogOpen(false);
+                      }
+                    });
+                  }
+                }}
+                data-testid="button-delete-announcement-dialog"
+              >
+                <Trash2 className="w-4 h-4 ml-2" />
+                حذف الإعلان
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Notices Dialog */}
-      <Dialog open={noticeDialogOpen} onOpenChange={setNoticeDialogOpen}>
+      <Dialog open={noticeDialogOpen} onOpenChange={(open) => !isDeletingNotice && setNoticeDialogOpen(open)}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>{editingNotice ? "تعديل التعميم" : "تعميم جديد"}</DialogTitle>
@@ -1476,16 +1428,37 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setNoticeDialogOpen(false)}>إلغاء</Button>
-            <Button 
-              onClick={handleNoticeSave} 
-              disabled={isNoticeCreating || isNoticeUpdating || isUploadingPdf}
-              data-testid="button-save-notice"
-            >
-              <Save className="w-4 h-4 ml-2" />
-              {editingNotice ? "حفظ التغييرات" : "إضافة التعميم"}
-            </Button>
+          <DialogFooter className="flex-row-reverse justify-between gap-2">
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setNoticeDialogOpen(false)}>إلغاء</Button>
+              <Button 
+                onClick={handleNoticeSave} 
+                disabled={isNoticeCreating || isNoticeUpdating || isUploadingPdf}
+                data-testid="button-save-notice"
+              >
+                <Save className="w-4 h-4 ml-2" />
+                {editingNotice ? "حفظ التغييرات" : "إضافة التعميم"}
+              </Button>
+            </div>
+            {editingNotice && (
+              <Button 
+                variant="destructive" 
+                onClick={() => {
+                  if (window.confirm("هل أنت متأكد من حذف هذا التعميم؟")) {
+                    deleteNotice(editingNotice.id, {
+                      onSuccess: () => {
+                        toast({ title: "تم الحذف", description: "تم حذف التعميم بنجاح" });
+                        setNoticeDialogOpen(false);
+                      }
+                    });
+                  }
+                }}
+                data-testid="button-delete-notice-dialog"
+              >
+                <Trash2 className="w-4 h-4 ml-2" />
+                حذف التعميم
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -1685,9 +1658,29 @@ export default function AdminDashboard() {
       {/* Edit User Dialog */}
       <EditUserDialog
         open={!!editingUser}
-        onOpenChange={(open) => !open && setEditingUser(null)}
+        onOpenChange={(open) => !open && !deleteUserMutation.isPending && setEditingUser(null)}
         user={editingUser}
         currentUserId={user?.id}
+        canDelete={isSuperAdmin && editingUser?.role !== "super_admin" && editingUser?.id !== user?.id}
+        onDelete={(userId, username, role) => {
+          if (role === "super_admin") {
+            toast({ title: "خطأ", description: "لا يمكن حذف المشرف الأعلى", variant: "destructive" });
+            return;
+          }
+          if (userId === user?.id) {
+            toast({ title: "خطأ", description: "لا يمكن حذف حسابك الحالي", variant: "destructive" });
+            return;
+          }
+          if (window.confirm(`هل أنت متأكد من حذف المستخدم "${username}"؟`)) {
+            deleteUserMutation.mutate(userId, {
+              onSuccess: () => {
+                toast({ title: "تم الحذف", description: "تم حذف المستخدم بنجاح" });
+                setEditingUser(null);
+              }
+            });
+          }
+        }}
+        isDeleting={deleteUserMutation.isPending}
       />
 
       {/* Reject NGO Dialog */}

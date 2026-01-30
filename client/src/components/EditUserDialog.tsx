@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, UserCog, Key, Copy, Check, RefreshCw } from "lucide-react";
+import { Loader2, Save, UserCog, Key, Copy, Check, RefreshCw, Trash2 } from "lucide-react";
 
 interface UserData {
   id: number;
@@ -30,6 +30,9 @@ interface EditUserDialogProps {
   onOpenChange: (open: boolean) => void;
   user: UserData | null;
   currentUserId?: number;
+  canDelete?: boolean;
+  onDelete?: (userId: number, username: string, role: string) => void;
+  isDeleting?: boolean;
 }
 
 const GOVERNORATES = [
@@ -49,7 +52,7 @@ const GOVERNORATES = [
   "الحسكة"
 ];
 
-export function EditUserDialog({ open, onOpenChange, user, currentUserId }: EditUserDialogProps) {
+export function EditUserDialog({ open, onOpenChange, user, currentUserId, canDelete, onDelete, isDeleting }: EditUserDialogProps) {
   const isEditingSelf = user?.id === currentUserId;
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -406,18 +409,36 @@ export function EditUserDialog({ open, onOpenChange, user, currentUserId }: Edit
             </div>
           )}
 
-          <DialogFooter className="gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-edit-user">
-              إلغاء
-            </Button>
-            <Button type="submit" disabled={updateUserMutation.isPending} data-testid="button-save-user">
-              {updateUserMutation.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin ml-2" />
-              ) : (
-                <Save className="w-4 h-4 ml-2" />
-              )}
-              حفظ التغييرات
-            </Button>
+          <DialogFooter className="flex-row-reverse justify-between gap-2 pt-4">
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-edit-user">
+                إلغاء
+              </Button>
+              <Button type="submit" disabled={updateUserMutation.isPending} data-testid="button-save-user">
+                {updateUserMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                ) : (
+                  <Save className="w-4 h-4 ml-2" />
+                )}
+                حفظ التغييرات
+              </Button>
+            </div>
+            {canDelete && onDelete && (
+              <Button 
+                type="button" 
+                variant="destructive" 
+                onClick={() => onDelete(user!.id, user!.username, user!.role)}
+                disabled={isDeleting}
+                data-testid="button-delete-user-dialog"
+              >
+                {isDeleting ? (
+                  <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                ) : (
+                  <Trash2 className="w-4 h-4 ml-2" />
+                )}
+                حذف المستخدم
+              </Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>
