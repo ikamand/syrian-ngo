@@ -662,14 +662,21 @@ export default function AdminDashboard() {
               </div>
 
               <div className="overflow-x-auto">
-                <Table>
+                <Table className="table-fixed w-full">
+                  <colgroup>
+                    <col className="w-[200px]" />
+                    <col className="w-[150px]" />
+                    <col className="w-[120px]" />
+                    <col className="w-[100px]" />
+                    <col className="w-[220px]" />
+                  </colgroup>
                   <TableHeader>
                     <TableRow className="bg-primary/5 hover:bg-primary/5">
-                      <TableHead className="text-right w-[25%]">اسم المنظمة</TableHead>
-                      <TableHead className="text-right w-[20%]">الشكل القانوني</TableHead>
-                      <TableHead className="text-right w-[20%]">النطاق</TableHead>
-                      <TableHead className="text-center w-[15%]">الحالة</TableHead>
-                      <TableHead className="text-center w-[20%]">الإجراءات</TableHead>
+                      <TableHead className="text-right">اسم المنظمة</TableHead>
+                      <TableHead className="text-right">الشكل القانوني</TableHead>
+                      <TableHead className="text-right">النطاق</TableHead>
+                      <TableHead className="text-center">الحالة</TableHead>
+                      <TableHead className="text-center">الإجراءات</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -684,13 +691,13 @@ export default function AdminDashboard() {
                     ) : (
                       filteredNgos.map((ngo) => (
                         <TableRow key={ngo.id} data-testid={`row-ngo-${ngo.id}`}>
-                          <TableCell className="font-medium text-primary w-[25%]">{ngo.arabicName || ngo.name || "غير محدد"}</TableCell>
-                          <TableCell className="w-[20%]">{ngo.legalForm || "—"}</TableCell>
-                          <TableCell className="w-[20%]">{ngo.scope || "—"}</TableCell>
-                          <TableCell className="text-center w-[15%]">
+                          <TableCell className="font-medium text-primary truncate">{ngo.arabicName || ngo.name || "غير محدد"}</TableCell>
+                          <TableCell className="truncate">{ngo.legalForm || "—"}</TableCell>
+                          <TableCell className="truncate">{ngo.scope || "—"}</TableCell>
+                          <TableCell className="text-center">
                             <StatusBadge status={ngo.status as any} />
                           </TableCell>
-                          <TableCell className="w-[20%]">
+                          <TableCell>
                             <div className="flex justify-center gap-2">
                               {ngo.status === "Pending" && (
                                 <>
