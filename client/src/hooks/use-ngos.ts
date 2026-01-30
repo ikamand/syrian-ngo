@@ -56,20 +56,34 @@ export function useUpdateNgoStatus() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async ({ id, status }: { id: number; status: "Approved" | "Rejected" | "Pending" }) => {
+    mutationFn: async ({ id, status, rejectionReason }: { 
+      id: number; 
+      status: "Approved" | "AdminApproved" | "Rejected" | "Pending";
+      rejectionReason?: string;
+    }) => {
       const url = buildUrl(api.ngos.updateStatus.path, { id });
       const res = await fetch(url, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status, rejectionReason }),
       });
 
-      if (!res.ok) throw new Error("Failed to update status");
-      return api.ngos.updateStatus.responses[200].parse(await res.json());
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to update status");
+      }
+      return res.json();
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: [api.ngos.list.path] });
-      const statusText = variables.status === "Approved" ? "الموافقة على" : "رفض";
+      let statusText = "";
+      if (variables.status === "Approved") {
+        statusText = "الموافقة النهائية على";
+      } else if (variables.status === "AdminApproved") {
+        statusText = "الموافقة الأولية على";
+      } else if (variables.status === "Rejected") {
+        statusText = "رفض";
+      }
       toast({
         title: "تم التحديث",
         description: `تم ${statusText} المنظمة بنجاح`,

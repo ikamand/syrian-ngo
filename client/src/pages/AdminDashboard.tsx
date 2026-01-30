@@ -8,7 +8,7 @@ import { usePublicFooterLinks, useCreateFooterLink, useUpdateFooterLink, useDele
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { Check, X, Trash2, Save, Plus, Key, Users, UserPlus, Pencil, Upload, ImageIcon, Loader2 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ResetUserPasswordDialog } from "@/components/ResetUserPasswordDialog";
 import { CreateUserDialog } from "@/components/CreateUserDialog";
 import { EditUserDialog } from "@/components/EditUserDialog";
@@ -50,6 +50,7 @@ import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
 import { NgoEditDialog } from "@/components/NgoEditDialog";
+import { RejectNgoDialog } from "@/components/RejectNgoDialog";
 import type { Ngo } from "@shared/schema";
 import { useEffect } from "react";
 
@@ -81,10 +82,26 @@ export default function AdminDashboard() {
   const [editingNgo, setEditingNgo] = useState<Ngo | null>(null);
   const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: allUsers, isLoading: isUsersLoading } = useQuery<AdminUser[]>({
     queryKey: ["/api/admin/users"],
   });
+  
+  // Statistics query
+  const { data: stats } = useQuery<{
+    totalNgos: number;
+    pendingByAdmin: number;
+    pendingBySuperAdmin: number;
+    approved: number;
+    rejected: number;
+    totalUsers: number;
+    totalAdmins: number;
+    totalSuperAdmins: number;
+  }>({
+    queryKey: ["/api/admin/statistics"],
+  });
+  
   const [resetPasswordUser, setResetPasswordUser] = useState<{ id: number; username: string } | null>(null);
   const [createUserOpen, setCreateUserOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
@@ -93,7 +110,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (!isAuthLoading && !user) {
       setLocation("/login");
-    } else if (!isAuthLoading && user && user.role !== "admin") {
+    } else if (!isAuthLoading && user && user.role !== "admin" && user.role !== "super_admin") {
       setLocation("/dashboard");
     }
   }, [user, isAuthLoading, setLocation]);
@@ -132,16 +149,41 @@ export default function AdminDashboard() {
   const [editingFooterLink, setEditingFooterLink] = useState<any>(null);
   const [footerLinkForm, setFooterLinkForm] = useState({ title: "", url: "", sortOrder: 0 });
 
+  // Rejection dialog state
+  const [rejectingNgo, setRejectingNgo] = useState<Ngo | null>(null);
+
+  // Delete user mutation (super admin only - uses protected endpoint)
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const res = await fetch(`/api/super-admin/users/${userId}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || "Failed to delete user");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/statistics"] });
+      toast({ title: "تم الحذف", description: "تم حذف المستخدم بنجاح" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "خطأ", description: error.message, variant: "destructive" });
+    },
+  });
+
   const predefinedContentKeys = [
     { key: "footer_contact", label: "معلومات التواصل", richText: false },
     { key: "association_law", label: "قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)", richText: true, pdfKey: "association_law_pdf" },
     { key: "executive_regulations", label: "اللائحة التنفيذية (قانون الجمعيات)", richText: true, pdfKey: "executive_regulations_pdf" },
   ];
 
-  // Show nothing while loading or if user isn't an admin (useEffect handles redirect)
-  if (isAuthLoading || !user || user.role !== "admin") {
+  // Show nothing while loading or if user isn't an admin or super_admin (useEffect handles redirect)
+  if (isAuthLoading || !user || (user.role !== "admin" && user.role !== "super_admin")) {
     return null;
   }
+
+  const isSuperAdmin = user.role === "super_admin";
 
   const filteredNgos = ngos?.filter(ngo => {
     const name = ngo.arabicName || ngo.name || "";
@@ -152,17 +194,42 @@ export default function AdminDashboard() {
     return matchesSearch && matchesStatus;
   }) || [];
 
-  const handleApprove = (id: number) => {
-    updateStatus({ id, status: "Approved" });
+  // Admin approves Pending -> AdminApproved
+  // Super Admin approves AdminApproved -> Approved
+  const handleApprove = (id: number, currentStatus: string) => {
+    if (isSuperAdmin && currentStatus === "AdminApproved") {
+      // Super admin final approval
+      updateStatus({ id, status: "Approved" });
+    } else if (currentStatus === "Pending") {
+      // Admin first-level approval (or super admin doing first-level)
+      updateStatus({ id, status: "AdminApproved" });
+    }
   };
 
-  const handleReject = (id: number) => {
-    updateStatus({ id, status: "Rejected" });
+  const handleReject = (reason: string) => {
+    if (rejectingNgo) {
+      updateStatus({ id: rejectingNgo.id, status: "Rejected", rejectionReason: reason });
+      setRejectingNgo(null);
+    }
   };
 
   const handleDelete = (id: number) => {
     if (window.confirm("هل أنت متأكد من حذف هذه المنظمة؟")) {
       deleteNgo(id);
+    }
+  };
+
+  const handleDeleteUser = (userId: number, username: string, role: string) => {
+    if (role === "super_admin") {
+      toast({ title: "خطأ", description: "لا يمكن حذف المشرف الأعلى", variant: "destructive" });
+      return;
+    }
+    if (userId === user?.id) {
+      toast({ title: "خطأ", description: "لا يمكن حذف حسابك الحالي", variant: "destructive" });
+      return;
+    }
+    if (window.confirm(`هل أنت متأكد من حذف المستخدم "${username}"؟`)) {
+      deleteUserMutation.mutate(userId);
     }
   };
 
@@ -616,6 +683,32 @@ export default function AdminDashboard() {
           <p className="text-muted-foreground mt-1">إدارة المنظمات والإعلانات ومحتوى الموقع</p>
         </div>
 
+        {/* Statistics Cards */}
+        {stats && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] p-4 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-primary/80"></div>
+              <div className="text-2xl font-bold text-primary">{stats.totalNgos}</div>
+              <div className="text-sm text-muted-foreground">إجمالي المنظمات</div>
+            </div>
+            <div className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] p-4 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-yellow-500"></div>
+              <div className="text-2xl font-bold text-yellow-600">{stats.pendingByAdmin}</div>
+              <div className="text-sm text-muted-foreground">بانتظار مراجعة المدير</div>
+            </div>
+            <div className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] p-4 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500"></div>
+              <div className="text-2xl font-bold text-blue-600">{stats.pendingBySuperAdmin}</div>
+              <div className="text-sm text-muted-foreground">بانتظار المشرف الأعلى</div>
+            </div>
+            <div className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] p-4 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-green-500"></div>
+              <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
+              <div className="text-sm text-muted-foreground">المنظمات المعتمدة</div>
+            </div>
+          </div>
+        )}
+
         <Tabs defaultValue="ngos" className="space-y-6">
           <TabsList className="grid w-full max-w-3xl grid-cols-5 bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] p-1">
             <TabsTrigger value="ngos" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-ngos">
@@ -654,6 +747,7 @@ export default function AdminDashboard() {
                     <SelectContent>
                       <SelectItem value="all">الكل</SelectItem>
                       <SelectItem value="Pending">قيد المراجعة</SelectItem>
+                      <SelectItem value="AdminApproved">بانتظار المشرف الأعلى</SelectItem>
                       <SelectItem value="Approved">مقبول</SelectItem>
                       <SelectItem value="Rejected">مرفوض</SelectItem>
                     </SelectContent>
@@ -699,14 +793,15 @@ export default function AdminDashboard() {
                           </TableCell>
                           <TableCell className="text-center">
                             <div className="flex justify-center gap-2">
+                              {/* Admin can approve Pending NGOs to AdminApproved */}
                               {ngo.status === "Pending" && (
                                 <>
                                   <Button 
                                     size="icon" 
                                     className="bg-green-600 hover:bg-green-700"
-                                    onClick={() => handleApprove(ngo.id)}
+                                    onClick={() => handleApprove(ngo.id, ngo.status)}
                                     disabled={isUpdating}
-                                    title="موافقة"
+                                    title="موافقة أولية"
                                     data-testid={`button-approve-${ngo.id}`}
                                   >
                                     <Check className="w-4 h-4" />
@@ -714,7 +809,32 @@ export default function AdminDashboard() {
                                   <Button 
                                     size="icon" 
                                     variant="destructive"
-                                    onClick={() => handleReject(ngo.id)}
+                                    onClick={() => setRejectingNgo(ngo)}
+                                    disabled={isUpdating}
+                                    title="رفض"
+                                    data-testid={`button-reject-${ngo.id}`}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </Button>
+                                </>
+                              )}
+                              {/* Super Admin can approve AdminApproved NGOs to Approved */}
+                              {ngo.status === "AdminApproved" && isSuperAdmin && (
+                                <>
+                                  <Button 
+                                    size="icon" 
+                                    className="bg-green-600 hover:bg-green-700"
+                                    onClick={() => handleApprove(ngo.id, ngo.status)}
+                                    disabled={isUpdating}
+                                    title="موافقة نهائية"
+                                    data-testid={`button-final-approve-${ngo.id}`}
+                                  >
+                                    <Check className="w-4 h-4" />
+                                  </Button>
+                                  <Button 
+                                    size="icon" 
+                                    variant="destructive"
+                                    onClick={() => setRejectingNgo(ngo)}
                                     disabled={isUpdating}
                                     title="رفض"
                                     data-testid={`button-reject-${ngo.id}`}
@@ -978,8 +1098,8 @@ export default function AdminDashboard() {
                           <TableCell className="text-right">{u.governorate || "-"}</TableCell>
                           <TableCell className="text-right" dir="ltr" style={{ unicodeBidi: "isolate" }}>{u.registrationNumber || "-"}</TableCell>
                           <TableCell className="text-center">
-                            <Badge variant={u.role === "admin" ? "default" : "secondary"}>
-                              {u.role === "admin" ? "مدير" : "مستخدم"}
+                            <Badge variant={u.role === "super_admin" ? "destructive" : u.role === "admin" ? "default" : "secondary"}>
+                              {u.role === "super_admin" ? "مشرف أعلى" : u.role === "admin" ? "مدير" : "مستخدم"}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-center">
@@ -1009,6 +1129,19 @@ export default function AdminDashboard() {
                                 <Key className="w-4 h-4 ml-1" />
                                 كلمة المرور
                               </Button>
+                              {/* Delete button - only for super admin and not for self or other super admins */}
+                              {isSuperAdmin && u.role !== "super_admin" && u.id !== user?.id && (
+                                <Button
+                                  size="icon"
+                                  variant="destructive"
+                                  onClick={() => handleDeleteUser(u.id, u.username, u.role)}
+                                  disabled={deleteUserMutation.isPending}
+                                  title="حذف المستخدم"
+                                  data-testid={`button-delete-user-${u.id}`}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              )}
                             </div>
                           </TableCell>
                         </TableRow>
@@ -1562,6 +1695,15 @@ export default function AdminDashboard() {
         open={!!editingUser}
         onOpenChange={(open) => !open && setEditingUser(null)}
         user={editingUser}
+      />
+
+      {/* Reject NGO Dialog */}
+      <RejectNgoDialog
+        open={!!rejectingNgo}
+        onOpenChange={(open) => !open && setRejectingNgo(null)}
+        ngoName={rejectingNgo?.arabicName || rejectingNgo?.name || ""}
+        onConfirm={handleReject}
+        isPending={isUpdating}
       />
     </div>
   );

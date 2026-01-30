@@ -65,6 +65,50 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange }: NgoDetailsDialogPr
               </div>
             </DialogHeader>
 
+            {/* Approval Chain & Rejection Info */}
+            {(ngo.status === "AdminApproved" || ngo.status === "Approved" || ngo.status === "Rejected") && (
+              <div className="mb-4 p-4 bg-muted/30 rounded-lg">
+                <h4 className="font-medium text-sm text-muted-foreground mb-3">سجل الموافقات</h4>
+                <div className="space-y-2 text-sm">
+                  {ngo.approvedByAdminAt && (
+                    <div className="flex items-center gap-2">
+                      <Badge variant="default" className="bg-blue-100 text-blue-700 hover:bg-blue-100">موافقة أولية</Badge>
+                      <span className="text-muted-foreground">
+                        بواسطة المدير رقم #{ngo.approvedByAdminId}
+                        {ngo.approvedByAdminAt && ` - ${new Date(ngo.approvedByAdminAt).toLocaleDateString("ar-SY")}`}
+                      </span>
+                    </div>
+                  )}
+                  {ngo.approvedBySuperAdminAt && (
+                    <div className="flex items-center gap-2">
+                      <Badge variant="default" className="bg-green-100 text-green-700 hover:bg-green-100">موافقة نهائية</Badge>
+                      <span className="text-muted-foreground">
+                        بواسطة المشرف الأعلى رقم #{ngo.approvedBySuperAdminId}
+                        {ngo.approvedBySuperAdminAt && ` - ${new Date(ngo.approvedBySuperAdminAt).toLocaleDateString("ar-SY")}`}
+                      </span>
+                    </div>
+                  )}
+                  {ngo.status === "Rejected" && ngo.rejectionReason && (
+                    <div className="mt-3 pt-3 border-t">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="destructive">مرفوض</Badge>
+                        {ngo.rejectedById && (
+                          <span className="text-muted-foreground text-xs">
+                            بواسطة المسؤول رقم #{ngo.rejectedById}
+                            {ngo.rejectedAt && ` - ${new Date(ngo.rejectedAt).toLocaleDateString("ar-SY")}`}
+                          </span>
+                        )}
+                      </div>
+                      <div className="bg-red-50 border border-red-200 rounded p-3">
+                        <span className="text-sm font-medium text-red-700">سبب الرفض:</span>
+                        <p className="text-sm text-red-600 mt-1">{ngo.rejectionReason}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             <Accordion type="multiple" defaultValue={["section-1"]} className="w-full">
               {/* Section 1: معلومات التأسيس */}
               <AccordionItem value="section-1">

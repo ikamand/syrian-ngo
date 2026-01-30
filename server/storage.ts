@@ -21,8 +21,19 @@ export interface IStorage {
   getNgos(): Promise<Ngo[]>;
   getNgosByUserId(userId: number): Promise<Ngo[]>;
   updateNgoStatus(id: number, status: string): Promise<Ngo | undefined>;
+  updateNgoApproval(id: number, updates: {
+    status: string;
+    approvedByAdminId?: number;
+    approvedByAdminAt?: Date;
+    approvedBySuperAdminId?: number;
+    approvedBySuperAdminAt?: Date;
+    rejectedById?: number;
+    rejectedAt?: Date;
+    rejectionReason?: string;
+  }): Promise<Ngo | undefined>;
   updateNgo(id: number, updates: Partial<InsertNgo>): Promise<Ngo | undefined>;
   deleteNgo(id: number): Promise<boolean>;
+  deleteUser(id: number): Promise<boolean>;
 
   createAnnouncement(announcement: InsertAnnouncement & { createdBy: number }): Promise<Announcement>;
   getAnnouncement(id: number): Promise<Announcement | undefined>;
@@ -110,8 +121,8 @@ export class DatabaseStorage implements IStorage {
   async createNgo(insertNgo: InsertNgo & { createdBy: number }): Promise<Ngo> {
     const [ngo] = await db.insert(ngos).values({
       ...insertNgo,
-      status: "Pending",
-    }).returning();
+      status: "Pending" as const,
+    } as any).returning();
     return ngo;
   }
 
@@ -130,15 +141,46 @@ export class DatabaseStorage implements IStorage {
 
   async updateNgoStatus(id: number, status: string): Promise<Ngo | undefined> {
     const [updated] = await db.update(ngos)
-      .set({ status: status as "Pending" | "Approved" | "Rejected" })
+      .set({ status: status as "Pending" | "AdminApproved" | "Approved" | "Rejected" })
       .where(eq(ngos.id, id))
       .returning();
     return updated;
   }
 
+  async updateNgoApproval(id: number, updates: {
+    status: string;
+    approvedByAdminId?: number;
+    approvedByAdminAt?: Date;
+    approvedBySuperAdminId?: number;
+    approvedBySuperAdminAt?: Date;
+    rejectedById?: number;
+    rejectedAt?: Date;
+    rejectionReason?: string;
+  }): Promise<Ngo | undefined> {
+    const [updated] = await db.update(ngos)
+      .set({
+        status: updates.status as "Pending" | "AdminApproved" | "Approved" | "Rejected",
+        approvedByAdminId: updates.approvedByAdminId,
+        approvedByAdminAt: updates.approvedByAdminAt,
+        approvedBySuperAdminId: updates.approvedBySuperAdminId,
+        approvedBySuperAdminAt: updates.approvedBySuperAdminAt,
+        rejectedById: updates.rejectedById,
+        rejectedAt: updates.rejectedAt,
+        rejectionReason: updates.rejectionReason
+      })
+      .where(eq(ngos.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteUser(id: number): Promise<boolean> {
+    const result = await db.delete(users).where(eq(users.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
   async updateNgo(id: number, updates: Partial<InsertNgo>): Promise<Ngo | undefined> {
     const [updated] = await db.update(ngos)
-      .set({ ...updates, status: "Pending" })
+      .set({ ...updates, status: "Pending" as const } as any)
       .where(eq(ngos.id, id))
       .returning();
     return updated;

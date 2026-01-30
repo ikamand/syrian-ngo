@@ -22,13 +22,18 @@ Preferred communication style: Simple, everyday language.
 - **Runtime**: Node.js with Express.js
 - **API Design**: RESTful API endpoints defined in `shared/routes.ts` using Zod for validation
 - **Session Management**: Express sessions with memory store (development) or PostgreSQL store (production)
-- **Authentication**: Cookie-based session authentication with role-based access control (user/admin roles)
+- **Authentication**: Cookie-based session authentication with three-tier role-based access control:
+  - `user`: Regular users who can register NGOs
+  - `admin`: Managers who can approve Pending NGOs to AdminApproved status
+  - `super_admin`: Top-level administrators who give final approval (AdminApproved → Approved) and manage admin accounts
 
 ### Data Layer
 - **ORM**: Drizzle ORM with PostgreSQL dialect
 - **Schema**: Defined in `shared/schema.ts` with six main tables:
   - `users`: User accounts with username, password, and role
-  - `ngos`: NGO registrations with approval workflow (Pending/Approved/Rejected status)
+  - `ngos`: NGO registrations with two-tier approval workflow (Pending → AdminApproved → Approved/Rejected)
+    - Tracks approval chain: approvedByAdminId, approvedByAdminAt, approvedBySuperAdminId, approvedBySuperAdminAt
+    - Rejection tracking: rejectedById, rejectedAt, rejectionReason (mandatory for rejections)
   - `announcements`: News and announcements with title, content, imageUrl (optional), published status, and author tracking
   - `siteContent`: Editable website content with key-based lookup for page elements (homepage title, descriptions, etc.)
   - `notices`: Official government notices/circulars (التعاميم) with noticeNumber, noticeDate, title (optional), pdfUrl

@@ -63,9 +63,22 @@ export async function registerRoutes(
       return res.status(401).json({ message: "Unauthorized" });
     }
     const user = await storage.getUser(req.session.userId);
-    if (!user || user.role !== "admin") {
+    if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
       return res.status(403).json({ message: "Forbidden: Admins only" });
     }
+    req.user = user;
+    next();
+  };
+
+  const requireSuperAdmin = async (req: any, res: any, next: any) => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const user = await storage.getUser(req.session.userId);
+    if (!user || user.role !== "super_admin") {
+      return res.status(403).json({ message: "Forbidden: Super Admins only" });
+    }
+    req.user = user;
     next();
   };
 
@@ -359,6 +372,148 @@ export async function registerRoutes(
     }
   });
 
+  // --- Super Admin Routes ---
+
+  // Super admin creates admin accounts
+  app.post("/api/super-admin/create-admin", requireSuperAdmin, async (req, res) => {
+    try {
+      const { 
+        username, 
+        password,
+        firstName,
+        lastName,
+        email,
+        phone,
+        organizationName,
+        governorate,
+        registrationNumber,
+        registrationDate
+      } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "اسم المستخدم وكلمة المرور مطلوبان" });
+      }
+      
+      if (password.length < 6) {
+        return res.status(400).json({ message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" });
+      }
+      
+      const existing = await storage.getUserByUsername(username);
+      if (existing) {
+        return res.status(400).json({ message: "اسم المستخدم موجود مسبقاً" });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+      
+      const user = await storage.createUser({
+        username,
+        password: hashedPassword,
+        role: "admin",
+        firstName,
+        lastName,
+        email,
+        phone,
+        organizationName,
+        governorate,
+        registrationNumber,
+        registrationDate,
+        status: "active"
+      });
+      
+      res.status(201).json(user);
+    } catch (err) {
+      console.log("[create-admin] Error:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Super admin deletes users (can delete admins and regular users)
+  app.delete("/api/super-admin/users/:id", requireSuperAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const currentUser = req.user!;
+      
+      // Cannot delete yourself
+      if (userId === currentUser.id) {
+        return res.status(400).json({ message: "لا يمكنك حذف حسابك الخاص" });
+      }
+      
+      const targetUser = await storage.getUser(userId);
+      if (!targetUser) {
+        return res.status(404).json({ message: "المستخدم غير موجود" });
+      }
+      
+      // Cannot delete super admins (only other super admins can delete super admins via different mechanism if needed)
+      if (targetUser.role === "super_admin") {
+        return res.status(403).json({ message: "لا يمكن حذف حساب المشرف الأعلى" });
+      }
+      
+      await storage.deleteUser(userId);
+      res.json({ success: true, message: "تم حذف المستخدم بنجاح" });
+    } catch (err) {
+      console.error("[delete-user] Error:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Super admin updates user role (can promote user to admin or demote admin to user)
+  app.patch("/api/super-admin/users/:id/role", requireSuperAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { role } = req.body;
+      const currentUser = req.user!;
+      
+      if (!role || !["user", "admin"].includes(role)) {
+        return res.status(400).json({ message: "الدور المطلوب غير صالح" });
+      }
+      
+      // Cannot change your own role
+      if (userId === currentUser.id) {
+        return res.status(400).json({ message: "لا يمكنك تغيير دور حسابك الخاص" });
+      }
+      
+      const targetUser = await storage.getUser(userId);
+      if (!targetUser) {
+        return res.status(404).json({ message: "المستخدم غير موجود" });
+      }
+      
+      // Cannot change super admin roles
+      if (targetUser.role === "super_admin") {
+        return res.status(403).json({ message: "لا يمكن تعديل دور المشرف الأعلى" });
+      }
+      
+      const updatedUser = await storage.updateUser(userId, { role });
+      res.json(updatedUser);
+    } catch (err) {
+      console.error("[update-user-role] Error:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Statistics endpoint for dashboard
+  app.get("/api/admin/statistics", requireAdmin, async (req, res) => {
+    try {
+      const allNgos = await storage.getNgos();
+      const allUsers = await storage.getAllUsers();
+      
+      const stats = {
+        totalNgos: allNgos.length,
+        pendingByAdmin: allNgos.filter(n => n.status === "Pending").length,
+        pendingBySuperAdmin: allNgos.filter(n => n.status === "AdminApproved").length,
+        approved: allNgos.filter(n => n.status === "Approved").length,
+        rejected: allNgos.filter(n => n.status === "Rejected").length,
+        totalUsers: allUsers.filter(u => u.role === "user").length,
+        totalAdmins: allUsers.filter(u => u.role === "admin").length,
+        totalSuperAdmins: allUsers.filter(u => u.role === "super_admin").length
+      };
+      
+      res.json(stats);
+    } catch (err) {
+      console.error("[statistics] Error:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // --- NGO Routes ---
 
   // Public endpoint: Get all approved NGOs (no auth required)
@@ -543,20 +698,29 @@ export async function registerRoutes(
     res.json(opportunity);
   });
 
-  // Get all NGOs (Admin sees all, User sees theirs - logic in route or generic list?)
-  // Requirement says: "Admin Panel: View all NGOs", "User Dashboard: View list of NGOs they created"
-  // Let's implement /api/ngos to return based on role or context
+  // Get all NGOs (Super Admin sees AdminApproved, Admin sees Pending, User sees theirs)
   app.get(api.ngos.list.path, requireAuth, async (req, res) => {
     const user = await storage.getUser(req.session.userId!);
     if (!user) return res.status(401).send();
 
     let ngos;
-    if (user.role === 'admin') {
+    if (user.role === 'super_admin') {
+      // Super admin sees all NGOs
+      ngos = await storage.getNgos();
+    } else if (user.role === 'admin') {
+      // Admin sees all NGOs except those awaiting super admin approval (they see Pending status)
       ngos = await storage.getNgos();
     } else {
       ngos = await storage.getNgosByUserId(user.id);
     }
     res.json(ngos);
+  });
+
+  // Get NGOs awaiting super admin approval (AdminApproved status)
+  app.get("/api/super-admin/pending-ngos", requireSuperAdmin, async (req, res) => {
+    const allNgos = await storage.getNgos();
+    const pendingNgos = allNgos.filter(ngo => ngo.status === "AdminApproved");
+    res.json(pendingNgos);
   });
 
   app.get(api.ngos.get.path, requireAuth, async (req, res) => {
@@ -579,16 +743,82 @@ export async function registerRoutes(
     }
   });
 
+  // Admin approves NGO (moves to AdminApproved)
   app.patch(api.ngos.updateStatus.path, requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id as string);
-      const { status } = api.ngos.updateStatus.input.parse(req.body);
+      const { status, rejectionReason } = req.body;
+      const user = req.user!;
       
-      const updated = await storage.updateNgoStatus(id, status);
-      if (!updated) return res.status(404).json({ message: "NGO not found" });
+      const ngo = await storage.getNgo(id);
+      if (!ngo) return res.status(404).json({ message: "NGO not found" });
       
-      res.json(updated);
+      // Determine what the admin can do based on role and current NGO status
+      if (user.role === "admin") {
+        // Regular admin can only approve Pending -> AdminApproved or Reject
+        if (ngo.status !== "Pending") {
+          return res.status(400).json({ message: "يمكنك فقط معالجة المنظمات بحالة 'قيد الانتظار'" });
+        }
+        
+        if (status === "Approved" || status === "AdminApproved") {
+          // Admin approves -> moves to AdminApproved
+          const updated = await storage.updateNgoApproval(id, {
+            status: "AdminApproved",
+            approvedByAdminId: user.id,
+            approvedByAdminAt: new Date()
+          });
+          return res.json(updated);
+        } else if (status === "Rejected") {
+          if (!rejectionReason) {
+            return res.status(400).json({ message: "يرجى ذكر سبب الرفض" });
+          }
+          const updated = await storage.updateNgoApproval(id, {
+            status: "Rejected",
+            rejectedById: user.id,
+            rejectedAt: new Date(),
+            rejectionReason
+          });
+          return res.json(updated);
+        }
+      } else if (user.role === "super_admin") {
+        // Super admin can approve AdminApproved -> Approved or reject
+        if (status === "Approved") {
+          if (ngo.status !== "AdminApproved") {
+            return res.status(400).json({ message: "يجب أن يوافق المشرف العادي على المنظمة أولاً" });
+          }
+          const updated = await storage.updateNgoApproval(id, {
+            status: "Approved",
+            approvedBySuperAdminId: user.id,
+            approvedBySuperAdminAt: new Date()
+          });
+          return res.json(updated);
+        } else if (status === "AdminApproved") {
+          // Super admin can also do first-level approval for Pending NGOs
+          if (ngo.status === "Pending") {
+            const updated = await storage.updateNgoApproval(id, {
+              status: "AdminApproved",
+              approvedByAdminId: user.id,
+              approvedByAdminAt: new Date()
+            });
+            return res.json(updated);
+          }
+        } else if (status === "Rejected") {
+          if (!rejectionReason) {
+            return res.status(400).json({ message: "يرجى ذكر سبب الرفض" });
+          }
+          const updated = await storage.updateNgoApproval(id, {
+            status: "Rejected",
+            rejectedById: user.id,
+            rejectedAt: new Date(),
+            rejectionReason
+          });
+          return res.json(updated);
+        }
+      }
+      
+      res.status(400).json({ message: "Invalid status transition" });
     } catch (err) {
+      console.error("Error updating NGO status:", err);
       res.status(400).json({ message: "Invalid request" });
     }
   });

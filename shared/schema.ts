@@ -6,7 +6,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  role: text("role", { enum: ["user", "admin"] }).default("user").notNull(),
+  role: text("role", { enum: ["user", "admin", "super_admin"] }).default("user").notNull(),
   firstName: text("first_name"),
   lastName: text("last_name"),
   email: text("email"),
@@ -306,9 +306,18 @@ export const ngos = pgTable("ngos", {
   phone: text("phone"),
   
   // System fields
-  status: text("status", { enum: ["Pending", "Approved", "Rejected"] }).default("Pending").notNull(),
+  status: text("status", { enum: ["Pending", "AdminApproved", "Approved", "Rejected"] }).default("Pending").notNull(),
   createdBy: integer("created_by").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
+  
+  // Approval tracking fields
+  approvedByAdminId: integer("approved_by_admin_id"),
+  approvedByAdminAt: timestamp("approved_by_admin_at"),
+  approvedBySuperAdminId: integer("approved_by_super_admin_id"),
+  approvedBySuperAdminAt: timestamp("approved_by_super_admin_at"),
+  rejectedById: integer("rejected_by_id"),
+  rejectedAt: timestamp("rejected_at"),
+  rejectionReason: text("rejection_reason"),
 });
 
 export const announcements = pgTable("announcements", {
