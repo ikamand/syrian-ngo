@@ -617,27 +617,28 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="ngos" className="space-y-6">
-          <TabsList className="grid w-full max-w-3xl grid-cols-5">
-            <TabsTrigger value="ngos" data-testid="tab-ngos">
+          <TabsList className="grid w-full max-w-3xl grid-cols-5 bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] p-1">
+            <TabsTrigger value="ngos" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-ngos">
               المنظمات
             </TabsTrigger>
-            <TabsTrigger value="announcements" data-testid="tab-announcements">
+            <TabsTrigger value="announcements" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-announcements">
               الإعلانات
             </TabsTrigger>
-            <TabsTrigger value="notices" data-testid="tab-notices">
+            <TabsTrigger value="notices" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-notices">
               التعاميم
             </TabsTrigger>
-            <TabsTrigger value="users" data-testid="tab-users">
+            <TabsTrigger value="users" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-users">
               المستخدمين
             </TabsTrigger>
-            <TabsTrigger value="content" data-testid="tab-content">
+            <TabsTrigger value="content" className="data-[state=active]:bg-primary data-[state=active]:text-white" data-testid="tab-content">
               المحتوى
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="ngos">
-            <div className="bg-white rounded-xl border shadow-sm">
-              <div className="p-4 border-b flex flex-col md:flex-row gap-4 justify-between">
+            <div className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] overflow-hidden">
+              <div className="h-2 bg-primary/80"></div>
+              <div className="p-4 flex flex-col md:flex-row gap-4 justify-between">
                 <Input 
                   placeholder="بحث باسم المنظمة أو المدينة..." 
                   className="w-full md:w-96"
@@ -663,7 +664,7 @@ export default function AdminDashboard() {
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-gray-50 hover:bg-gray-50">
+                    <TableRow className="bg-primary/5 hover:bg-primary/5">
                       <TableHead className="text-right">اسم المنظمة</TableHead>
                       <TableHead className="text-right">الشكل القانوني</TableHead>
                       <TableHead className="text-right">النطاق</TableHead>
@@ -752,21 +753,23 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="announcements">
-            <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">إدارة الإعلانات</h2>
-                <Button onClick={openCreateAnnouncement} data-testid="button-create-announcement">
-                  <Plus className="w-4 h-4 ml-2" />
-                  إعلان جديد
-                </Button>
-              </div>
+            <div className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] overflow-hidden">
+              <div className="h-2 bg-primary/80"></div>
+              <div className="p-6 space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-semibold">إدارة الإعلانات</h2>
+                  <Button onClick={openCreateAnnouncement} data-testid="button-create-announcement">
+                    <Plus className="w-4 h-4 ml-2" />
+                    إعلان جديد
+                  </Button>
+                </div>
 
               {isAnnouncementsLoading ? (
                 <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
               ) : announcements && announcements.length > 0 ? (
                 <div className="grid gap-4">
                   {announcements.map((announcement) => (
-                    <Card key={announcement.id} className="overflow-hidden" data-testid={`card-announcement-${announcement.id}`}>
+                    <Card key={announcement.id} className="overflow-hidden border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] hover:shadow-[0_6px_20px_-6px_rgba(0,0,0,0.12)] transition-all duration-300" data-testid={`card-announcement-${announcement.id}`}>
                       <div className="flex flex-col md:flex-row">
                         {announcement.imageUrl && (
                           <div className="w-full md:w-48 h-32 md:h-auto shrink-0 bg-muted">
@@ -828,7 +831,7 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               ) : (
-                <Card className="border-dashed">
+                <Card className="border-dashed border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)]">
                   <CardContent className="py-12 text-center">
                     <p className="text-muted-foreground">لا توجد إعلانات حالياً</p>
                     <Button variant="outline" className="mt-4" onClick={openCreateAnnouncement}>
@@ -838,25 +841,28 @@ export default function AdminDashboard() {
                   </CardContent>
                 </Card>
               )}
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="notices">
-            <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">إدارة التعاميم</h2>
-                <Button onClick={openCreateNotice} data-testid="button-create-notice">
-                  <Plus className="w-4 h-4 ml-2" />
-                  إضافة تعميم جديد
-                </Button>
-              </div>
+            <div className="bg-white border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] overflow-hidden">
+              <div className="h-2 bg-primary/80"></div>
+              <div className="p-6 space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-semibold">إدارة التعاميم</h2>
+                  <Button onClick={openCreateNotice} data-testid="button-create-notice">
+                    <Plus className="w-4 h-4 ml-2" />
+                    إضافة تعميم جديد
+                  </Button>
+                </div>
 
               {isNoticesLoading ? (
                 <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
               ) : noticesData && noticesData.length > 0 ? (
                 <div className="grid gap-4">
                   {noticesData.map((notice) => (
-                    <Card key={notice.id} data-testid={`card-notice-${notice.id}`}>
+                    <Card key={notice.id} className="border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] hover:shadow-[0_6px_20px_-6px_rgba(0,0,0,0.12)] transition-all duration-300" data-testid={`card-notice-${notice.id}`}>
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start gap-4">
                           <div className="flex-1 min-w-0">
@@ -896,7 +902,7 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               ) : (
-                <Card className="border-dashed">
+                <Card className="border-dashed border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)]">
                   <CardContent className="py-12 text-center">
                     <p className="text-muted-foreground">لا توجد تعاميم حالياً</p>
                     <Button variant="outline" className="mt-4" onClick={openCreateNotice}>
@@ -906,6 +912,7 @@ export default function AdminDashboard() {
                   </CardContent>
                 </Card>
               )}
+              </div>
             </div>
           </TabsContent>
 
