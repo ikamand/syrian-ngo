@@ -165,36 +165,54 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           <Button
                             variant="outline"
                             className="justify-start gap-2"
-                            onClick={() => window.open(ngo.internalRegulationsDoc!, "_blank")}
-                            data-testid="button-download-internal-regulations"
+                            asChild
                           >
-                            <FileText className="h-4 w-4" />
-                            <span className="truncate">وثيقة النظام الداخلي</span>
-                            <Download className="h-3 w-3 mr-auto" />
+                            <a
+                              href={ngo.internalRegulationsDoc}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              data-testid="link-download-internal-regulations"
+                            >
+                              <FileText className="h-4 w-4" />
+                              <span className="truncate">وثيقة النظام الداخلي</span>
+                              <Download className="h-3 w-3 mr-auto" />
+                            </a>
                           </Button>
                         )}
                         {ngo.publicationDecisionDoc && (
                           <Button
                             variant="outline"
                             className="justify-start gap-2"
-                            onClick={() => window.open(ngo.publicationDecisionDoc!, "_blank")}
-                            data-testid="button-download-publication-decision"
+                            asChild
                           >
-                            <FileText className="h-4 w-4" />
-                            <span className="truncate">وثيقة قرار الإشهار</span>
-                            <Download className="h-3 w-3 mr-auto" />
+                            <a
+                              href={ngo.publicationDecisionDoc}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              data-testid="link-download-publication-decision"
+                            >
+                              <FileText className="h-4 w-4" />
+                              <span className="truncate">وثيقة قرار الإشهار</span>
+                              <Download className="h-3 w-3 mr-auto" />
+                            </a>
                           </Button>
                         )}
                         {ngo.publicBenefitDoc && (
                           <Button
                             variant="outline"
                             className="justify-start gap-2"
-                            onClick={() => window.open(ngo.publicBenefitDoc!, "_blank")}
-                            data-testid="button-download-public-benefit"
+                            asChild
                           >
-                            <FileText className="h-4 w-4" />
-                            <span className="truncate">وثيقة النفع العام</span>
-                            <Download className="h-3 w-3 mr-auto" />
+                            <a
+                              href={ngo.publicBenefitDoc}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              data-testid="link-download-public-benefit"
+                            >
+                              <FileText className="h-4 w-4" />
+                              <span className="truncate">وثيقة النفع العام</span>
+                              <Download className="h-3 w-3 mr-auto" />
+                            </a>
                           </Button>
                         )}
                       </div>

@@ -96,10 +96,6 @@ export function DocumentUploader({
     onChange("");
   };
 
-  const handleDownload = () => {
-    if (!value) return;
-    window.open(value, "_blank");
-  };
 
   const getFileName = (path: string) => {
     const parts = path.split("/");
@@ -123,11 +119,17 @@ export function DocumentUploader({
               type="button"
               variant="ghost"
               size="icon"
-              onClick={handleDownload}
+              asChild
               title="تحميل"
-              data-testid="button-download-document"
             >
-              <Download className="h-4 w-4" />
+              <a
+                href={value}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="link-download-document"
+              >
+                <Download className="h-4 w-4" />
+              </a>
             </Button>
             <Button
               type="button"
