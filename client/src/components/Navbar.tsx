@@ -1,5 +1,5 @@
+import logoUrl from "@assets/emblem-of-syria-seeklogo_1769035838735.png";
 import { Link, useLocation } from "wouter";
-import { SyriaEmblem } from "./SyriaEmblem";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, LayoutDashboard, LogOut, User, Menu } from "lucide-react";
@@ -33,7 +33,7 @@ export function Navbar() {
           <Link href="/">
             <div className="flex items-center gap-2 md:gap-3 cursor-pointer">
               <div className="w-10 h-10 md:w-16 md:h-16 flex items-center justify-center overflow-hidden">
-                <SyriaEmblem className="h-full w-full" />
+                <img src={logoUrl} alt="Emblem of Syria" className="h-full w-full object-contain" />
               </div>
               <div className="flex flex-col">
                 <span className="text-xs md:text-sm font-bold text-white">الجمهورية العربية السورية</span>
