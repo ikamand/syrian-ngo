@@ -14,7 +14,7 @@ export default function NgoProfile() {
   const [match, params] = useRoute("/ngos/:id");
   const ngoId = params?.id;
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.role === "admin" || user?.role === "super_admin";
 
   const { data: ngo, isLoading, error } = useQuery<Ngo>({
     queryKey: ['/api/ngos/public', ngoId],
@@ -172,8 +172,8 @@ export default function NgoProfile() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Documents Section - Only visible to authenticated users */}
-                  {user && (ngo.internalRegulationsDoc || ngo.publicationDecisionDoc || ngo.publicBenefitDoc) && (
+                  {/* Documents Section - Only visible to NGO owner or admins */}
+                  {(isAdmin || user?.id === ngo.createdBy) && (ngo.internalRegulationsDoc || ngo.publicationDecisionDoc || ngo.publicBenefitDoc) && (
                     <AccordionItem value="documents" className="border rounded-lg px-4">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-documents">
                         <span className="flex items-center gap-2">
