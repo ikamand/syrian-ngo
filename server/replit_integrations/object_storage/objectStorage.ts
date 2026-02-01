@@ -103,7 +103,20 @@ export class ObjectStorageService {
       const aclPolicy = await getObjectAclPolicy(file);
       const isPublic = aclPolicy?.visibility === "public";
       
-      const contentType = metadata.contentType || "application/octet-stream";
+      let contentType = metadata.contentType || "application/octet-stream";
+      
+      // If content type is unknown, try to detect PDF by reading first bytes
+      if (contentType === "application/octet-stream") {
+        try {
+          const [contents] = await file.download({ start: 0, end: 4 });
+          const header = contents.toString('utf8', 0, 4);
+          if (header === '%PDF') {
+            contentType = 'application/pdf';
+          }
+        } catch (e) {
+          // Ignore detection errors
+        }
+      }
       
       // Set appropriate headers
       res.set({
