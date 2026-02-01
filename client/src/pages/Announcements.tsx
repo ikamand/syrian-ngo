@@ -28,8 +28,16 @@ export default function Announcements() {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       
-      <div className="bg-primary text-white py-8 border-b-4 border-secondary">
-        <div className="container mx-auto px-4">
+      <div className="bg-primary text-white py-8 border-b-4 border-secondary relative overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `url('/attached_assets/star_1769972814342.png')`,
+            backgroundRepeat: 'repeat',
+            backgroundSize: 'auto',
+          }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div>
