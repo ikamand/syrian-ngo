@@ -19,9 +19,10 @@ interface NgoDetailsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   showInternalNotes?: boolean;
+  showDocuments?: boolean;
 }
 
-export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = false }: NgoDetailsDialogProps) {
+export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = false, showDocuments = false }: NgoDetailsDialogProps) {
   const getFieldValue = (value: string | null | undefined, fallback: string = "غير محدد") => {
     return value && value.trim() ? value : fallback;
   };
@@ -157,7 +158,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                     </div>
                   </div>
 
-                  {(ngo.internalRegulationsDoc || ngo.publicationDecisionDoc || ngo.publicBenefitDoc) && (
+                  {showDocuments && (ngo.internalRegulationsDoc || ngo.publicationDecisionDoc || ngo.publicBenefitDoc) && (
                     <div className="border-t pt-3">
                       <span className="text-sm font-medium text-muted-foreground block mb-2">وثائق المنظمة</span>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">

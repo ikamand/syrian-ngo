@@ -172,8 +172,8 @@ export default function NgoProfile() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Documents Section */}
-                  {(ngo.internalRegulationsDoc || ngo.publicationDecisionDoc || ngo.publicBenefitDoc) && (
+                  {/* Documents Section - Only visible to authenticated users */}
+                  {user && (ngo.internalRegulationsDoc || ngo.publicationDecisionDoc || ngo.publicBenefitDoc) && (
                     <AccordionItem value="documents" className="border rounded-lg px-4">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-documents">
                         <span className="flex items-center gap-2">

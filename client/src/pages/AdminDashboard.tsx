@@ -1629,6 +1629,7 @@ export default function AdminDashboard() {
         open={!!viewingNgo} 
         onOpenChange={(open) => !open && setViewingNgo(null)}
         showInternalNotes={true}
+        showDocuments={true}
       />
       {/* Create User Dialog */}
       <CreateUserDialog

@@ -173,7 +173,8 @@ export default function Dashboard() {
       <NgoDetailsDialog 
         ngo={viewingNgo} 
         open={!!viewingNgo} 
-        onOpenChange={(open) => !open && setViewingNgo(null)} 
+        onOpenChange={(open) => !open && setViewingNgo(null)}
+        showDocuments={true}
       />
     </div>
   );
