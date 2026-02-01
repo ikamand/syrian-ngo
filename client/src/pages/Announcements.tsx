@@ -7,18 +7,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
-
-const patternSvg = `<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="600" height="43" viewBox="0 0 6000 430">
-  <g fill="white" stroke="none">
-    <path d="M248 43 c6 -2 18 -2 25 0 6 3 1 5 -13 5 -14 0 -19 -2 -12 -5z"/>
-    <path d="M1538 43 c7 -3 16 -2 19 1 4 3 -2 6 -13 5 -11 0 -14 -3 -6 -6z"/>
-    <path d="M1938 43 c7 -3 16 -2 19 1 4 3 -2 6 -13 5 -11 0 -14 -3 -6 -6z"/>
-    <path d="M2213 43 c9 -2 23 -2 30 0 6 3 -1 5 -18 5 -16 0 -22 -2 -12 -5z"/>
-    <path d="M4808 43 c6 -2 18 -2 25 0 6 3 1 5 -13 5 -14 0 -19 -2 -12 -5z"/>
-    <path d="M5448 43 c6 -2 18 -2 25 0 6 3 1 5 -13 5 -14 0 -19 -2 -12 -5z"/>
-  </g>
-</svg>`;
-const patternUri = `url("data:image/svg+xml,${encodeURIComponent(patternSvg)}")`;
+import headerPattern from "@assets/header-pattern.svg";
 
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
@@ -44,7 +33,7 @@ export default function Announcements() {
         <div 
           className="absolute inset-0"
           style={{
-            backgroundImage: patternUri,
+            backgroundImage: `url(${headerPattern})`,
             backgroundRepeat: 'repeat-x',
             backgroundSize: 'auto 100%',
             backgroundPosition: 'center',
