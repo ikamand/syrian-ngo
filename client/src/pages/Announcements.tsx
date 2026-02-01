@@ -7,7 +7,31 @@ import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
-import starPattern from "@assets/star_1769972814342.png";
+
+const GeometricPattern = () => (
+  <svg 
+    className="absolute inset-0 w-full h-full opacity-20" 
+    xmlns="http://www.w3.org/2000/svg"
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <defs>
+      <pattern id="starPattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+        <circle cx="30" cy="30" r="2" fill="white"/>
+        <circle cx="0" cy="0" r="2" fill="white"/>
+        <circle cx="60" cy="0" r="2" fill="white"/>
+        <circle cx="0" cy="60" r="2" fill="white"/>
+        <circle cx="60" cy="60" r="2" fill="white"/>
+        <path d="M30 10 L35 25 L50 25 L38 35 L43 50 L30 40 L17 50 L22 35 L10 25 L25 25 Z" fill="none" stroke="white" strokeWidth="1"/>
+        <circle cx="30" cy="30" r="18" fill="none" stroke="white" strokeWidth="0.5"/>
+        <circle cx="0" cy="30" r="8" fill="none" stroke="white" strokeWidth="0.5"/>
+        <circle cx="60" cy="30" r="8" fill="none" stroke="white" strokeWidth="0.5"/>
+        <circle cx="30" cy="0" r="8" fill="none" stroke="white" strokeWidth="0.5"/>
+        <circle cx="30" cy="60" r="8" fill="none" stroke="white" strokeWidth="0.5"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#starPattern)" />
+  </svg>
+);
 
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
@@ -30,16 +54,7 @@ export default function Announcements() {
       <Navbar />
       
       <div className="bg-primary text-white py-8 border-b-4 border-secondary relative overflow-hidden">
-        <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${starPattern})`,
-            backgroundRepeat: 'repeat-x',
-            backgroundPosition: 'center',
-            opacity: 0.3,
-            filter: 'invert(1)',
-          }}
-        />
+        <GeometricPattern />
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
