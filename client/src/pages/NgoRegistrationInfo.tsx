@@ -2,18 +2,31 @@ import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, ListChecks, Scale, Table2, CheckCircle2, AlertCircle } from "lucide-react";
+import headerPattern from "@assets/header-pattern.svg";
 
 export default function NgoRegistrationInfo() {
   return (
     <div className="min-h-screen bg-gray-50/50">
       <Navbar />
-      {/* Hero Banner */}
-      <div className="bg-primary text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl font-bold mb-3">إنشاء منظمة جديدة</h1>
-          <p className="text-lg opacity-90 max-w-2xl mx-auto">
-            دليل شامل لتأسيس المنظمات غير الحكومية في الجمهورية العربية السورية
-          </p>
+      <div className="bg-primary text-white py-8 border-b-4 border-secondary relative overflow-hidden">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${headerPattern})`,
+            backgroundRepeat: 'repeat-x',
+            backgroundSize: 'auto 100%',
+            backgroundPosition: 'center bottom',
+            opacity: 0.5,
+            filter: 'invert(1)',
+          }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">إنشاء منظمة جديدة</h1>
+              <p className="text-white/80 text-sm">دليل شامل لتأسيس المنظمات غير الحكومية في الجمهورية العربية السورية</p>
+            </div>
+          </div>
         </div>
       </div>
       <main className="container mx-auto px-4 py-8">

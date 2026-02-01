@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Briefcase, Users, Search, MapPin, Building2, Calendar, Loader2, Filter, Clock, ArrowLeft } from "lucide-react";
+import headerPattern from "@assets/header-pattern.svg";
 
 interface Opportunity {
   id: string;
@@ -106,12 +107,25 @@ export default function Opportunities() {
     <div className="min-h-screen bg-gray-50/50">
       <Navbar />
       
-      <div className="bg-primary text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl font-bold mb-4">فرص العمل والتطوع</h1>
-          <p className="text-white/80 max-w-2xl mx-auto">
-            تصفح فرص العمل والتطوع المتاحة لدى المنظمات غير الحكومية المسجلة
-          </p>
+      <div className="bg-primary text-white py-8 border-b-4 border-secondary relative overflow-hidden">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${headerPattern})`,
+            backgroundRepeat: 'repeat-x',
+            backgroundSize: 'auto 100%',
+            backgroundPosition: 'center bottom',
+            opacity: 0.5,
+            filter: 'invert(1)',
+          }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">فرص العمل والتطوع</h1>
+              <p className="text-white/80 text-sm">تصفح فرص العمل والتطوع المتاحة لدى المنظمات غير الحكومية المسجلة</p>
+            </div>
+          </div>
         </div>
       </div>
 

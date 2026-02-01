@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SyriaMapLeaflet } from "@/components/SyriaMapLeaflet";
 import { Button } from "@/components/ui/button";
+import headerPattern from "@assets/header-pattern.svg";
 
 export default function NgoList() {
   const { data: ngos, isLoading } = useQuery({
@@ -267,12 +268,25 @@ export default function NgoList() {
     <div className="min-h-screen bg-gray-50/50">
       <Navbar />
       
-      <div className="bg-primary text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl font-bold mb-4">دليل المنظمات غير الحكومية</h1>
-          <p className="text-white/80 max-w-2xl mx-auto">
-            ابحث في قاعدة بيانات المنظمات المرخصة والمعتمدة رسمياً في الجمهورية العربية السورية
-          </p>
+      <div className="bg-primary text-white py-8 border-b-4 border-secondary relative overflow-hidden">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${headerPattern})`,
+            backgroundRepeat: 'repeat-x',
+            backgroundSize: 'auto 100%',
+            backgroundPosition: 'center bottom',
+            opacity: 0.5,
+            filter: 'invert(1)',
+          }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">دليل المنظمات غير الحكومية</h1>
+              <p className="text-white/80 text-sm">ابحث في قاعدة بيانات المنظمات المرخصة والمعتمدة رسمياً في الجمهورية العربية السورية</p>
+            </div>
+          </div>
         </div>
       </div>
 

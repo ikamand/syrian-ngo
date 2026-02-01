@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Scale, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import headerPattern from "@assets/header-pattern.svg";
 
 interface CollapsibleSectionProps {
   title: string;
@@ -36,12 +37,25 @@ export default function OtherLaws() {
     <div className="min-h-screen bg-gray-50/50">
       <Navbar />
       
-      <div className="bg-primary text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-2xl md:text-3xl font-bold leading-relaxed mb-4">القوانين والمراسيم المرتبطة بعمل المنظمات غير الحكومية</h1>
-          <p className="text-white/80 max-w-2xl mx-auto">
-            مجموعة التشريعات والمراسيم التكميلية والقرارات المنظمة للعمل الأهلي
-          </p>
+      <div className="bg-primary text-white py-8 border-b-4 border-secondary relative overflow-hidden">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${headerPattern})`,
+            backgroundRepeat: 'repeat-x',
+            backgroundSize: 'auto 100%',
+            backgroundPosition: 'center bottom',
+            opacity: 0.5,
+            filter: 'invert(1)',
+          }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">القوانين والمراسيم المرتبطة بعمل المنظمات غير الحكومية</h1>
+              <p className="text-white/80 text-sm">مجموعة التشريعات والمراسيم التكميلية والقرارات المنظمة للعمل الأهلي</p>
+            </div>
+          </div>
         </div>
       </div>
 
