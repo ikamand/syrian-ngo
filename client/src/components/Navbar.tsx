@@ -27,7 +27,7 @@ export function Navbar() {
   const isActive = (path: string) => location === path;
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-primary/20 backdrop-blur-md supports-[backdrop-filter]:bg-primary/80 shadow-md bg-[#002421]">
+    <nav className="sticky top-0 z-50 w-full border-b border-primary/20 shadow-md bg-primary">
       <div className="container mx-auto px-2 h-14 md:h-16 flex items-center justify-between">
         <div className="flex items-center gap-1 md:gap-2">
           <Link href="/">
