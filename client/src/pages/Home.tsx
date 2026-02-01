@@ -8,6 +8,7 @@ import { FeaturedNewsSlider } from "@/components/FeaturedNewsSlider";
 import { usePublicFooterLinks } from "@/hooks/use-footer-links";
 
 import emblemUrl from "@assets/emblem-of-syria-seeklogo_1769042472182.png";
+import headerPattern from "@assets/header-pattern.svg";
 
 interface QuickLinkCardProps {
   title: string;
@@ -123,8 +124,19 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="py-16 bg-primary text-white">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-primary text-white relative overflow-hidden">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${headerPattern})`,
+            backgroundRepeat: 'repeat-x',
+            backgroundSize: 'auto 100%',
+            backgroundPosition: 'center bottom',
+            opacity: 0.5,
+            filter: 'invert(1)',
+          }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
               <div className="text-4xl font-bold text-secondary">30+</div>
