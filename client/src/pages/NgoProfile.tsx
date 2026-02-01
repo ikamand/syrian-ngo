@@ -460,7 +460,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Employees Section */}
-                  {isAdmin && hasData(ngo.employees as any[]) && (
+                  {(isAdmin || user?.id === ngo.createdBy) && hasData(ngo.employees as any[]) && (
                     <AccordionItem value="employees" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-employees">
                         <span className="flex items-center gap-2">
@@ -468,7 +468,7 @@ export default function NgoProfile() {
                           الموظفون ({(ngo.employees as any[]).length})
                           <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
                             <Lock className="w-3 h-3" />
-                            للمسؤولين فقط
+                            بيانات خاصة
                           </Badge>
                         </span>
                       </AccordionTrigger>
@@ -489,7 +489,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Volunteers Section */}
-                  {isAdmin && hasData(ngo.volunteers as any[]) && (
+                  {(isAdmin || user?.id === ngo.createdBy) && hasData(ngo.volunteers as any[]) && (
                     <AccordionItem value="volunteers" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-volunteers">
                         <span className="flex items-center gap-2">
@@ -497,7 +497,7 @@ export default function NgoProfile() {
                           المتطوعون ({(ngo.volunteers as any[]).length})
                           <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
                             <Lock className="w-3 h-3" />
-                            للمسؤولين فقط
+                            بيانات خاصة
                           </Badge>
                         </span>
                       </AccordionTrigger>
@@ -518,7 +518,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Bank Accounts Section */}
-                  {isAdmin && hasData(ngo.bankAccounts as any[]) && (
+                  {(isAdmin || user?.id === ngo.createdBy) && hasData(ngo.bankAccounts as any[]) && (
                     <AccordionItem value="bank-accounts" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-bank-accounts">
                         <span className="flex items-center gap-2">
@@ -526,7 +526,7 @@ export default function NgoProfile() {
                           الحسابات البنكية
                           <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
                             <Lock className="w-3 h-3" />
-                            للمسؤولين فقط
+                            بيانات خاصة
                           </Badge>
                         </span>
                       </AccordionTrigger>
@@ -549,7 +549,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Vehicles Section */}
-                  {isAdmin && hasData(ngo.vehicles as any[]) && (
+                  {(isAdmin || user?.id === ngo.createdBy) && hasData(ngo.vehicles as any[]) && (
                     <AccordionItem value="vehicles" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-vehicles">
                         <span className="flex items-center gap-2">
@@ -557,7 +557,7 @@ export default function NgoProfile() {
                           المركبات
                           <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
                             <Lock className="w-3 h-3" />
-                            للمسؤولين فقط
+                            بيانات خاصة
                           </Badge>
                         </span>
                       </AccordionTrigger>
@@ -578,7 +578,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Real Estate Section */}
-                  {isAdmin && hasData(ngo.realEstate as any[]) && (
+                  {(isAdmin || user?.id === ngo.createdBy) && hasData(ngo.realEstate as any[]) && (
                     <AccordionItem value="real-estate" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-real-estate">
                         <span className="flex items-center gap-2">
@@ -586,7 +586,7 @@ export default function NgoProfile() {
                           العقارات
                           <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
                             <Lock className="w-3 h-3" />
-                            للمسؤولين فقط
+                            بيانات خاصة
                           </Badge>
                         </span>
                       </AccordionTrigger>
@@ -607,7 +607,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Financial Data Section */}
-                  {isAdmin && hasData(ngo.financialData as any[]) && (
+                  {(isAdmin || user?.id === ngo.createdBy) && hasData(ngo.financialData as any[]) && (
                     <AccordionItem value="financial-data" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-financial-data">
                         <span className="flex items-center gap-2">
@@ -615,7 +615,7 @@ export default function NgoProfile() {
                           البيانات المالية
                           <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
                             <Lock className="w-3 h-3" />
-                            للمسؤولين فقط
+                            بيانات خاصة
                           </Badge>
                         </span>
                       </AccordionTrigger>
@@ -633,7 +633,7 @@ export default function NgoProfile() {
                   )}
 
                   {/* Annual Plans Section */}
-                  {isAdmin && hasData(ngo.annualPlans as any[]) && (
+                  {(isAdmin || user?.id === ngo.createdBy) && hasData(ngo.annualPlans as any[]) && (
                     <AccordionItem value="annual-plans" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-annual-plans">
                         <span className="flex items-center gap-2">
@@ -641,7 +641,7 @@ export default function NgoProfile() {
                           الخطط السنوية
                           <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
                             <Lock className="w-3 h-3" />
-                            للمسؤولين فقط
+                            بيانات خاصة
                           </Badge>
                         </span>
                       </AccordionTrigger>
