@@ -7,7 +7,11 @@ import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
-import starPattern from "@assets/star_1769972814342.png";
+
+const starPatternSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <polygon fill="white" points="30,5 35,20 50,20 38,30 42,45 30,35 18,45 22,30 10,20 25,20"/>
+</svg>`;
+const starPatternUri = `url("data:image/svg+xml,${encodeURIComponent(starPatternSvg)}")`;
 
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
@@ -33,11 +37,10 @@ export default function Announcements() {
         <div 
           className="absolute inset-0"
           style={{
-            backgroundImage: `url(${starPattern})`,
-            backgroundRepeat: 'repeat-x',
-            backgroundPosition: 'center',
+            backgroundImage: starPatternUri,
+            backgroundRepeat: 'repeat',
+            backgroundSize: '60px 60px',
             opacity: 0.3,
-            filter: 'invert(1)',
           }}
         />
         <div className="container mx-auto px-4 relative z-10">
