@@ -7,6 +7,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
+import starPattern from "@assets/star_1769972814342.png";
 
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
@@ -30,11 +31,12 @@ export default function Announcements() {
       
       <div className="bg-primary text-white py-8 border-b-4 border-secondary relative overflow-hidden">
         <div 
-          className="absolute inset-0 opacity-15"
+          className="absolute inset-0"
           style={{
-            backgroundImage: `url('/attached_assets/star_1769972814342.png')`,
+            backgroundImage: `url(${starPattern})`,
             backgroundRepeat: 'repeat-x',
             backgroundPosition: 'center',
+            opacity: 0.3,
             filter: 'invert(1)',
           }}
         />
