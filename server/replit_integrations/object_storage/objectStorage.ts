@@ -102,13 +102,17 @@ export class ObjectStorageService {
       // Get the ACL policy for the object.
       const aclPolicy = await getObjectAclPolicy(file);
       const isPublic = aclPolicy?.visibility === "public";
+      
+      const contentType = metadata.contentType || "application/octet-stream";
+      
       // Set appropriate headers
       res.set({
-        "Content-Type": metadata.contentType || "application/octet-stream",
+        "Content-Type": contentType,
         "Content-Length": metadata.size,
         "Cache-Control": `${
           isPublic ? "public" : "private"
         }, max-age=${cacheTtlSec}`,
+        "Content-Disposition": "inline",
       });
 
       // Stream the file to the response
