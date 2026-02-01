@@ -30,11 +30,12 @@ export default function Announcements() {
       
       <div className="bg-primary text-white py-8 border-b-4 border-secondary relative overflow-hidden">
         <div 
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0 opacity-15"
           style={{
             backgroundImage: `url('/attached_assets/star_1769972814342.png')`,
-            backgroundRepeat: 'repeat',
-            backgroundSize: 'auto',
+            backgroundRepeat: 'repeat-x',
+            backgroundPosition: 'center',
+            filter: 'invert(1)',
           }}
         />
         <div className="container mx-auto px-4 relative z-10">
