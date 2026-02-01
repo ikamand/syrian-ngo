@@ -8,10 +8,17 @@ import { ar } from "date-fns/locale";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
 
-const starPatternSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
-  <polygon fill="white" points="30,5 35,20 50,20 38,30 42,45 30,35 18,45 22,30 10,20 25,20"/>
+const patternSvg = `<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="600" height="43" viewBox="0 0 6000 430">
+  <g fill="white" stroke="none">
+    <path d="M248 43 c6 -2 18 -2 25 0 6 3 1 5 -13 5 -14 0 -19 -2 -12 -5z"/>
+    <path d="M1538 43 c7 -3 16 -2 19 1 4 3 -2 6 -13 5 -11 0 -14 -3 -6 -6z"/>
+    <path d="M1938 43 c7 -3 16 -2 19 1 4 3 -2 6 -13 5 -11 0 -14 -3 -6 -6z"/>
+    <path d="M2213 43 c9 -2 23 -2 30 0 6 3 -1 5 -18 5 -16 0 -22 -2 -12 -5z"/>
+    <path d="M4808 43 c6 -2 18 -2 25 0 6 3 1 5 -13 5 -14 0 -19 -2 -12 -5z"/>
+    <path d="M5448 43 c6 -2 18 -2 25 0 6 3 1 5 -13 5 -14 0 -19 -2 -12 -5z"/>
+  </g>
 </svg>`;
-const starPatternUri = `url("data:image/svg+xml,${encodeURIComponent(starPatternSvg)}")`;
+const patternUri = `url("data:image/svg+xml,${encodeURIComponent(patternSvg)}")`;
 
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
@@ -37,9 +44,10 @@ export default function Announcements() {
         <div 
           className="absolute inset-0"
           style={{
-            backgroundImage: starPatternUri,
-            backgroundRepeat: 'repeat',
-            backgroundSize: '60px 60px',
+            backgroundImage: patternUri,
+            backgroundRepeat: 'repeat-x',
+            backgroundSize: 'auto 100%',
+            backgroundPosition: 'center',
             opacity: 0.3,
           }}
         />
