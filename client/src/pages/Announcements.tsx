@@ -38,6 +38,7 @@ export default function Announcements() {
             backgroundSize: 'auto 100%',
             backgroundPosition: 'center bottom',
             opacity: 0.5,
+            filter: 'invert(1)',
           }}
         />
         <div className="container mx-auto px-4 relative z-10">
