@@ -12,7 +12,7 @@
   --foreground: 222 47% 11%;
   
   /* Official Green */
-  --primary: 140 100% 24%; /* #007a3d approx */
+  --primary: 175 100% 7%; /* #002623 */
   --primary-foreground: 0 0% 100%;
   
   --secondary: 45 100% 50%; /* Gold accent */
@@ -29,17 +29,17 @@
 
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
-  --ring: 142 76% 36%;
+  --ring: 175 100% 7%;
   
   --radius: 0;
   
   /* Map choropleth colors */
   --map-empty: transparent;
-  --map-low: 141 76% 85%;
-  --map-medium: 142 70% 73%;
-  --map-high: 142 70% 55%;
-  --map-very-high: 142 76% 36%;
-  --map-selected: 140 60% 20%;
+  --map-low: 175 50% 85%;
+  --map-medium: 175 60% 60%;
+  --map-high: 175 80% 30%;
+  --map-very-high: 175 100% 15%;
+  --map-selected: 175 100% 7%;
   --map-border: 215 14% 45%;
 }
 
@@ -47,8 +47,8 @@
   --background: 222.2 84% 4.9%;
   --foreground: 210 40% 98%;
   
-  --primary: 142 70% 50%;
-  --primary-foreground: 144.9 80.4% 10%;
+  --primary: 175 70% 40%;
+  --primary-foreground: 0 0% 100%;
   
   --secondary: 45 100% 50%;
   --secondary-foreground: 0 0% 0%;
@@ -64,15 +64,15 @@
   
   --border: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
-  --ring: 142 70% 50%;
+  --ring: 175 70% 40%;
   
   /* Map choropleth colors - dark mode */
   --map-empty: transparent;
-  --map-low: 141 50% 30%;
-  --map-medium: 142 55% 40%;
-  --map-high: 142 60% 50%;
-  --map-very-high: 142 70% 60%;
-  --map-selected: 140 70% 35%;
+  --map-low: 175 50% 30%;
+  --map-medium: 175 55% 40%;
+  --map-high: 175 60% 50%;
+  --map-very-high: 175 70% 60%;
+  --map-selected: 175 70% 35%;
   --map-border: 215 20% 50%;
   /* Translucent green background for popovers and dropdowns */
   [data-radix-popper-content-wrapper] {
