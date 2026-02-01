@@ -15,6 +15,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { LogoUploader } from "@/components/LogoUploader";
 import { ImageUploader } from "@/components/ImageUploader";
+import { DocumentUploader } from "@/components/DocumentUploader";
 import {
   Select,
   SelectContent,
@@ -495,8 +496,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                     <FormField control={form.control} name="internalRegulationsDoc"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>وثيقة النظام الداخلي</FormLabel>
-                          <FormControl><Input {...field} placeholder="رابط الملف" data-testid="edit-input-internal-regulations-doc" /></FormControl>
+                          <FormControl>
+                            <DocumentUploader
+                              value={field.value}
+                              onChange={field.onChange}
+                              label="وثيقة النظام الداخلي"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -504,8 +510,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                     <FormField control={form.control} name="publicationDecisionDoc"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>وثيقة قرار الإشهار</FormLabel>
-                          <FormControl><Input {...field} placeholder="رابط الملف" data-testid="edit-input-publication-decision-doc" /></FormControl>
+                          <FormControl>
+                            <DocumentUploader
+                              value={field.value}
+                              onChange={field.onChange}
+                              label="وثيقة قرار الإشهار"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -513,8 +524,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                     <FormField control={form.control} name="publicBenefitDoc"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>وثيقة النفع العام</FormLabel>
-                          <FormControl><Input {...field} placeholder="رابط الملف" data-testid="edit-input-public-benefit-doc" /></FormControl>
+                          <FormControl>
+                            <DocumentUploader
+                              value={field.value}
+                              onChange={field.onChange}
+                              label="وثيقة النفع العام"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
