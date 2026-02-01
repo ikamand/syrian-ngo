@@ -1210,7 +1210,7 @@ export default function AdminDashboard() {
       />
       {/* Announcement Dialog */}
       <Dialog open={announcementDialogOpen} onOpenChange={(open) => !isDeletingAnnouncement && setAnnouncementDialogOpen(open)}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle>{editingAnnouncement ? "تعديل الخبر" : "خبر جديد"}</DialogTitle>
           </DialogHeader>
@@ -1330,7 +1330,7 @@ export default function AdminDashboard() {
       </Dialog>
       {/* Notices Dialog */}
       <Dialog open={noticeDialogOpen} onOpenChange={(open) => !isDeletingNotice && setNoticeDialogOpen(open)}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px]" onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle>{editingNotice ? "تعديل التعميم" : "تعميم جديد"}</DialogTitle>
           </DialogHeader>
@@ -1449,7 +1449,7 @@ export default function AdminDashboard() {
       </Dialog>
       {/* Content Edit Dialog */}
       <Dialog open={contentDialogOpen} onOpenChange={setContentDialogOpen}>
-        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle>تعديل المحتوى: {contentForm.title}</DialogTitle>
           </DialogHeader>
@@ -1491,7 +1491,7 @@ export default function AdminDashboard() {
       </Dialog>
       {/* Footer Links Management Dialog */}
       <Dialog open={footerLinkDialogOpen} onOpenChange={closeFooterLinkDialog}>
-        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
           {footerLinkDialogMode === "list" ? (
             <>
               <DialogHeader>

@@ -99,7 +99,7 @@ export function ResetUserPasswordDialog({ open, onOpenChange, user }: ResetUserP
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => isOpen ? handleOpen() : handleClose()}>
-      <DialogContent className="sm:max-w-[425px]" dir="rtl">
+      <DialogContent className="sm:max-w-[425px]" dir="rtl" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>إعادة تعيين كلمة المرور</DialogTitle>
           <DialogDescription>

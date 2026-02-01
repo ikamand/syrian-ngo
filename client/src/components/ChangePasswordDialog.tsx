@@ -76,7 +76,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]" dir="rtl">
+      <DialogContent className="sm:max-w-[425px]" dir="rtl" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>تغيير كلمة المرور</DialogTitle>
         </DialogHeader>
