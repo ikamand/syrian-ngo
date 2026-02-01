@@ -36,7 +36,7 @@ export function Navbar() {
                 <img src={logoUrl} alt="Emblem of Syria" className="h-full w-full object-contain" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xs md:text-sm font-bold text-[#9d8861]">الجمهورية العربية السورية</span>
+                <span className="text-xs md:text-sm font-bold text-[#b9a67c]">الجمهورية العربية السورية</span>
                 <span className="text-[10px] md:text-xs text-white/80 font-medium">وزارة الشؤون الإجتماعية والعمل</span>
               </div>
             </div>
