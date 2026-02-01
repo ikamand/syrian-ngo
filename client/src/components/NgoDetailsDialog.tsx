@@ -8,7 +8,8 @@ import {
 import { StatusBadge } from "@/components/StatusBadge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Check, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Check, X, FileText, Download } from "lucide-react";
 import type { Ngo } from "@shared/schema";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { NgoInternalNotes } from "@/components/NgoInternalNotes";
@@ -155,6 +156,50 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                       <BooleanBadge value={ngo.hasOrgStructure} />
                     </div>
                   </div>
+
+                  {(ngo.internalRegulationsDoc || ngo.publicationDecisionDoc || ngo.publicBenefitDoc) && (
+                    <div className="border-t pt-3">
+                      <span className="text-sm font-medium text-muted-foreground block mb-2">وثائق المنظمة</span>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {ngo.internalRegulationsDoc && (
+                          <Button
+                            variant="outline"
+                            className="justify-start gap-2"
+                            onClick={() => window.open(ngo.internalRegulationsDoc!, "_blank")}
+                            data-testid="button-download-internal-regulations"
+                          >
+                            <FileText className="h-4 w-4" />
+                            <span className="truncate">وثيقة النظام الداخلي</span>
+                            <Download className="h-3 w-3 mr-auto" />
+                          </Button>
+                        )}
+                        {ngo.publicationDecisionDoc && (
+                          <Button
+                            variant="outline"
+                            className="justify-start gap-2"
+                            onClick={() => window.open(ngo.publicationDecisionDoc!, "_blank")}
+                            data-testid="button-download-publication-decision"
+                          >
+                            <FileText className="h-4 w-4" />
+                            <span className="truncate">وثيقة قرار الإشهار</span>
+                            <Download className="h-3 w-3 mr-auto" />
+                          </Button>
+                        )}
+                        {ngo.publicBenefitDoc && (
+                          <Button
+                            variant="outline"
+                            className="justify-start gap-2"
+                            onClick={() => window.open(ngo.publicBenefitDoc!, "_blank")}
+                            data-testid="button-download-public-benefit"
+                          >
+                            <FileText className="h-4 w-4" />
+                            <span className="truncate">وثيقة النفع العام</span>
+                            <Download className="h-3 w-3 mr-auto" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {ngo.description && (
                     <div className="border-t pt-3">
