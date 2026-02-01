@@ -36,8 +36,8 @@ export default function Announcements() {
             backgroundImage: `url(${headerPattern})`,
             backgroundRepeat: 'repeat-x',
             backgroundSize: 'auto 100%',
-            backgroundPosition: 'center',
-            opacity: 0.3,
+            backgroundPosition: 'center bottom',
+            opacity: 0.5,
           }}
         />
         <div className="container mx-auto px-4 relative z-10">
