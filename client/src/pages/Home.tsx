@@ -7,7 +7,7 @@ import { HeroSlideshow } from "@/components/HeroSlideshow";
 import { FeaturedNewsSlider } from "@/components/FeaturedNewsSlider";
 import { usePublicFooterLinks } from "@/hooks/use-footer-links";
 
-import emblemUrl from "@assets/emblem-of-syria-seeklogo_1769042472182.png";
+import emblemUrl from "@assets/emblem-of-syria-seeklogo_1769035838735.png";
 import headerPattern from "@assets/header-pattern.svg";
 
 interface QuickLinkCardProps {
