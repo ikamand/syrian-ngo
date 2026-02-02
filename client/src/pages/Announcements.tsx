@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { usePublishedAnnouncements } from "@/hooks/use-announcements";
 import { Input } from "@/components/ui/input";
-import { Calendar, Loader2, ArrowLeft, Megaphone, Newspaper, Clock, Search } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
+import { Calendar, Loader2, Megaphone, Newspaper, Search } from "lucide-react";
+import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
@@ -22,8 +22,7 @@ export default function Announcements() {
   });
 
   const featuredArticle = filteredAnnouncements?.[0];
-  const secondaryArticles = filteredAnnouncements?.slice(1, 3) || [];
-  const remainingArticles = filteredAnnouncements?.slice(3) || [];
+  const subArticles = filteredAnnouncements?.slice(1) || [];
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -86,160 +85,93 @@ export default function Announcements() {
 
       <main className="container mx-auto px-4 py-8">
         {isLoading ? (
-          <div className="space-y-6">
-            <div className="bg-white p-6 animate-pulse">
-              <div className="flex flex-col lg:flex-row gap-6">
-                <div className="lg:w-2/3 aspect-video bg-gray-200" />
-                <div className="lg:w-1/3 space-y-4">
-                  <div className="h-4 bg-gray-200 w-1/4" />
-                  <div className="h-8 bg-gray-200 w-full" />
-                  <div className="h-4 bg-gray-200 w-full" />
-                  <div className="h-4 bg-gray-200 w-3/4" />
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-10 h-10 animate-spin text-primary" />
           </div>
         ) : filteredAnnouncements && filteredAnnouncements.length > 0 ? (
           <div className="space-y-8" dir="rtl">
             {featuredArticle && (
               <section>
-                <Link href={`/news/${featuredArticle.id}`}>
-                  <article className="bg-white shadow-lg overflow-hidden group cursor-pointer" data-testid={`featured-article-${featuredArticle.id}`}>
-                    <div className="flex flex-col lg:flex-row">
-                      <div className="lg:w-2/3 relative overflow-hidden">
-                        {featuredArticle.imageUrl ? (
-                          <img
-                            src={featuredArticle.imageUrl}
-                            alt={featuredArticle.title}
-                            className="w-full h-64 lg:h-96 object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-64 lg:h-96 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                            <Megaphone className="w-24 h-24 text-primary/20" />
-                          </div>
-                        )}
-                        <div className="absolute top-4 right-4 bg-secondary text-black px-4 py-1 font-bold text-sm">
-                          خبر رئيسي
-                        </div>
+                <Link href={`/news/${featuredArticle.id}`} data-testid={`link-featured-article-${featuredArticle.id}`}>
+                  <article 
+                    className="relative h-[400px] md:h-[500px] overflow-hidden group cursor-pointer shadow-lg"
+                    data-testid={`featured-article-${featuredArticle.id}`}
+                  >
+                    {featuredArticle.imageUrl ? (
+                      <img
+                        src={featuredArticle.imageUrl}
+                        alt={featuredArticle.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                        <Megaphone className="w-32 h-32 text-white/20" />
                       </div>
-                      <div className="lg:w-1/3 p-6 lg:p-8 flex flex-col justify-center">
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {featuredArticle.createdAt 
-                              ? format(new Date(featuredArticle.createdAt), "d MMMM yyyy", { locale: ar })
-                              : ""}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            {featuredArticle.createdAt 
-                              ? formatDistanceToNow(new Date(featuredArticle.createdAt), { locale: ar, addSuffix: true })
-                              : ""}
-                          </span>
-                        </div>
-                        <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-primary transition-colors">
-                          {featuredArticle.title}
-                        </h2>
-                        <p className="text-muted-foreground leading-relaxed line-clamp-4 mb-6">
-                          {stripHtml(featuredArticle.content)}
-                        </p>
-                        <div className="flex items-center gap-2 text-primary font-bold">
-                          <span>قراءة الخبر كاملاً</span>
-                          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
-                        </div>
+                    )}
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                    
+                    <div className="absolute bottom-0 right-0 left-0 p-6 md:p-10 text-white">
+                      <div className="flex items-center gap-2 text-sm text-white/80 mb-3">
+                        <Calendar className="w-4 h-4" />
+                        <span>
+                          {featuredArticle.createdAt 
+                            ? format(new Date(featuredArticle.createdAt), "d MMMM yyyy", { locale: ar })
+                            : ""}
+                        </span>
                       </div>
+                      <h2 className="text-2xl md:text-4xl font-bold mb-4 leading-tight group-hover:text-secondary transition-colors">
+                        {featuredArticle.title}
+                      </h2>
+                      <p className="text-white/90 leading-relaxed line-clamp-3 max-w-3xl text-sm md:text-base">
+                        {stripHtml(featuredArticle.content)}
+                      </p>
                     </div>
                   </article>
                 </Link>
               </section>
             )}
 
-            {secondaryArticles.length > 0 && (
+            {subArticles.length > 0 && (
               <section>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {secondaryArticles.map((article) => (
-                    <Link key={article.id} href={`/news/${article.id}`}>
-                      <article className="bg-white shadow-sm overflow-hidden group cursor-pointer h-full" data-testid={`secondary-article-${article.id}`}>
-                        <div className="flex flex-col sm:flex-row h-full">
-                          <div className="sm:w-2/5 relative overflow-hidden">
-                            {article.imageUrl ? (
-                              <img
-                                src={article.imageUrl}
-                                alt={article.title}
-                                className="w-full h-48 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                            ) : (
-                              <div className="w-full h-48 sm:h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                                <Megaphone className="w-12 h-12 text-primary/20" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="sm:w-3/5 p-5 flex flex-col">
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                              <Calendar className="w-3.5 h-3.5" />
-                              <span>
-                                {article.createdAt 
-                                  ? format(new Date(article.createdAt), "d MMMM yyyy", { locale: ar })
-                                  : ""}
-                              </span>
-                            </div>
-                            <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
-                              {article.title}
-                            </h3>
-                            <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed flex-grow">
-                              {stripHtml(article.content)}
-                            </p>
-                            <div className="flex items-center gap-1 text-primary text-sm font-medium mt-3">
-                              <span>المزيد</span>
-                              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                            </div>
-                          </div>
-                        </div>
-                      </article>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {remainingArticles.length > 0 && (
-              <section>
-                <div className="border-b-2 border-primary mb-6 pb-2">
-                  <h2 className="text-xl font-bold text-primary">المزيد من الأخبار</h2>
-                </div>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {remainingArticles.map((article) => (
-                    <Link key={article.id} href={`/news/${article.id}`}>
-                      <article className="bg-white shadow-sm overflow-hidden group cursor-pointer h-full flex flex-col" data-testid={`article-${article.id}`}>
-                        <div className="relative overflow-hidden">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {subArticles.map((article) => (
+                    <Link key={article.id} href={`/news/${article.id}`} data-testid={`link-article-${article.id}`}>
+                      <article 
+                        className="bg-white shadow-md overflow-hidden group cursor-pointer h-full flex flex-col"
+                        data-testid={`article-${article.id}`}
+                      >
+                        <div className="relative overflow-hidden aspect-video">
                           {article.imageUrl ? (
                             <img
                               src={article.imageUrl}
                               alt={article.title}
-                              className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                           ) : (
-                            <div className="w-full h-40 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                              <Megaphone className="w-10 h-10 text-primary/20" />
+                            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                              <Megaphone className="w-12 h-12 text-primary/30" />
                             </div>
                           )}
                         </div>
-                        <div className="p-4 flex flex-col flex-grow">
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                            <Calendar className="w-3 h-3" />
+                        
+                        <div className="p-5 flex flex-col flex-grow">
+                          <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
+                            {article.title}
+                          </h3>
+                          
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                            <Calendar className="w-3.5 h-3.5" />
                             <span>
                               {article.createdAt 
                                 ? format(new Date(article.createdAt), "d MMMM yyyy", { locale: ar })
                                 : ""}
                             </span>
                           </div>
-                          <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-snug flex-grow">
-                            {article.title}
-                          </h3>
-                          <div className="flex items-center gap-1 text-primary text-xs font-medium">
-                            <span>اقرأ المزيد</span>
-                            <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-                          </div>
+                          
+                          <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed">
+                            {stripHtml(article.content)}
+                          </p>
                         </div>
                       </article>
                     </Link>
