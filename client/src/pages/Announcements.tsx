@@ -22,7 +22,8 @@ export default function Announcements() {
   });
 
   const featuredArticle = filteredAnnouncements?.[0];
-  const subArticles = filteredAnnouncements?.slice(1) || [];
+  const secondaryArticles = filteredAnnouncements?.slice(1, 3) || [];
+  const remainingArticles = filteredAnnouncements?.slice(3) || [];
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -89,53 +90,96 @@ export default function Announcements() {
             <Loader2 className="w-10 h-10 animate-spin text-primary" />
           </div>
         ) : filteredAnnouncements && filteredAnnouncements.length > 0 ? (
-          <div className="space-y-8" dir="rtl">
+          <div className="space-y-6" dir="rtl">
             {featuredArticle && (
               <section>
-                <Link href={`/news/${featuredArticle.id}`} data-testid={`link-featured-article-${featuredArticle.id}`}>
-                  <article 
-                    className="relative h-[400px] md:h-[500px] overflow-hidden group cursor-pointer shadow-lg"
-                    data-testid={`featured-article-${featuredArticle.id}`}
-                  >
-                    {featuredArticle.imageUrl ? (
-                      <img
-                        src={featuredArticle.imageUrl}
-                        alt={featuredArticle.title}
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                        <Megaphone className="w-32 h-32 text-white/20" />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <Link href={`/news/${featuredArticle.id}`} data-testid={`link-featured-article-${featuredArticle.id}`}>
+                    <article 
+                      className="relative h-[300px] lg:h-full min-h-[400px] overflow-hidden group cursor-pointer shadow-md"
+                      data-testid={`featured-article-${featuredArticle.id}`}
+                    >
+                      {featuredArticle.imageUrl ? (
+                        <img
+                          src={featuredArticle.imageUrl}
+                          alt={featuredArticle.title}
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                          <Megaphone className="w-32 h-32 text-white/20" />
+                        </div>
+                      )}
+                      
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                      
+                      <div className="absolute bottom-0 right-0 left-0 p-6 text-white">
+                        <div className="flex items-center gap-2 text-sm text-white/80 mb-2">
+                          <Calendar className="w-4 h-4" />
+                          <span>
+                            {featuredArticle.createdAt 
+                              ? format(new Date(featuredArticle.createdAt), "d MMMM yyyy", { locale: ar })
+                              : ""}
+                          </span>
+                        </div>
+                        <h2 className="text-xl md:text-2xl font-bold mb-3 leading-tight group-hover:text-secondary transition-colors">
+                          {featuredArticle.title}
+                        </h2>
+                        <p className="text-white/90 leading-relaxed line-clamp-3 text-sm">
+                          {stripHtml(featuredArticle.content)}
+                        </p>
                       </div>
-                    )}
-                    
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-                    
-                    <div className="absolute bottom-0 right-0 left-0 p-6 md:p-10 text-white">
-                      <div className="flex items-center gap-2 text-sm text-white/80 mb-3">
-                        <Calendar className="w-4 h-4" />
-                        <span>
-                          {featuredArticle.createdAt 
-                            ? format(new Date(featuredArticle.createdAt), "d MMMM yyyy", { locale: ar })
-                            : ""}
-                        </span>
-                      </div>
-                      <h2 className="text-2xl md:text-4xl font-bold mb-4 leading-tight group-hover:text-secondary transition-colors">
-                        {featuredArticle.title}
-                      </h2>
-                      <p className="text-white/90 leading-relaxed line-clamp-3 max-w-3xl text-sm md:text-base">
-                        {stripHtml(featuredArticle.content)}
-                      </p>
+                    </article>
+                  </Link>
+
+                  {secondaryArticles.length > 0 && (
+                    <div className="flex flex-col gap-4">
+                      {secondaryArticles.map((article) => (
+                        <Link key={article.id} href={`/news/${article.id}`} data-testid={`link-secondary-article-${article.id}`}>
+                          <article 
+                            className="relative h-[200px] overflow-hidden group cursor-pointer shadow-md flex-1"
+                            data-testid={`secondary-article-${article.id}`}
+                          >
+                            {article.imageUrl ? (
+                              <img
+                                src={article.imageUrl}
+                                alt={article.title}
+                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            ) : (
+                              <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-primary/80 to-primary/60 flex items-center justify-center">
+                                <Megaphone className="w-16 h-16 text-white/20" />
+                              </div>
+                            )}
+                            
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                            
+                            <div className="absolute bottom-0 right-0 left-0 p-4 text-white">
+                              <div className="flex items-center gap-2 text-xs text-white/80 mb-1">
+                                <Calendar className="w-3.5 h-3.5" />
+                                <span>
+                                  {article.createdAt 
+                                    ? format(new Date(article.createdAt), "d MMMM yyyy", { locale: ar })
+                                    : ""}
+                                </span>
+                              </div>
+                              <h3 className="text-lg font-bold leading-tight group-hover:text-secondary transition-colors line-clamp-2">
+                                {article.title}
+                              </h3>
+                            </div>
+                          </article>
+                        </Link>
+                      ))}
                     </div>
-                  </article>
-                </Link>
+                  )}
+                </div>
               </section>
             )}
 
-            {subArticles.length > 0 && (
+            {remainingArticles.length > 0 && (
               <section>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {subArticles.map((article) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {remainingArticles.map((article) => (
                     <Link key={article.id} href={`/news/${article.id}`} data-testid={`link-article-${article.id}`}>
                       <article 
                         className="bg-white shadow-md overflow-hidden group cursor-pointer h-full flex flex-col"
@@ -150,18 +194,18 @@ export default function Announcements() {
                             />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                              <Megaphone className="w-12 h-12 text-primary/30" />
+                              <Megaphone className="w-10 h-10 text-primary/30" />
                             </div>
                           )}
                         </div>
                         
-                        <div className="p-5 flex flex-col flex-grow">
-                          <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
+                        <div className="p-4 flex flex-col flex-grow">
+                          <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
                             {article.title}
                           </h3>
                           
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                            <Calendar className="w-3.5 h-3.5" />
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                            <Calendar className="w-3 h-3" />
                             <span>
                               {article.createdAt 
                                 ? format(new Date(article.createdAt), "d MMMM yyyy", { locale: ar })
