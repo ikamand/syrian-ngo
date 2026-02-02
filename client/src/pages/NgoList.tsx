@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
-import { Search, Building2, Map, List, ChevronLeft } from "lucide-react";
+import { Search, Building2, Map, List, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
@@ -10,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SyriaMapLeaflet } from "@/components/SyriaMapLeaflet";
 import { Button } from "@/components/ui/button";
 import headerPattern from "@assets/header-pattern.svg";
+
+const ITEMS_PER_PAGE = 16;
 
 export default function NgoList() {
   const { data: ngos, isLoading } = useQuery({
@@ -24,6 +26,7 @@ export default function NgoList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGovernorate, setSelectedGovernorate] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(50);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const VALID_GOVERNORATES = [
     "دمشق", "ريف دمشق", "حلب", "حمص", "حماة", "اللاذقية", 
@@ -177,6 +180,20 @@ export default function NgoList() {
     
     return result;
   }, [ngos, searchTerm]);
+
+  const totalPages = Math.ceil(filteredNgos.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedNgos = filteredNgos.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 300, behavior: 'smooth' });
+  };
 
   const governorateNgos = useMemo(() => {
     if (!selectedGovernorate) return [];
@@ -426,7 +443,7 @@ export default function NgoList() {
                   placeholder="ابحث عن اسم منظمة أو مدينة..." 
                   className="pr-10 h-12 text-lg border-gray-200"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={handleSearchChange}
                   data-testid="input-search-ngo"
                 />
               </div>
@@ -451,9 +468,70 @@ export default function NgoList() {
                 <div className="text-center mb-6">
                   <p className="text-sm text-muted-foreground">
                     تم العثور على <span className="font-bold text-primary">{filteredNgos.length}</span> منظمة مرخصة
+                    {totalPages > 1 && (
+                      <span className="mr-2">
+                        (عرض {startIndex + 1} - {Math.min(startIndex + ITEMS_PER_PAGE, filteredNgos.length)})
+                      </span>
+                    )}
                   </p>
                 </div>
-                <NgoGrid ngosList={filteredNgos} />
+                <NgoGrid ngosList={paginatedNgos} />
+                
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => goToPage(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      data-testid="button-prev-page"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                    
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                        if (
+                          page === 1 ||
+                          page === totalPages ||
+                          (page >= currentPage - 1 && page <= currentPage + 1)
+                        ) {
+                          return (
+                            <Button
+                              key={page}
+                              variant={currentPage === page ? "default" : "outline"}
+                              size="icon"
+                              onClick={() => goToPage(page)}
+                              data-testid={`button-page-${page}`}
+                            >
+                              {page}
+                            </Button>
+                          );
+                        } else if (
+                          page === currentPage - 2 ||
+                          page === currentPage + 2
+                        ) {
+                          return <span key={page} className="px-2 text-muted-foreground">...</span>;
+                        }
+                        return null;
+                      })}
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => goToPage(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      data-testid="button-next-page"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    
+                    <span className="text-sm text-muted-foreground mr-4">
+                      صفحة {currentPage} من {totalPages}
+                    </span>
+                  </div>
+                )}
               </>
             )}
           </TabsContent>

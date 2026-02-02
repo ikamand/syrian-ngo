@@ -2,16 +2,20 @@ import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { usePublishedAnnouncements } from "@/hooks/use-announcements";
 import { Input } from "@/components/ui/input";
-import { Calendar, Loader2, Megaphone, Newspaper, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, Loader2, Megaphone, Newspaper, Search, ChevronRight, ChevronLeft } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
 import headerPattern from "@assets/header-pattern.svg";
 
+const ITEMS_PER_PAGE = 12;
+
 export default function Announcements() {
   const { data: announcements, isLoading } = usePublishedAnnouncements();
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredAnnouncements = announcements?.filter((announcement) => {
     if (!searchTerm.trim()) return true;
@@ -23,7 +27,21 @@ export default function Announcements() {
 
   const featuredArticle = filteredAnnouncements?.[0];
   const secondaryArticles = filteredAnnouncements?.slice(1, 3) || [];
-  const remainingArticles = filteredAnnouncements?.slice(3) || [];
+  const allRemainingArticles = filteredAnnouncements?.slice(3) || [];
+  
+  const totalPages = Math.ceil(allRemainingArticles.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const remainingArticles = allRemainingArticles.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 500, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -67,7 +85,7 @@ export default function Announcements() {
               type="text"
               placeholder="ابحث في الأخبار..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
               className="pr-10 text-right"
               data-testid="input-search-announcements"
             />
@@ -226,6 +244,62 @@ export default function Announcements() {
                     </Link>
                   ))}
                 </div>
+
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => goToPage(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      data-testid="button-prev-page"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                    
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                        if (
+                          page === 1 ||
+                          page === totalPages ||
+                          (page >= currentPage - 1 && page <= currentPage + 1)
+                        ) {
+                          return (
+                            <Button
+                              key={page}
+                              variant={currentPage === page ? "default" : "outline"}
+                              size="icon"
+                              onClick={() => goToPage(page)}
+                              data-testid={`button-page-${page}`}
+                            >
+                              {page}
+                            </Button>
+                          );
+                        } else if (
+                          page === currentPage - 2 ||
+                          page === currentPage + 2
+                        ) {
+                          return <span key={page} className="px-2 text-muted-foreground">...</span>;
+                        }
+                        return null;
+                      })}
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => goToPage(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      data-testid="button-next-page"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    
+                    <span className="text-sm text-muted-foreground mr-4">
+                      صفحة {currentPage} من {totalPages}
+                    </span>
+                  </div>
+                )}
               </section>
             )}
           </div>
