@@ -1,4 +1,4 @@
-import logoUrl from "@assets/emblem-of-syria-seeklogo_1769035838735.png";
+import logoUrl from "@/assets/images/emblem-of-syria.png";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
