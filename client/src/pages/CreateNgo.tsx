@@ -13,6 +13,7 @@ import { Link, useLocation } from "wouter";
 import { ArrowRight, Loader2, Plus, Trash2 } from "lucide-react";
 import { LogoUploader } from "@/components/LogoUploader";
 import { ImageUploader } from "@/components/ImageUploader";
+import { DocumentUploader } from "@/components/DocumentUploader";
 import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 
@@ -92,6 +93,9 @@ const formSchema = z.object({
   hasOrgStructure: z.boolean().default(false),
   description: z.string().optional(),
   logo: z.string().optional(),
+  internalRegulationsDoc: z.string().optional(),
+  publicationDecisionDoc: z.string().optional(),
+  publicBenefitDoc: z.string().optional(),
   
   // Section 2: التصنيفات والخدمات
   classifications: z.array(z.object({
@@ -733,6 +737,64 @@ export default function CreateNgo() {
                             </FormItem>
                           )}
                         />
+                      </div>
+
+                      {/* وثائق المنظمة */}
+                      <div className="space-y-4">
+                        <h3 className="font-semibold text-foreground border-b pb-2">وثائق المنظمة</h3>
+                        <div className="grid md:grid-cols-3 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="internalRegulationsDoc"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>النظام الداخلي</FormLabel>
+                                <FormControl>
+                                  <DocumentUploader
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    label="النظام الداخلي"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="publicationDecisionDoc"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>قرار الإشهار</FormLabel>
+                                <FormControl>
+                                  <DocumentUploader
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    label="قرار الإشهار"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="publicBenefitDoc"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>وثيقة النفع العام</FormLabel>
+                                <FormControl>
+                                  <DocumentUploader
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    label="وثيقة النفع العام"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
