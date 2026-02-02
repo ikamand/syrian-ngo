@@ -48,7 +48,6 @@ import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
-import { NgoEditDialog } from "@/components/NgoEditDialog";
 import { RejectNgoDialog } from "@/components/RejectNgoDialog";
 import type { Ngo } from "@shared/schema";
 import { useEffect } from "react";
@@ -78,7 +77,6 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [editingNgo, setEditingNgo] = useState<Ngo | null>(null);
   const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -809,15 +807,6 @@ export default function AdminDashboard() {
                               >
                                 التفاصيل
                               </Button>
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                onClick={() => setEditingNgo(ngo)}
-                                data-testid={`button-edit-ngo-${ngo.id}`}
-                              >
-                                <Pencil className="w-4 h-4 ml-1" />
-                                تعديل
-                              </Button>
                             </div>
                           </TableCell>
                         </TableRow>
@@ -1190,24 +1179,6 @@ export default function AdminDashboard() {
 
         </Tabs>
       </main>
-      {/* NGO Edit Dialog */}
-      <NgoEditDialog
-        ngo={editingNgo}
-        open={!!editingNgo}
-        onOpenChange={(open) => !open && !isDeletingNgo && setEditingNgo(null)}
-        onSuccess={() => setEditingNgo(null)}
-        isDeleting={isDeletingNgo}
-        onDelete={(id) => {
-          if (window.confirm("هل أنت متأكد من حذف هذه المنظمة؟")) {
-            deleteNgo(id, {
-              onSuccess: () => {
-                toast({ title: "تم الحذف", description: "تم حذف المنظمة بنجاح" });
-                setEditingNgo(null);
-              }
-            });
-          }
-        }}
-      />
       {/* Announcement Dialog */}
       <Dialog open={announcementDialogOpen} onOpenChange={(open) => !isDeletingAnnouncement && setAnnouncementDialogOpen(open)}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>

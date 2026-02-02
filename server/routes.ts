@@ -851,14 +851,13 @@ export async function registerRoutes(
       const user = await storage.getUser(req.session.userId!);
       if (!user) return res.status(401).json({ message: "Unauthorized" });
       
-      // Ensure user owns the NGO or is admin
-      if (user.role !== "admin" && user.role !== "super_admin" && ngo.createdBy !== user.id) {
-        return res.status(403).json({ message: "Forbidden" });
+      // Only the NGO owner can edit - admins can only view and approve/reject
+      if (ngo.createdBy !== user.id) {
+        return res.status(403).json({ message: "يمكن فقط لصاحب المنظمة تعديل بياناتها" });
       }
       
-      // Regular users cannot edit NGOs under review (Pending or AdminApproved)
-      // Admins and super admins can still edit
-      if (user.role === "user" && (ngo.status === "Pending" || ngo.status === "AdminApproved")) {
+      // Users cannot edit NGOs under review (Pending or AdminApproved)
+      if (ngo.status === "Pending" || ngo.status === "AdminApproved") {
         return res.status(403).json({ message: "لا يمكن تعديل الجمعية أثناء فترة المراجعة" });
       }
 
