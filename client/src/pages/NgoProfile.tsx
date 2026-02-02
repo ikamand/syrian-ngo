@@ -174,11 +174,15 @@ export default function NgoProfile() {
 
                   {/* Documents Section - Only visible to NGO owner or admins */}
                   {(isAdmin || user?.id === ngo.createdBy) && (ngo.internalRegulationsDoc || ngo.publicationDecisionDoc || ngo.publicBenefitDoc) && (
-                    <AccordionItem value="documents" className="border rounded-lg px-4">
+                    <AccordionItem value="documents" className="border rounded-lg px-4 bg-muted/10">
                       <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-documents">
                         <span className="flex items-center gap-2">
                           <FileText className="w-5 h-5" />
                           الوثائق
+                          <Badge variant="outline" className="mr-auto border-primary/20 text-primary flex gap-1 items-center">
+                            <Lock className="w-3 h-3" />
+                            بيانات خاصة
+                          </Badge>
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="space-y-3 pt-2">
