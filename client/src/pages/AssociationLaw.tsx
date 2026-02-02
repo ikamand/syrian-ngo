@@ -52,7 +52,7 @@ export default function AssociationLaw() {
             backgroundRepeat: 'repeat-x',
             backgroundSize: 'auto 100%',
             backgroundPosition: 'center bottom',
-            opacity: 0.5,
+            opacity: 0.25,
             filter: 'invert(1)',
           }}
         />
