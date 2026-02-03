@@ -103,6 +103,27 @@ The announcements page uses an editorial news-style design:
 └── migrations/       # Drizzle database migrations
 ```
 
+### Smart Approval Workflow
+NGO updates distinguish between operational fields (no re-approval required) and core identity fields (require re-approval):
+
+**Operational Fields (no re-approval):**
+- معلومات التواصل: contactMethods, bankAccounts
+- البرامج والأنشطة: programs, activities
+- الموظفين والمتطوعين: employees, volunteers
+- معلومات إضافية: vehicles, realEstate, annualPlans, unCooperation, meetingMinutes
+- البيانات الاختيارية: jobOpportunities, volunteerOpportunities, statistics, events, donationCampaigns, photoGallery, networking
+- إعدادات العرض: syriatelCashEnabled, mtnCashEnabled, showJobOpportunities, showVolunteerOpportunities, showEvents, showDonationCampaigns
+
+**Core Identity Fields (require re-approval):**
+- orgIdentifier, arabicName, englishName, legalForm, scope, publicationNumber, publicationDate, and other foundational registration fields
+
+**Implementation:** `storage.updateNgo(id, updates, resetStatus)` accepts a boolean to control status reset; routes.ts detects if only operational fields changed.
+
+### Empty State Pattern
+Public NGO profile sections (programs, activities, job opportunities, volunteer opportunities) are always displayed with consistent empty state messages when no data exists:
+- Icon (opacity-50) + Arabic message centered in section
+- Pattern: "لا توجد [type] مسجلة/متاحة حالياً"
+
 ### Authentication Design
 The authentication system uses secure password hashing with bcrypt and admin-only user management:
 - Session-based authentication with cookies
