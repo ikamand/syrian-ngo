@@ -169,9 +169,9 @@ export default function AdminDashboard() {
   });
 
   const predefinedContentKeys = [
-    { key: "footer_contact", label: "معلومات التواصل", richText: false },
     { key: "association_law", label: "قانون الجمعيات والمؤسسات الخاصة (قانون 93 لعام 1958)", richText: true, pdfKey: "association_law_pdf" },
     { key: "executive_regulations", label: "اللائحة التنفيذية (قانون الجمعيات)", richText: true, pdfKey: "executive_regulations_pdf" },
+    { key: "footer_contact", label: "معلومات التواصل", richText: false },
   ];
 
   // Show nothing while loading or if user isn't an admin or super_admin (useEffect handles redirect)
