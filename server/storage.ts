@@ -31,7 +31,7 @@ export interface IStorage {
     rejectedAt?: Date;
     rejectionReason?: string;
   }): Promise<Ngo | undefined>;
-  updateNgo(id: number, updates: Partial<InsertNgo>): Promise<Ngo | undefined>;
+  updateNgo(id: number, updates: Partial<InsertNgo>, resetStatus?: boolean): Promise<Ngo | undefined>;
   deleteNgo(id: number): Promise<boolean>;
   deleteUser(id: number): Promise<boolean>;
 
@@ -181,9 +181,12 @@ export class DatabaseStorage implements IStorage {
     return (result.rowCount ?? 0) > 0;
   }
 
-  async updateNgo(id: number, updates: Partial<InsertNgo>): Promise<Ngo | undefined> {
+  async updateNgo(id: number, updates: Partial<InsertNgo>, resetStatus: boolean = true): Promise<Ngo | undefined> {
+    const setData = resetStatus 
+      ? { ...updates, status: "Pending" as const }
+      : updates;
     const [updated] = await db.update(ngos)
-      .set({ ...updates, status: "Pending" as const } as any)
+      .set(setData as any)
       .where(eq(ngos.id, id))
       .returning();
     return updated;

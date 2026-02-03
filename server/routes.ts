@@ -862,7 +862,33 @@ export async function registerRoutes(
       }
 
       const input = api.ngos.update.input.parse(req.body);
-      const updated = await storage.updateNgo(id, input);
+      
+      // Operational fields that don't require re-approval when changed
+      const operationalFields = new Set([
+        // Section 5: معلومات التواصل
+        'contactMethods', 'bankAccounts',
+        // البرامج والأنشطة
+        'programs', 'activities',
+        // الموظفين والمتطوعين
+        'employees', 'volunteers',
+        // معلومات إضافية
+        'vehicles', 'realEstate', 'annualPlans', 'unCooperation', 'meetingMinutes',
+        // البيانات الاختيارية
+        'jobOpportunities', 'volunteerOpportunities', 'statistics', 'events', 
+        'donationCampaigns', 'photoGallery', 'networking',
+        // إعدادات العرض
+        'syriatelCashEnabled', 'mtnCashEnabled', 'showJobOpportunities', 
+        'showVolunteerOpportunities', 'showEvents', 'showDonationCampaigns'
+      ]);
+      
+      // Check if only operational fields are being updated
+      const updatedFields = Object.keys(input);
+      const hasOnlyOperationalChanges = updatedFields.every(field => operationalFields.has(field));
+      
+      // Don't reset status if only operational fields changed
+      const resetStatus = !hasOnlyOperationalChanges;
+      
+      const updated = await storage.updateNgo(id, input, resetStatus);
       res.json(updated);
     } catch (err) {
       res.status(400).json({ message: "Invalid request" });

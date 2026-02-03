@@ -352,17 +352,17 @@ export default function NgoProfile() {
                     </AccordionItem>
                   )}
 
-                  {/* Programs Section */}
-                  {hasData(ngo.programs as any[]) && (
-                    <AccordionItem value="programs" className="border rounded-lg px-4">
-                      <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-programs">
-                        <span className="flex items-center gap-2">
-                          <FileText className="w-5 h-5" />
-                          البرامج
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-3 pt-2">
-                        {(ngo.programs as any[]).map((program, i) => (
+                  {/* Programs Section - always show */}
+                  <AccordionItem value="programs" className="border rounded-lg px-4">
+                    <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-programs">
+                      <span className="flex items-center gap-2">
+                        <FileText className="w-5 h-5" />
+                        البرامج
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-3 pt-2">
+                      {hasData(ngo.programs as any[]) ? (
+                        (ngo.programs as any[]).map((program, i) => (
                           <div key={i} className="p-3 bg-muted/30 rounded-lg">
                             <div className="font-medium mb-2">{program.name}</div>
                             <div className="space-y-1 text-sm">
@@ -371,22 +371,27 @@ export default function NgoProfile() {
                               {program.services && <div><span className="text-muted-foreground">الخدمات:</span> {program.services}</div>}
                             </div>
                           </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
+                        ))
+                      ) : (
+                        <div className="text-center py-6 text-muted-foreground">
+                          <FileText className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                          <p>لا توجد برامج مسجلة حالياً</p>
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
 
-                  {/* Activities Section */}
-                  {hasData(ngo.activities as any[]) && (
-                    <AccordionItem value="activities" className="border rounded-lg px-4">
-                      <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-activities">
-                        <span className="flex items-center gap-2">
-                          <Target className="w-5 h-5" />
-                          الأنشطة
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-3 pt-2">
-                        {(ngo.activities as any[]).map((activity, i) => (
+                  {/* Activities Section - always show */}
+                  <AccordionItem value="activities" className="border rounded-lg px-4">
+                    <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-activities">
+                      <span className="flex items-center gap-2">
+                        <Target className="w-5 h-5" />
+                        الأنشطة
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-3 pt-2">
+                      {hasData(ngo.activities as any[]) ? (
+                        (ngo.activities as any[]).map((activity, i) => (
                           <div key={i} className="p-3 bg-muted/30 rounded-lg">
                             <div className="font-medium mb-2">{activity.name}</div>
                             <div className="space-y-1 text-sm">
@@ -396,22 +401,27 @@ export default function NgoProfile() {
                               {activity.targetGroups && <div><span className="text-muted-foreground">الفئات المستهدفة:</span> {activity.targetGroups}</div>}
                             </div>
                           </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
+                        ))
+                      ) : (
+                        <div className="text-center py-6 text-muted-foreground">
+                          <Target className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                          <p>لا توجد أنشطة مسجلة حالياً</p>
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
 
-                  {/* Job Opportunities Section (only if showJobOpportunities is true) */}
-                  {ngo.showJobOpportunities && hasData(ngo.jobOpportunities as any[]) && (
-                    <AccordionItem value="job-opportunities" className="border rounded-lg px-4">
-                      <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-job-opportunities">
-                        <span className="flex items-center gap-2">
-                          <Briefcase className="w-5 h-5" />
-                          فرص العمل
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-3 pt-2">
-                        {(ngo.jobOpportunities as any[]).map((job, i) => (
+                  {/* Job Opportunities Section - always show */}
+                  <AccordionItem value="job-opportunities" className="border rounded-lg px-4">
+                    <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-job-opportunities">
+                      <span className="flex items-center gap-2">
+                        <Briefcase className="w-5 h-5" />
+                        فرص العمل
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-3 pt-2">
+                      {ngo.showJobOpportunities && hasData(ngo.jobOpportunities as any[]) ? (
+                        (ngo.jobOpportunities as any[]).map((job, i) => (
                           <div key={i} className="p-4 bg-muted/30 rounded-lg" data-testid={`job-opportunity-${i}`}>
                             <div className="font-medium text-lg mb-2">{job.vacancyName}</div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
@@ -427,22 +437,27 @@ export default function NgoProfile() {
                               {job.jobPurpose && <div className="col-span-2"><span className="text-muted-foreground">الهدف من الوظيفة:</span> {job.jobPurpose}</div>}
                             </div>
                           </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
+                        ))
+                      ) : (
+                        <div className="text-center py-6 text-muted-foreground">
+                          <Briefcase className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                          <p>لا توجد فرص عمل متاحة حالياً</p>
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
 
-                  {/* Volunteer Opportunities Section (only if showVolunteerOpportunities is true) */}
-                  {ngo.showVolunteerOpportunities && hasData(ngo.volunteerOpportunities as any[]) && (
-                    <AccordionItem value="volunteer-opportunities" className="border rounded-lg px-4">
-                      <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-volunteer-opportunities">
-                        <span className="flex items-center gap-2">
-                          <Users className="w-5 h-5" />
-                          فرص التطوع
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-3 pt-2">
-                        {(ngo.volunteerOpportunities as any[]).map((vol, i) => (
+                  {/* Volunteer Opportunities Section - always show */}
+                  <AccordionItem value="volunteer-opportunities" className="border rounded-lg px-4">
+                    <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-volunteer-opportunities">
+                      <span className="flex items-center gap-2">
+                        <Users className="w-5 h-5" />
+                        فرص التطوع
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-3 pt-2">
+                      {ngo.showVolunteerOpportunities && hasData(ngo.volunteerOpportunities as any[]) ? (
+                        (ngo.volunteerOpportunities as any[]).map((vol, i) => (
                           <div key={i} className="p-4 bg-muted/30 rounded-lg" data-testid={`volunteer-opportunity-${i}`}>
                             <div className="font-medium text-lg mb-2">{vol.vacancyName}</div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
@@ -458,10 +473,15 @@ export default function NgoProfile() {
                               {vol.volunteerPurpose && <div className="col-span-2"><span className="text-muted-foreground">الهدف من التطوع:</span> {vol.volunteerPurpose}</div>}
                             </div>
                           </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
+                        ))
+                      ) : (
+                        <div className="text-center py-6 text-muted-foreground">
+                          <Users className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                          <p>لا توجد فرص تطوع متاحة حالياً</p>
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
 
                   {/* Employees Section */}
                   {(isAdmin || user?.id === ngo.createdBy) && hasData(ngo.employees as any[]) && (
