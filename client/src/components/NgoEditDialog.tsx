@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, Trash2, ShieldCheck, ShieldAlert } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import { useEffect } from "react";
@@ -319,12 +319,30 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, handleFormError)} className="space-y-4">
+            {/* Approval Legend */}
+            <div className="bg-muted/50 rounded-lg p-3 text-sm">
+              <p className="font-medium mb-2">دليل الموافقة على التعديلات:</p>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-1.5">
+                  <ShieldAlert className="w-4 h-4 text-amber-600" />
+                  <span className="text-muted-foreground">تتطلب موافقة الإدارة</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-green-600" />
+                  <span className="text-muted-foreground">لا تتطلب موافقة</span>
+                </div>
+              </div>
+            </div>
+
             <Accordion type="multiple" defaultValue={[]} className="w-full space-y-2">
               
-              {/* Section 1: معلومات التأسيس */}
+              {/* Section 1: معلومات التأسيس - REQUIRES APPROVAL */}
               <AccordionItem value="section-1" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-1">
-                  1. معلومات التأسيس
+                  <span className="flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 text-amber-600" />
+                    1. معلومات التأسيس
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="grid md:grid-cols-2 gap-4">
@@ -562,10 +580,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 2: الفروع والمكاتب */}
+              {/* Section 2: الفروع والمكاتب - REQUIRES APPROVAL */}
               <AccordionItem value="section-2" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-2">
-                  2. الفروع والمكاتب
+                  <span className="flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 text-amber-600" />
+                    2. الفروع والمكاتب
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
@@ -598,10 +619,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 4: المراكز الخدمية (Moved under section 2) */}
+              {/* Section 4: المراكز الخدمية - REQUIRES APPROVAL */}
               <AccordionItem value="section-4" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-4">
-                  3. المراكز الخدمية
+                  <span className="flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 text-amber-600" />
+                    3. المراكز الخدمية
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
@@ -632,10 +656,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 3: التصنيفات والخدمات */}
+              {/* Section 3: التصنيفات والخدمات - REQUIRES APPROVAL */}
               <AccordionItem value="section-3" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-3">
-                  4. التصنيفات والخدمات
+                  <span className="flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 text-amber-600" />
+                    4. التصنيفات والخدمات
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
@@ -666,10 +693,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 5: معلومات التواصل */}
+              {/* Section 5: معلومات التواصل - NO APPROVAL NEEDED */}
               <AccordionItem value="section-5" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-5">
-                  5. معلومات التواصل
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    5. معلومات التواصل
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
@@ -701,10 +731,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 6: الحسابات البنكية */}
+              {/* Section 6: الحسابات البنكية - NO APPROVAL NEEDED */}
               <AccordionItem value="section-6" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-6">
-                  6. الحسابات البنكية
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    6. الحسابات البنكية
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
@@ -735,10 +768,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 7: البرامج */}
+              {/* Section 7: البرامج - NO APPROVAL NEEDED */}
               <AccordionItem value="section-7" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-7">
-                  7. البرامج والأنشطة
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    7. البرامج والأنشطة
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
@@ -798,10 +834,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 8: الموظفين والمتطوعين */}
+              {/* Section 8: الموظفين والمتطوعين - NO APPROVAL NEEDED */}
               <AccordionItem value="section-8" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-8">
-                  8. الموظفين والمتطوعين
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    8. الموظفين والمتطوعين
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="space-y-4">
@@ -855,10 +894,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 9: الممتلكات */}
+              {/* Section 9: الممتلكات - NO APPROVAL NEEDED */}
               <AccordionItem value="section-9" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-9">
-                  9. الممتلكات
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    9. الممتلكات
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
@@ -906,10 +948,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 10: إعدادات الدفع الإلكتروني */}
+              {/* Section 10: إعدادات الدفع الإلكتروني - NO APPROVAL NEEDED */}
               <AccordionItem value="section-10" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-10">
-                  10. إعدادات الدفع الإلكتروني
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    10. إعدادات الدفع الإلكتروني
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="space-y-3">
@@ -933,10 +978,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 11: معلومات إضافية (Legacy) */}
+              {/* Section 11: معلومات إضافية - REQUIRES APPROVAL */}
               <AccordionItem value="section-11" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-11">
-                  11. معلومات إضافية
+                  <span className="flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 text-amber-600" />
+                    11. معلومات إضافية
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="grid md:grid-cols-2 gap-4">
@@ -985,10 +1033,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 12: البيانات الاختيارية */}
+              {/* Section 12: البيانات الاختيارية - NO APPROVAL NEEDED */}
               <AccordionItem value="section-12" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-12">
-                  12. البيانات الاختيارية
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    12. البيانات الاختيارية
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="flex items-center justify-between">
@@ -1239,10 +1290,13 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 13: إعدادات العرض */}
+              {/* Section 13: إعدادات العرض - NO APPROVAL NEEDED */}
               <AccordionItem value="section-13" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-13">
-                  13. إعدادات العرض
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    13. إعدادات العرض
+                  </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
                   <div className="space-y-3">
