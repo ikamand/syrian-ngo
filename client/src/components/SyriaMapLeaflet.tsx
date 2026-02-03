@@ -271,6 +271,13 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
         .leaflet-container {
           font-family: Cairo, sans-serif;
         }
+        /* Remove focus outline (square box) from governorate paths */
+        .leaflet-container path:focus {
+          outline: none;
+        }
+        .leaflet-interactive:focus {
+          outline: none;
+        }
       `}</style>
     </div>
   );
