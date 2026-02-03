@@ -580,50 +580,12 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 2: معلومات التواصل - NO APPROVAL NEEDED */}
+              {/* Section 2: التصنيفات والخدمات - REQUIRES APPROVAL */}
               <AccordionItem value="section-2" className="border rounded-lg px-4">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-2">
                   <span className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-green-600" />
-                    2. معلومات التواصل
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent className="space-y-4 pt-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">وسائل الاتصال</h4>
-                    <Button type="button" variant="outline" size="sm" onClick={() => contactMethodsArray.append({ type: "", value: "" })}>
-                      <Plus className="w-4 h-4 ml-1" /> إضافة وسيلة اتصال
-                    </Button>
-                  </div>
-                  {contactMethodsArray.fields.map((field, index) => (
-                    <div key={field.id} className="grid grid-cols-3 gap-2 items-end border-b pb-2">
-                      <FormField control={form.control} name={`contactMethods.${index}.type`} render={({ field }) => (
-                        <FormItem><FormLabel>نوع وسيلة الاتصال</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="اختر" /></SelectTrigger></FormControl>
-                            <SelectContent>
-                              <SelectItem value="phone">هاتف</SelectItem>
-                              <SelectItem value="mobile">موبايل</SelectItem>
-                              <SelectItem value="email">بريد إلكتروني</SelectItem>
-                              <SelectItem value="website">موقع إلكتروني</SelectItem>
-                              <SelectItem value="facebook">فيسبوك</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-                      )} />
-                      <FormField control={form.control} name={`contactMethods.${index}.value`} render={({ field }) => (<FormItem><FormLabel>القيمة</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
-                      <Button type="button" variant="ghost" size="icon" onClick={() => contactMethodsArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
-                    </div>
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-
-              {/* Section 3: التصنيفات والخدمات - REQUIRES APPROVAL */}
-              <AccordionItem value="section-3" className="border rounded-lg px-4">
-                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-3">
-                  <span className="flex items-center gap-2">
                     <ShieldAlert className="w-4 h-4 text-amber-600" />
-                    3. التصنيفات والخدمات
+                    2. التصنيفات والخدمات
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -679,12 +641,12 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 4: المراكز الخدمية - REQUIRES APPROVAL */}
-              <AccordionItem value="section-4" className="border rounded-lg px-4">
-                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-4">
+              {/* Section 3: المراكز الخدمية - REQUIRES APPROVAL */}
+              <AccordionItem value="section-3" className="border rounded-lg px-4">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-3">
                   <span className="flex items-center gap-2">
                     <ShieldAlert className="w-4 h-4 text-amber-600" />
-                    4. المراكز الخدمية
+                    3. المراكز الخدمية
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -716,12 +678,12 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 5: الفروع والمكاتب - REQUIRES APPROVAL */}
-              <AccordionItem value="section-5" className="border rounded-lg px-4">
-                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-5">
+              {/* Section 4: الفروع والمكاتب - REQUIRES APPROVAL */}
+              <AccordionItem value="section-4" className="border rounded-lg px-4">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-4">
                   <span className="flex items-center gap-2">
                     <ShieldAlert className="w-4 h-4 text-amber-600" />
-                    5. الفروع والمكاتب
+                    4. الفروع والمكاتب
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
@@ -755,12 +717,12 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 6: الحسابات البنكية - NO APPROVAL NEEDED */}
-              <AccordionItem value="section-6" className="border rounded-lg px-4">
-                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-6">
+              {/* Section 5: الحسابات البنكية - NO APPROVAL NEEDED */}
+              <AccordionItem value="section-5" className="border rounded-lg px-4">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="edit-accordion-section-5">
                   <span className="flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4 text-green-600" />
-                    6. الحسابات البنكية
+                    5. الحسابات البنكية
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
