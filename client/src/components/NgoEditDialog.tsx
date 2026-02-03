@@ -331,8 +331,8 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                     <FormField control={form.control} name="orgIdentifier"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>معرف المنظمة</FormLabel>
-                          <FormControl><Input {...field} data-testid="edit-input-org-identifier" /></FormControl>
+                          <FormLabel className="text-muted-foreground">معرف المنظمة (غير قابل للتعديل)</FormLabel>
+                          <FormControl><Input {...field} disabled className="bg-muted text-muted-foreground cursor-not-allowed" data-testid="edit-input-org-identifier" /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -340,8 +340,8 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                     <FormField control={form.control} name="arabicName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>الاسم العربي *</FormLabel>
-                          <FormControl><Input {...field} data-testid="edit-input-arabic-name" /></FormControl>
+                          <FormLabel className="text-muted-foreground">الاسم العربي (غير قابل للتعديل)</FormLabel>
+                          <FormControl><Input {...field} disabled className="bg-muted text-muted-foreground cursor-not-allowed" data-testid="edit-input-arabic-name" /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -349,8 +349,8 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                     <FormField control={form.control} name="englishName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>الاسم الإنكليزي</FormLabel>
-                          <FormControl><Input {...field} data-testid="edit-input-english-name" /></FormControl>
+                          <FormLabel className="text-muted-foreground">الاسم الإنكليزي (غير قابل للتعديل)</FormLabel>
+                          <FormControl><Input {...field} disabled className="bg-muted text-muted-foreground cursor-not-allowed" data-testid="edit-input-english-name" /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -434,8 +434,8 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                     <FormField control={form.control} name="publicationNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>رقم الإشهار</FormLabel>
-                          <FormControl><Input {...field} data-testid="edit-input-publication-number" /></FormControl>
+                          <FormLabel className="text-muted-foreground">رقم الإشهار (غير قابل للتعديل)</FormLabel>
+                          <FormControl><Input {...field} disabled className="bg-muted text-muted-foreground cursor-not-allowed" data-testid="edit-input-publication-number" /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -443,8 +443,8 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                     <FormField control={form.control} name="publicationDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>تاريخ الإشهار</FormLabel>
-                          <FormControl><Input type="date" {...field} data-testid="edit-input-publication-date" /></FormControl>
+                          <FormLabel className="text-muted-foreground">تاريخ الإشهار (غير قابل للتعديل)</FormLabel>
+                          <FormControl><Input type="date" {...field} disabled className="bg-muted text-muted-foreground cursor-not-allowed" data-testid="edit-input-publication-date" /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
