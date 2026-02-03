@@ -799,10 +799,85 @@ export default function CreateNgo() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Section 2: التصنيفات والخدمات */}
+                  {/* Section 2: معلومات التواصل */}
                   <AccordionItem value="section-2" className="border rounded-lg px-4">
                     <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline" data-testid="accordion-section-2">
-                      2. التصنيفات والخدمات
+                      2. معلومات التواصل
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-4 pt-4">
+                      <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => contactMethodsArray.append({ type: "", value: "" })}
+                          data-testid="button-add-contact"
+                        >
+                          <Plus className="w-4 h-4 ml-2" />
+                          إضافة وسيلة تواصل
+                        </Button>
+                      </div>
+                      {contactMethodsArray.fields.map((field, index) => (
+                        <div key={field.id} className="grid md:grid-cols-3 gap-4 p-4 border rounded-lg bg-muted/30">
+                          <FormField
+                            control={form.control}
+                            name={`contactMethods.${index}.type`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>نوع وسيلة التواصل</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="اختر النوع" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="موبايل">موبايل</SelectItem>
+                                    <SelectItem value="واتساب">واتساب</SelectItem>
+                                    <SelectItem value="بريد إلكتروني">بريد إلكتروني</SelectItem>
+                                    <SelectItem value="هاتف أرضي">هاتف أرضي</SelectItem>
+                                    <SelectItem value="فاكس">فاكس</SelectItem>
+                                    <SelectItem value="موقع إلكتروني">موقع إلكتروني</SelectItem>
+                                    <SelectItem value="فيسبوك">فيسبوك</SelectItem>
+                                    <SelectItem value="أخرى">أخرى</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`contactMethods.${index}.value`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>القيمة</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="flex items-end">
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              onClick={() => contactMethodsArray.remove(index)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Section 3: التصنيفات والخدمات */}
+                  <AccordionItem value="section-3" className="border rounded-lg px-4">
+                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline" data-testid="accordion-section-3">
+                      3. التصنيفات والخدمات
                     </AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
                       {/* التصنيفات */}
@@ -1016,10 +1091,10 @@ export default function CreateNgo() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Section 3: المراكز الخدمية */}
-                  <AccordionItem value="section-3" className="border rounded-lg px-4">
-                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline" data-testid="accordion-section-3">
-                      3. المراكز الخدمية
+                  {/* Section 4: المراكز الخدمية */}
+                  <AccordionItem value="section-4" className="border rounded-lg px-4">
+                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline" data-testid="accordion-section-4">
+                      4. المراكز الخدمية
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-4">
                       <div className="flex justify-end">
@@ -1194,10 +1269,10 @@ export default function CreateNgo() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Section 4: الفروع والمكاتب */}
-                  <AccordionItem value="section-4" className="border rounded-lg px-4">
-                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline" data-testid="accordion-section-4">
-                      4. الفروع والمكاتب
+                  {/* Section 5: الفروع والمكاتب */}
+                  <AccordionItem value="section-5" className="border rounded-lg px-4">
+                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline" data-testid="accordion-section-5">
+                      5. الفروع والمكاتب
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-4">
                       <div className="flex justify-end">
@@ -1367,10 +1442,10 @@ export default function CreateNgo() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Section 5: العلاقة مع الوزارة */}
-                  <AccordionItem value="section-5" className="border rounded-lg px-4">
-                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline" data-testid="accordion-section-5">
-                      5. العلاقة مع الوزارة
+                  {/* Section 6: العلاقة مع الوزارة */}
+                  <AccordionItem value="section-6" className="border rounded-lg px-4">
+                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline" data-testid="accordion-section-6">
+                      6. العلاقة مع الوزارة
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-4">
                       <div className="flex justify-between items-center border-b pb-2">
@@ -1433,81 +1508,6 @@ export default function CreateNgo() {
                               variant="destructive"
                               size="icon"
                               onClick={() => financialDataArray.remove(index)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  {/* Section 6: معلومات التواصل */}
-                  <AccordionItem value="section-6" className="border rounded-lg px-4">
-                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline" data-testid="accordion-section-6">
-                      6. معلومات التواصل
-                    </AccordionTrigger>
-                    <AccordionContent className="space-y-4 pt-4">
-                      <div className="flex justify-end">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => contactMethodsArray.append({ type: "", value: "" })}
-                          data-testid="button-add-contact"
-                        >
-                          <Plus className="w-4 h-4 ml-2" />
-                          إضافة وسيلة تواصل
-                        </Button>
-                      </div>
-                      {contactMethodsArray.fields.map((field, index) => (
-                        <div key={field.id} className="grid md:grid-cols-3 gap-4 p-4 border rounded-lg bg-muted/30">
-                          <FormField
-                            control={form.control}
-                            name={`contactMethods.${index}.type`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>نوع وسيلة التواصل</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="اختر النوع" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="موبايل">موبايل</SelectItem>
-                                    <SelectItem value="واتساب">واتساب</SelectItem>
-                                    <SelectItem value="بريد إلكتروني">بريد إلكتروني</SelectItem>
-                                    <SelectItem value="هاتف أرضي">هاتف أرضي</SelectItem>
-                                    <SelectItem value="فاكس">فاكس</SelectItem>
-                                    <SelectItem value="موقع إلكتروني">موقع إلكتروني</SelectItem>
-                                    <SelectItem value="فيسبوك">فيسبوك</SelectItem>
-                                    <SelectItem value="أخرى">أخرى</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`contactMethods.${index}.value`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>القيمة</FormLabel>
-                                <FormControl>
-                                  <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <div className="flex items-end">
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              onClick={() => contactMethodsArray.remove(index)}
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
