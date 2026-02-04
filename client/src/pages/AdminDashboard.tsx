@@ -100,6 +100,17 @@ export default function AdminDashboard() {
   }>({
     queryKey: ["/api/admin/statistics"],
   });
+
+  // Note counts query
+  const { data: noteCounts } = useQuery<{ ngoId: number; count: number }[]>({
+    queryKey: ["/api/admin/ngos/note-counts"],
+  });
+
+  const getNoteCount = (ngoId: number) => {
+    if (!noteCounts) return 0;
+    const item = noteCounts.find(c => c.ngoId === ngoId);
+    return item?.count || 0;
+  };
   
   const [createUserOpen, setCreateUserOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
@@ -814,8 +825,14 @@ export default function AdminDashboard() {
                                 variant="ghost"
                                 onClick={() => setNotesNgo(ngo)}
                                 data-testid={`button-notes-ngo-${ngo.id}`}
+                                className="gap-1"
                               >
                                 الملاحظات
+                                {getNoteCount(ngo.id) > 0 && (
+                                  <Badge variant="secondary" className="text-xs px-1.5 py-0 h-5 min-w-[20px] justify-center">
+                                    {getNoteCount(ngo.id)}
+                                  </Badge>
+                                )}
                               </Button>
                             </div>
                           </TableCell>

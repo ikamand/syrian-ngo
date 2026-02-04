@@ -47,6 +47,7 @@ export function NgoInternalNotes({ ngoId }: NgoInternalNotesProps) {
     onSuccess: () => {
       setNewNote("");
       queryClient.invalidateQueries({ queryKey: ['/api/admin/ngos', ngoId, 'notes'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/ngos/note-counts'] });
       toast({
         title: "تمت الإضافة",
         description: "تم إضافة الملاحظة بنجاح",
@@ -68,7 +69,7 @@ export function NgoInternalNotes({ ngoId }: NgoInternalNotesProps) {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString("ar-SY", {
+    return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",

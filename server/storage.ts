@@ -3,7 +3,7 @@ import session from "express-session";
 import createMemoryStore from "memorystore";
 import connectPgSimple from "connect-pg-simple";
 import { db, pool } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 const MemoryStore = createMemoryStore(session);
 const PgSession = connectPgSimple(session);
@@ -60,6 +60,7 @@ export interface IStorage {
 
   createNgoNote(note: InsertNgoNote & { authorId: number }): Promise<NgoNote>;
   getNgoNotes(ngoId: number): Promise<NgoNote[]>;
+  getAllNgoNoteCounts(): Promise<{ ngoId: number; count: number }[]>;
 
   sessionStore: session.Store;
 }
@@ -315,6 +316,17 @@ export class DatabaseStorage implements IStorage {
 
   async getNgoNotes(ngoId: number): Promise<NgoNote[]> {
     return db.select().from(ngoNotes).where(eq(ngoNotes.ngoId, ngoId)).orderBy(desc(ngoNotes.createdAt));
+  }
+
+  async getAllNgoNoteCounts(): Promise<{ ngoId: number; count: number }[]> {
+    const result = await db
+      .select({
+        ngoId: ngoNotes.ngoId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(ngoNotes)
+      .groupBy(ngoNotes.ngoId);
+    return result;
   }
 }
 

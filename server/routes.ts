@@ -1157,6 +1157,17 @@ export async function registerRoutes(
     }
   });
 
+  // Get note counts for all NGOs
+  app.get("/api/admin/ngos/note-counts", requireAdmin, async (req, res) => {
+    try {
+      const counts = await storage.getAllNgoNoteCounts();
+      res.json(counts);
+    } catch (err) {
+      console.error("[get-ngo-note-counts] Error:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // --- Open Graph Meta Tags for Social Media Sharing ---
   // This middleware injects dynamic meta tags for news article pages
   app.get("/news/:id", async (req, res, next) => {
