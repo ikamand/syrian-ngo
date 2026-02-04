@@ -27,21 +27,32 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
     return value && value.trim() ? value : fallback;
   };
 
+  const getArrayLength = (arr: any[] | null | undefined): number => {
+    if (!arr || !Array.isArray(arr)) return 0;
+    return arr.length;
+  };
+
   const displayName = ngo?.arabicName || ngo?.name || "غير محدد";
   const displayEnglishName = ngo?.englishName || "Not specified";
 
   const BooleanBadge = ({ value }: { value: boolean | null | undefined }) => (
     value ? (
-      <Badge variant="default" className="bg-green-100 text-green-700 hover:bg-green-100">
+      <Badge variant="default" className="bg-green-100 text-green-700 no-default-hover-elevate">
         <Check className="w-3 h-3 ml-1" />
         نعم
       </Badge>
     ) : (
-      <Badge variant="secondary" className="bg-gray-100 text-gray-600 hover:bg-gray-100">
+      <Badge variant="secondary" className="bg-gray-100 text-gray-600 no-default-hover-elevate">
         <X className="w-3 h-3 ml-1" />
         لا
       </Badge>
     )
+  );
+
+  const EmptyState = ({ message = "لا توجد بيانات" }: { message?: string }) => (
+    <div className="bg-muted/20 rounded-lg p-4 text-center text-sm text-muted-foreground border border-dashed">
+      {message}
+    </div>
   );
 
   return (
@@ -69,14 +80,14 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
               </div>
             </DialogHeader>
 
-            {/* Approval Chain & Rejection Info */}
+            {/* Approval Chain & Rejection Info - Keep conditional */}
             {(ngo.status === "AdminApproved" || ngo.status === "Approved" || ngo.status === "Rejected") && (
               <div className="mb-4 p-4 bg-muted/30 rounded-lg">
                 <h4 className="font-medium text-sm text-muted-foreground mb-3">سجل الموافقات</h4>
                 <div className="space-y-2 text-sm">
                   {ngo.approvedByAdminAt && (
                     <div className="flex items-center gap-2">
-                      <Badge variant="default" className="bg-blue-100 text-blue-700 hover:bg-blue-100">موافقة أولية</Badge>
+                      <Badge variant="default" className="bg-blue-100 text-blue-700 no-default-hover-elevate">موافقة أولية</Badge>
                       <span className="text-muted-foreground">
                         بواسطة المدير رقم #{ngo.approvedByAdminId}
                         {ngo.approvedByAdminAt && ` - ${new Date(ngo.approvedByAdminAt).toLocaleDateString("ar-SY")}`}
@@ -85,7 +96,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                   )}
                   {ngo.approvedBySuperAdminAt && (
                     <div className="flex items-center gap-2">
-                      <Badge variant="default" className="bg-green-100 text-green-700 hover:bg-green-100">موافقة نهائية</Badge>
+                      <Badge variant="default" className="bg-green-100 text-green-700 no-default-hover-elevate">موافقة نهائية</Badge>
                       <span className="text-muted-foreground">
                         بواسطة المشرف الأعلى رقم #{ngo.approvedBySuperAdminId}
                         {ngo.approvedBySuperAdminAt && ` - ${new Date(ngo.approvedBySuperAdminAt).toLocaleDateString("ar-SY")}`}
@@ -220,65 +231,68 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                     </div>
                   )}
 
-                  {ngo.description && (
-                    <div className="border-t pt-3">
-                      <span className="text-sm font-medium text-muted-foreground block mb-2">نبذة عن المنظمة</span>
-                      <div className="bg-muted/30 rounded-lg p-3">
+                  <div className="border-t pt-3">
+                    <span className="text-sm font-medium text-muted-foreground block mb-2">نبذة عن المنظمة</span>
+                    <div className="bg-muted/30 rounded-lg p-3">
+                      {ngo.description ? (
                         <div className="text-sm leading-relaxed prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground" dangerouslySetInnerHTML={{ __html: sanitizeHtml(ngo.description) }} />
-                      </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">لا يوجد وصف</p>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Section 2: التصنيفات والخدمات */}
-              {((ngo.classifications && (ngo.classifications as any[]).length > 0) || 
-                (ngo.services && (ngo.services as any[]).length > 0)) && (
-                <AccordionItem value="section-2">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    التصنيفات والخدمات
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4">
-                    {ngo.classifications && (ngo.classifications as any[]).length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">التصنيفات</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {(ngo.classifications as any[]).map((c, i) => (
-                            <Badge key={i} variant="outline">{c.type}: {c.name}</Badge>
-                          ))}
-                        </div>
+              {/* Section 2: التصنيفات والخدمات - Always show */}
+              <AccordionItem value="section-2">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  التصنيفات والخدمات
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2">التصنيفات</h4>
+                    {getArrayLength(ngo.classifications as any[]) > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {(ngo.classifications as any[]).map((c, i) => (
+                          <Badge key={i} variant="outline">{c.type}: {c.name}</Badge>
+                        ))}
                       </div>
+                    ) : (
+                      <EmptyState />
                     )}
-                    {ngo.services && (ngo.services as any[]).length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">الخدمات</h4>
-                        <div className="space-y-2">
-                          {(ngo.services as any[]).map((s, i) => (
-                            <div key={i} className="bg-muted/30 rounded-lg p-3 text-sm">
-                              <div className="font-medium">{s.serviceType} - {s.specialty}</div>
-                              <div className="text-muted-foreground">{s.serviceDescription}</div>
-                              <div className="flex gap-4 mt-1 text-xs text-muted-foreground">
-                                <span>الفئة: {s.targetGroup}</span>
-                                <span>المحافظة: {s.governorate}</span>
-                                <span>الحالة: {s.availabilityStatus}</span>
-                              </div>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2">الخدمات</h4>
+                    {getArrayLength(ngo.services as any[]) > 0 ? (
+                      <div className="space-y-2">
+                        {(ngo.services as any[]).map((s, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3 text-sm">
+                            <div className="font-medium">{s.serviceType} - {s.specialty}</div>
+                            <div className="text-muted-foreground">{s.serviceDescription}</div>
+                            <div className="flex gap-4 mt-1 text-xs text-muted-foreground">
+                              <span>الفئة: {s.targetGroup}</span>
+                              <span>المحافظة: {s.governorate}</span>
+                              <span>الحالة: {s.availabilityStatus}</span>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <EmptyState />
                     )}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Section 3: المراكز الخدمية */}
-              {ngo.serviceCenters && (ngo.serviceCenters as any[]).length > 0 && (
-                <AccordionItem value="section-3">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    المراكز الخدمية ({(ngo.serviceCenters as any[]).length})
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-3">
-                    {(ngo.serviceCenters as any[]).map((center, i) => (
+              {/* Section 3: المراكز الخدمية - Always show */}
+              <AccordionItem value="section-3">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  المراكز الخدمية ({getArrayLength(ngo.serviceCenters as any[])})
+                </AccordionTrigger>
+                <AccordionContent className="space-y-3">
+                  {getArrayLength(ngo.serviceCenters as any[]) > 0 ? (
+                    (ngo.serviceCenters as any[]).map((center, i) => (
                       <div key={i} className="bg-muted/30 rounded-lg p-3">
                         <div className="font-medium text-sm">{center.name}</div>
                         <div className="grid grid-cols-2 gap-2 mt-2 text-xs text-muted-foreground">
@@ -288,19 +302,21 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           <span>العنوان: {center.detailedAddress}</span>
                         </div>
                       </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                    ))
+                  ) : (
+                    <EmptyState />
+                  )}
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Section 4: الفروع والمكاتب */}
-              {ngo.branches && (ngo.branches as any[]).length > 0 && (
-                <AccordionItem value="section-4">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    الفروع والمكاتب ({(ngo.branches as any[]).length})
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-3">
-                    {(ngo.branches as any[]).map((branch, i) => (
+              {/* Section 4: الفروع والمكاتب - Always show */}
+              <AccordionItem value="section-4">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  الفروع والمكاتب ({getArrayLength(ngo.branches as any[])})
+                </AccordionTrigger>
+                <AccordionContent className="space-y-3">
+                  {getArrayLength(ngo.branches as any[]) > 0 ? (
+                    (ngo.branches as any[]).map((branch, i) => (
                       <div key={i} className="bg-muted/30 rounded-lg p-3">
                         <div className="font-medium text-sm">{branch.branchType} - {branch.licensedGovernorate}</div>
                         <div className="text-xs text-muted-foreground mt-1">{branch.address}</div>
@@ -308,35 +324,39 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           <div className="text-xs text-muted-foreground mt-1">الخدمات: {branch.offeredServices}</div>
                         )}
                       </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                    ))
+                  ) : (
+                    <EmptyState />
+                  )}
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Section 5: العلاقة مع الوزارة */}
-              {ngo.financialData && (ngo.financialData as any[]).length > 0 && (
-                <AccordionItem value="section-5">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    البيانات المالية ({(ngo.financialData as any[]).length})
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-2">
-                    {(ngo.financialData as any[]).map((fd, i) => (
+              {/* Section 5: البيانات المالية - Always show */}
+              <AccordionItem value="section-5">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  البيانات المالية ({getArrayLength(ngo.financialData as any[])})
+                </AccordionTrigger>
+                <AccordionContent className="space-y-2">
+                  {getArrayLength(ngo.financialData as any[]) > 0 ? (
+                    (ngo.financialData as any[]).map((fd, i) => (
                       <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
                         <span className="font-medium text-sm">سنة {fd.year}</span>
                         <span className="text-sm text-muted-foreground">{fd.closingBudget}</span>
                       </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                    ))
+                  ) : (
+                    <EmptyState />
+                  )}
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Section 6: معلومات التواصل */}
-              {ngo.contactMethods && (ngo.contactMethods as any[]).length > 0 && (
-                <AccordionItem value="section-6">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    معلومات التواصل ({(ngo.contactMethods as any[]).length})
-                  </AccordionTrigger>
-                  <AccordionContent>
+              {/* Section 6: معلومات التواصل - Always show */}
+              <AccordionItem value="section-6">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  معلومات التواصل ({getArrayLength(ngo.contactMethods as any[])})
+                </AccordionTrigger>
+                <AccordionContent>
+                  {getArrayLength(ngo.contactMethods as any[]) > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {(ngo.contactMethods as any[]).map((cm, i) => (
                         <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
@@ -345,18 +365,20 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                         </div>
                       ))}
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                  ) : (
+                    <EmptyState />
+                  )}
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Section 7: الحسابات البنكية */}
-              {ngo.bankAccounts && (ngo.bankAccounts as any[]).length > 0 && (
-                <AccordionItem value="section-7">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    الحسابات البنكية ({(ngo.bankAccounts as any[]).length})
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-2">
-                    {(ngo.bankAccounts as any[]).map((ba, i) => (
+              {/* Section 7: الحسابات البنكية - Always show */}
+              <AccordionItem value="section-7">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  الحسابات البنكية ({getArrayLength(ngo.bankAccounts as any[])})
+                </AccordionTrigger>
+                <AccordionContent className="space-y-2">
+                  {getArrayLength(ngo.bankAccounts as any[]) > 0 ? (
+                    (ngo.bankAccounts as any[]).map((ba, i) => (
                       <div key={i} className="bg-muted/30 rounded-lg p-3">
                         <div className="flex justify-between items-center">
                           <span className="font-medium text-sm">{ba.bankName} - {ba.branchName}</span>
@@ -364,143 +386,141 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                         </div>
                         <div className="text-xs text-muted-foreground mt-1">رقم الحساب: {ba.accountNumber}</div>
                       </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                    ))
+                  ) : (
+                    <EmptyState />
+                  )}
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Section 8: البرامج والأنشطة */}
-              {((ngo.programs && (ngo.programs as any[]).length > 0) || 
-                (ngo.activities && (ngo.activities as any[]).length > 0)) && (
-                <AccordionItem value="section-8">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    البرامج والأنشطة
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4">
-                    {ngo.programs && (ngo.programs as any[]).length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">البرامج</h4>
-                        <div className="space-y-2">
-                          {(ngo.programs as any[]).map((p, i) => (
-                            <div key={i} className="bg-muted/30 rounded-lg p-3">
-                              <div className="font-medium text-sm">{p.name}</div>
-                              <div className="text-xs text-muted-foreground mt-1">الأهداف: {p.goals}</div>
-                              <div className="text-xs text-muted-foreground">الفئات المستهدفة: {p.targetGroups}</div>
-                            </div>
-                          ))}
-                        </div>
+              {/* Section 8: البرامج والأنشطة - Always show */}
+              <AccordionItem value="section-8">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  البرامج والأنشطة
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2">البرامج</h4>
+                    {getArrayLength(ngo.programs as any[]) > 0 ? (
+                      <div className="space-y-2">
+                        {(ngo.programs as any[]).map((p, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{p.name}</div>
+                            <div className="text-xs text-muted-foreground mt-1">الأهداف: {p.goals}</div>
+                            <div className="text-xs text-muted-foreground">الفئات المستهدفة: {p.targetGroups}</div>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <EmptyState />
                     )}
-                    {ngo.activities && (ngo.activities as any[]).length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">الأنشطة</h4>
-                        <div className="space-y-2">
-                          {(ngo.activities as any[]).map((a, i) => (
-                            <div key={i} className="bg-muted/30 rounded-lg p-3">
-                              <div className="font-medium text-sm">{a.name} ({a.activityType})</div>
-                              <div className="text-xs text-muted-foreground mt-1">الأهداف: {a.goals}</div>
-                            </div>
-                          ))}
-                        </div>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2">الأنشطة</h4>
+                    {getArrayLength(ngo.activities as any[]) > 0 ? (
+                      <div className="space-y-2">
+                        {(ngo.activities as any[]).map((a, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{a.name} ({a.activityType})</div>
+                            <div className="text-xs text-muted-foreground mt-1">الأهداف: {a.goals}</div>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <EmptyState />
                     )}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Section 9: الموظفون والمتطوعون */}
-              {((ngo.employees && (ngo.employees as any[]).length > 0) || 
-                (ngo.volunteers && (ngo.volunteers as any[]).length > 0)) && (
-                <AccordionItem value="section-9">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    الوضع الإداري والتنظيمي
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4">
-                    {ngo.employees && (ngo.employees as any[]).length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">الموظفون ({(ngo.employees as any[]).length})</h4>
-                        <div className="space-y-2">
-                          {(ngo.employees as any[]).map((e, i) => (
-                            <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
-                              <span className="font-medium text-sm">{e.firstName} {e.lastName}</span>
-                              <span className="text-sm text-muted-foreground">{e.position}</span>
-                            </div>
-                          ))}
-                        </div>
+              {/* Section 9: الموظفون والمتطوعون - Always show */}
+              <AccordionItem value="section-9">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  الوضع الإداري والتنظيمي
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2">الموظفون ({getArrayLength(ngo.employees as any[])})</h4>
+                    {getArrayLength(ngo.employees as any[]) > 0 ? (
+                      <div className="space-y-2">
+                        {(ngo.employees as any[]).map((e, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
+                            <span className="font-medium text-sm">{e.firstName} {e.lastName}</span>
+                            <span className="text-sm text-muted-foreground">{e.position}</span>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <EmptyState />
                     )}
-                    {ngo.volunteers && (ngo.volunteers as any[]).length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">المتطوعون ({(ngo.volunteers as any[]).length})</h4>
-                        <div className="space-y-2">
-                          {(ngo.volunteers as any[]).map((v, i) => (
-                            <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
-                              <span className="font-medium text-sm">{v.firstName} {v.lastName}</span>
-                              <span className="text-sm text-muted-foreground">{v.position}</span>
-                            </div>
-                          ))}
-                        </div>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2">المتطوعون ({getArrayLength(ngo.volunteers as any[])})</h4>
+                    {getArrayLength(ngo.volunteers as any[]) > 0 ? (
+                      <div className="space-y-2">
+                        {(ngo.volunteers as any[]).map((v, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
+                            <span className="font-medium text-sm">{v.firstName} {v.lastName}</span>
+                            <span className="text-sm text-muted-foreground">{v.position}</span>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <EmptyState />
                     )}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Section 10: الممتلكات */}
-              {((ngo.vehicles && (ngo.vehicles as any[]).length > 0) || 
-                (ngo.realEstate && (ngo.realEstate as any[]).length > 0)) && (
-                <AccordionItem value="section-10">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    الممتلكات
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4">
-                    {ngo.vehicles && (ngo.vehicles as any[]).length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">الآليات ({(ngo.vehicles as any[]).length})</h4>
-                        <div className="space-y-2">
-                          {(ngo.vehicles as any[]).map((v, i) => (
-                            <div key={i} className="bg-muted/30 rounded-lg p-3">
-                              <div className="font-medium text-sm">{v.vehicleType} - {v.model}</div>
-                              <div className="text-xs text-muted-foreground mt-1">رقم اللوحة: {v.plateNumber}</div>
-                            </div>
-                          ))}
-                        </div>
+              {/* Section 10: الممتلكات - Always show */}
+              <AccordionItem value="section-10">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  الممتلكات
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2">الآليات ({getArrayLength(ngo.vehicles as any[])})</h4>
+                    {getArrayLength(ngo.vehicles as any[]) > 0 ? (
+                      <div className="space-y-2">
+                        {(ngo.vehicles as any[]).map((v, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{v.vehicleType} - {v.model}</div>
+                            <div className="text-xs text-muted-foreground mt-1">رقم اللوحة: {v.plateNumber}</div>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <EmptyState />
                     )}
-                    {ngo.realEstate && (ngo.realEstate as any[]).length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">العقارات ({(ngo.realEstate as any[]).length})</h4>
-                        <div className="space-y-2">
-                          {(ngo.realEstate as any[]).map((r, i) => (
-                            <div key={i} className="bg-muted/30 rounded-lg p-3">
-                              <div className="font-medium text-sm">{r.propertyType} - {r.governorate}</div>
-                              <div className="text-xs text-muted-foreground mt-1">رقم العقار: {r.propertyNumber}</div>
-                            </div>
-                          ))}
-                        </div>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2">العقارات ({getArrayLength(ngo.realEstate as any[])})</h4>
+                    {getArrayLength(ngo.realEstate as any[]) > 0 ? (
+                      <div className="space-y-2">
+                        {(ngo.realEstate as any[]).map((r, i) => (
+                          <div key={i} className="bg-muted/30 rounded-lg p-3">
+                            <div className="font-medium text-sm">{r.propertyType} - {r.governorate}</div>
+                            <div className="text-xs text-muted-foreground mt-1">رقم العقار: {r.propertyNumber}</div>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <EmptyState />
                     )}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Section 11: فرص عمل و تطوع */}
-              {((ngo.jobOpportunities && (ngo.jobOpportunities as any[]).length > 0) ||
-                (ngo.volunteerOpportunities && (ngo.volunteerOpportunities as any[]).length > 0) ||
-                (ngo.events && (ngo.events as any[]).length > 0) ||
-                (ngo.donationCampaigns && (ngo.donationCampaigns as any[]).length > 0) ||
-                (ngo.photoGallery && (ngo.photoGallery as any[]).length > 0) ||
-                (ngo.statistics && (ngo.statistics as any[]).length > 0) ||
-                (ngo.networking && (ngo.networking as any[]).length > 0)) && (
+              {/* Section 11: فرص عمل و تطوع - Always show */}
               <AccordionItem value="section-11">
                 <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline" data-testid="accordion-trigger-section-11">
                   فرص عمل و تطوع
                 </AccordionTrigger>
                 <AccordionContent className="space-y-6">
                   {/* فرص العمل */}
-                  {ngo.jobOpportunities && (ngo.jobOpportunities as any[]).length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">فرص العمل ({(ngo.jobOpportunities as any[]).length})</h4>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">فرص العمل ({getArrayLength(ngo.jobOpportunities as any[])})</h4>
+                    {getArrayLength(ngo.jobOpportunities as any[]) > 0 ? (
                       <div className="space-y-2">
                         {(ngo.jobOpportunities as any[]).map((job, i) => (
                           <div key={i} className="bg-muted/30 rounded-lg p-3">
@@ -526,13 +546,15 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <EmptyState />
+                    )}
+                  </div>
 
                   {/* فرص التطوع */}
-                  {ngo.volunteerOpportunities && (ngo.volunteerOpportunities as any[]).length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">فرص التطوع ({(ngo.volunteerOpportunities as any[]).length})</h4>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">فرص التطوع ({getArrayLength(ngo.volunteerOpportunities as any[])})</h4>
+                    {getArrayLength(ngo.volunteerOpportunities as any[]) > 0 ? (
                       <div className="space-y-2">
                         {(ngo.volunteerOpportunities as any[]).map((vol, i) => (
                           <div key={i} className="bg-muted/30 rounded-lg p-3">
@@ -544,13 +566,15 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <EmptyState />
+                    )}
+                  </div>
 
                   {/* الفعاليات */}
-                  {ngo.events && (ngo.events as any[]).length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">الفعاليات ({(ngo.events as any[]).length})</h4>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">الفعاليات ({getArrayLength(ngo.events as any[])})</h4>
+                    {getArrayLength(ngo.events as any[]) > 0 ? (
                       <div className="space-y-2">
                         {(ngo.events as any[]).map((event, i) => (
                           <div key={i} className="bg-muted/30 rounded-lg p-3">
@@ -566,13 +590,15 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <EmptyState />
+                    )}
+                  </div>
 
                   {/* حملات التبرع */}
-                  {ngo.donationCampaigns && (ngo.donationCampaigns as any[]).length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">حملات التبرع ({(ngo.donationCampaigns as any[]).length})</h4>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">حملات التبرع ({getArrayLength(ngo.donationCampaigns as any[])})</h4>
+                    {getArrayLength(ngo.donationCampaigns as any[]) > 0 ? (
                       <div className="space-y-2">
                         {(ngo.donationCampaigns as any[]).map((campaign, i) => (
                           <div key={i} className="bg-muted/30 rounded-lg p-3">
@@ -588,13 +614,15 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <EmptyState />
+                    )}
+                  </div>
 
                   {/* معرض الصور */}
-                  {ngo.photoGallery && (ngo.photoGallery as any[]).length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">معرض الصور ({(ngo.photoGallery as any[]).length})</h4>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">معرض الصور ({getArrayLength(ngo.photoGallery as any[])})</h4>
+                    {getArrayLength(ngo.photoGallery as any[]) > 0 ? (
                       <div className="space-y-2">
                         {(ngo.photoGallery as any[]).map((photo, i) => (
                           <div key={i} className="bg-muted/30 rounded-lg p-3">
@@ -604,13 +632,15 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <EmptyState />
+                    )}
+                  </div>
 
                   {/* الإحصائيات */}
-                  {ngo.statistics && (ngo.statistics as any[]).length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">الإحصائيات ({(ngo.statistics as any[]).length})</h4>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">الإحصائيات ({getArrayLength(ngo.statistics as any[])})</h4>
+                    {getArrayLength(ngo.statistics as any[]) > 0 ? (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                         {(ngo.statistics as any[]).map((stat, i) => (
                           <div key={i} className="bg-muted/30 rounded-lg p-3 text-center">
@@ -619,13 +649,15 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <EmptyState />
+                    )}
+                  </div>
 
                   {/* التشبيك */}
-                  {ngo.networking && (ngo.networking as any[]).length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">التشبيك ({(ngo.networking as any[]).length})</h4>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground mb-2 border-b pb-2">التشبيك ({getArrayLength(ngo.networking as any[])})</h4>
+                    {getArrayLength(ngo.networking as any[]) > 0 ? (
                       <div className="space-y-2">
                         {(ngo.networking as any[]).map((net, i) => (
                           <div key={i} className="bg-muted/30 rounded-lg p-3">
@@ -639,35 +671,34 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showInternalNotes = 
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <EmptyState />
+                    )}
+                  </div>
                 </AccordionContent>
               </AccordionItem>
-              )}
 
-              {/* Legacy fields for backward compatibility */}
-              {(ngo.city || ngo.presidentName || ngo.email || ngo.phone) && (
-                <AccordionItem value="section-legacy">
-                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
-                    معلومات إضافية
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {ngo.city && <DetailItem label="المدينة" value={ngo.city} />}
-                      {ngo.presidentName && <DetailItem label="اسم الرئيس" value={ngo.presidentName} />}
-                      {ngo.email && <DetailItem label="البريد الإلكتروني" value={ngo.email} />}
-                      {ngo.phone && <DetailItem label="رقم الهاتف" value={ngo.phone} />}
-                    </div>
-                    <div className="mt-3 text-xs text-muted-foreground">
-                      تاريخ التقديم: {ngo.createdAt ? new Date(ngo.createdAt).toLocaleDateString("ar-SY", {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      }) : "غير محدد"}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+              {/* Legacy fields - Always show */}
+              <AccordionItem value="section-legacy">
+                <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                  معلومات إضافية
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <DetailItem label="المدينة" value={getFieldValue(ngo.city)} />
+                    <DetailItem label="اسم الرئيس" value={getFieldValue(ngo.presidentName)} />
+                    <DetailItem label="البريد الإلكتروني" value={getFieldValue(ngo.email)} />
+                    <DetailItem label="رقم الهاتف" value={getFieldValue(ngo.phone)} />
+                  </div>
+                  <div className="mt-3 text-xs text-muted-foreground">
+                    تاريخ التقديم: {ngo.createdAt ? new Date(ngo.createdAt).toLocaleDateString("ar-SY", {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    }) : "غير محدد"}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
 
             {/* Internal Notes Section - Admin Only */}
