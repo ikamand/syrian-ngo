@@ -48,6 +48,7 @@ import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
+import { NgoInternalNotesDialog } from "@/components/NgoInternalNotesDialog";
 import { RejectNgoDialog } from "@/components/RejectNgoDialog";
 import type { Ngo } from "@shared/schema";
 import { useEffect } from "react";
@@ -78,6 +79,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewingNgo, setViewingNgo] = useState<Ngo | null>(null);
+  const [notesNgo, setNotesNgo] = useState<Ngo | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -806,6 +808,14 @@ export default function AdminDashboard() {
                                 data-testid={`button-details-ngo-${ngo.id}`}
                               >
                                 التفاصيل
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                onClick={() => setNotesNgo(ngo)}
+                                data-testid={`button-notes-ngo-${ngo.id}`}
+                              >
+                                الملاحظات
                               </Button>
                             </div>
                           </TableCell>
@@ -1599,8 +1609,13 @@ export default function AdminDashboard() {
         ngo={viewingNgo} 
         open={!!viewingNgo} 
         onOpenChange={(open) => !open && setViewingNgo(null)}
-        showInternalNotes={true}
         showDocuments={true}
+      />
+      {/* NGO Internal Notes Dialog */}
+      <NgoInternalNotesDialog 
+        ngo={notesNgo} 
+        open={!!notesNgo} 
+        onOpenChange={(open) => !open && setNotesNgo(null)}
       />
       {/* Create User Dialog */}
       <CreateUserDialog
