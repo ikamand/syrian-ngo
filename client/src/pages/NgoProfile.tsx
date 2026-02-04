@@ -138,36 +138,12 @@ export default function NgoProfile() {
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-2">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <InfoItem label="معرف المنظمة" value={getFieldValue(ngo.orgIdentifier)} />
                         <InfoItem label="رقم قرار الإشهار" value={getFieldValue(ngo.publicationNumber)} />
                         <InfoItem label="تاريخ قرار الإشهار" value={getFieldValue(ngo.publicationDate)} icon={<Calendar className="w-4 h-4" />} />
                         <InfoItem label="المدينة" value={getFieldValue(ngo.city)} icon={<MapPin className="w-4 h-4" />} />
                         {ngo.presidentName && <InfoItem label="رئيس المنظمة" value={ngo.presidentName} />}
                         {ngo.email && <InfoItem label="البريد الإلكتروني" value={ngo.email} icon={<Mail className="w-4 h-4" />} />}
                         {ngo.phone && <InfoItem label="الهاتف" value={ngo.phone} icon={<Phone className="w-4 h-4" />} />}
-                      </div>
-                      
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-3 border-t">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">صفة النفع العام:</span>
-                          <BooleanBadge value={ngo.hasPublicBenefit} />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">نظام داخلي:</span>
-                          <BooleanBadge value={ngo.hasInternalRegulations} />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">نظام نساء:</span>
-                          <BooleanBadge value={ngo.hasWomenPolicy} />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">نظام تطوع:</span>
-                          <BooleanBadge value={ngo.hasVolunteerPolicy} />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">هيكل تنظيمي:</span>
-                          <BooleanBadge value={ngo.hasOrgStructure} />
-                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
