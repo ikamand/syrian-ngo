@@ -185,8 +185,8 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
         data-testid="leaflet-map-container"
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://wikimediafoundation.org/wiki/Maps_Terms_of_Use">Wikimedia</a>'
-          url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <GeoJSON
           ref={geoJsonRef as any}
