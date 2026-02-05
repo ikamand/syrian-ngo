@@ -1085,6 +1085,51 @@ export default function AdminDashboard() {
                   <h2 className="text-xl font-semibold">إدارة محتوى الموقع</h2>
                 </div>
 
+                {isSuperAdmin && (
+                  <Card className="border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] bg-primary/5" data-testid="card-admin-settings">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">إعدادات صلاحيات المشرفين</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <Label htmlFor="admin-final-approve" className="text-base font-medium">
+                            السماح للمشرف بالموافقة النهائية على المنظمات
+                          </Label>
+                          <p className="text-sm text-muted-foreground">
+                            عند التفعيل، يمكن للمشرف العادي الموافقة على المنظمات مباشرة دون الحاجة لموافقة المشرف الأعلى
+                          </p>
+                        </div>
+                        <Switch
+                          id="admin-final-approve"
+                          checked={siteContent?.find(c => c.key === "admin_can_final_approve")?.content === "true"}
+                          onCheckedChange={async (checked) => {
+                            try {
+                              await upsertSiteContent({
+                                key: "admin_can_final_approve",
+                                content: checked ? "true" : "false"
+                              });
+                              toast({
+                                title: "تم التحديث",
+                                description: checked 
+                                  ? "تم تفعيل صلاحية الموافقة النهائية للمشرف" 
+                                  : "تم إلغاء صلاحية الموافقة النهائية للمشرف"
+                              });
+                            } catch (error) {
+                              toast({
+                                title: "خطأ",
+                                description: "فشل تحديث الإعداد",
+                                variant: "destructive"
+                              });
+                            }
+                          }}
+                          data-testid="switch-admin-final-approve"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
                 {isSiteContentLoading ? (
                   <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
                 ) : (

@@ -774,19 +774,29 @@ export async function registerRoutes(
       const ngo = await storage.getNgo(id);
       if (!ngo) return res.status(404).json({ message: "NGO not found" });
       
+      // Check if admin can give final approval (setting controlled by super admin)
+      const adminCanFinalApproveSetting = await storage.getSiteContent("admin_can_final_approve");
+      const adminCanFinalApprove = adminCanFinalApproveSetting?.content === "true";
+      
       // Determine what the admin can do based on role and current NGO status
       if (user.role === "admin") {
-        // Regular admin can only approve Pending -> AdminApproved or Reject
+        // Regular admin can only approve Pending -> AdminApproved (or Approved if setting enabled) or Reject
         if (ngo.status !== "Pending") {
           return res.status(400).json({ message: "يمكنك فقط معالجة المنظمات بحالة 'قيد الانتظار'" });
         }
         
         if (status === "Approved" || status === "AdminApproved") {
-          // Admin approves -> moves to AdminApproved
+          // If setting enabled, admin gives final approval directly
+          const targetStatus = adminCanFinalApprove ? "Approved" : "AdminApproved";
           const updated = await storage.updateNgoApproval(id, {
-            status: "AdminApproved",
+            status: targetStatus,
             approvedByAdminId: user.id,
-            approvedByAdminAt: new Date()
+            approvedByAdminAt: new Date(),
+            // If admin is giving final approval, also set super admin fields
+            ...(adminCanFinalApprove && {
+              approvedBySuperAdminId: user.id,
+              approvedBySuperAdminAt: new Date()
+            })
           });
           return res.json(updated);
         } else if (status === "Rejected") {
