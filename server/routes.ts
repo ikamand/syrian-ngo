@@ -985,10 +985,20 @@ export async function registerRoutes(
     res.json(content);
   });
 
-  // Upsert site content (admin only)
+  // Upsert site content (admin only, some keys require super_admin)
   app.put(api.siteContent.upsert.path, requireAdmin, async (req, res) => {
     try {
       const key = req.params.key as string;
+      
+      // Keys that require super_admin permission
+      const superAdminOnlyKeys = ["admin_can_final_approve"];
+      if (superAdminOnlyKeys.includes(key)) {
+        const user = await storage.getUser(req.session.userId!);
+        if (!user || user.role !== "super_admin") {
+          return res.status(403).json({ message: "هذا الإعداد يتطلب صلاحية المشرف الأعلى" });
+        }
+      }
+      
       const input = api.siteContent.upsert.input.parse(req.body);
       const content = await storage.upsertSiteContent(key, { ...input, updatedBy: req.session.userId! });
       res.json(content);

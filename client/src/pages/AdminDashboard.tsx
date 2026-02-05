@@ -1107,6 +1107,7 @@ export default function AdminDashboard() {
                             try {
                               await upsertSiteContent({
                                 key: "admin_can_final_approve",
+                                title: "إعداد صلاحية الموافقة النهائية للمشرف",
                                 content: checked ? "true" : "false"
                               });
                               toast({
