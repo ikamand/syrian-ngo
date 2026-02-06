@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import heroCommunity from "@/assets/images/hero-community.png";
 
 interface Slide {
   image: string;
@@ -20,7 +21,7 @@ const slides: Slide[] = [
     subtitle: "نسعى لتعزيز العمل التطوعي والخيري من خلال منظومة رقمية متكاملة"
   },
   {
-    image: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop",
+    image: heroCommunity,
     title: "دعم المجتمع المحلي",
     subtitle: "تواصل مباشر بين الجهات المانحة والمنظمات لتحقيق أثر أكبر"
   }
