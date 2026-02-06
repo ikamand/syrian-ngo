@@ -21,6 +21,7 @@ import OpportunityDetail from "@/pages/OpportunityDetail";
 import Notices from "@/pages/Notices";
 import Events from "@/pages/Events";
 import DonationCampaigns from "@/pages/DonationCampaigns";
+import UsePolicy from "@/pages/UsePolicy";
 
 function Router() {
   return (
@@ -42,6 +43,7 @@ function Router() {
       <Route path="/opportunities" component={Opportunities} />
       <Route path="/events" component={Events} />
       <Route path="/donation-campaigns" component={DonationCampaigns} />
+      <Route path="/use-policy" component={UsePolicy} />
       <Route component={NotFound} />
     </Switch>
   );
