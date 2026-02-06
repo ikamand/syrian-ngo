@@ -646,7 +646,24 @@ export function NgoEditDialog({ ngo, open, onOpenChange, onSuccess, onDelete, is
                           </Select>
                         </FormItem>
                       )} />
-                      <FormField control={form.control} name={`classifications.${index}.name`} render={({ field }) => (<FormItem><FormLabel>اسم التصنيف</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                      <FormField control={form.control} name={`classifications.${index}.name`} render={({ field }) => (
+                        <FormItem><FormLabel>اسم التصنيف</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <FormControl><SelectTrigger data-testid={`edit-select-classification-name-${index}`}><SelectValue placeholder="اختر التصنيف" /></SelectTrigger></FormControl>
+                            <SelectContent>
+                              <SelectItem value="تعليم وتمكين">تعليم وتمكين</SelectItem>
+                              <SelectItem value="البيئة">البيئة</SelectItem>
+                              <SelectItem value="الأعمال الخيرية">الأعمال الخيرية</SelectItem>
+                              <SelectItem value="التنمية والإسكان">التنمية والإسكان</SelectItem>
+                              <SelectItem value="الخدمات الاجتماعية">الخدمات الاجتماعية</SelectItem>
+                              <SelectItem value="الثقافة والرياضة والتسلية والفنون">الثقافة والرياضة والتسلية والفنون</SelectItem>
+                              <SelectItem value="الترويج للعمل التطوعي">الترويج للعمل التطوعي</SelectItem>
+                              <SelectItem value="القانون والدفاع والحقوق">القانون والدفاع والحقوق</SelectItem>
+                              <SelectItem value="الصحة">الصحة</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )} />
                       <Button type="button" variant="ghost" size="icon" onClick={() => classificationsArray.remove(index)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
                     </div>
                   ))}

@@ -924,9 +924,24 @@ export default function CreateNgo() {
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>اسم التصنيف</FormLabel>
-                                  <FormControl>
-                                    <Input {...field} />
-                                  </FormControl>
+                                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                                    <FormControl>
+                                      <SelectTrigger data-testid={`select-classification-name-${index}`}>
+                                        <SelectValue placeholder="اختر التصنيف" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="تعليم وتمكين">تعليم وتمكين</SelectItem>
+                                      <SelectItem value="البيئة">البيئة</SelectItem>
+                                      <SelectItem value="الأعمال الخيرية">الأعمال الخيرية</SelectItem>
+                                      <SelectItem value="التنمية والإسكان">التنمية والإسكان</SelectItem>
+                                      <SelectItem value="الخدمات الاجتماعية">الخدمات الاجتماعية</SelectItem>
+                                      <SelectItem value="الثقافة والرياضة والتسلية والفنون">الثقافة والرياضة والتسلية والفنون</SelectItem>
+                                      <SelectItem value="الترويج للعمل التطوعي">الترويج للعمل التطوعي</SelectItem>
+                                      <SelectItem value="القانون والدفاع والحقوق">القانون والدفاع والحقوق</SelectItem>
+                                      <SelectItem value="الصحة">الصحة</SelectItem>
+                                    </SelectContent>
+                                  </Select>
                                   <FormMessage />
                                 </FormItem>
                               )}
