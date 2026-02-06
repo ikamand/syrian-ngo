@@ -61,15 +61,15 @@ export function Footer() {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold border-r-4 border-secondary pr-3">اتصل بنا</h3>
+            <h3 className="text-lg font-bold border-r-4 border-secondary pr-3">تواصل معنا</h3>
             <ul className="space-y-3 pr-4">
               <li className="flex items-center gap-3 text-sm text-white/70">
                 <MapPin className="w-4 h-4 text-secondary shrink-0" />
-                <span>دمشق - ساحة يوسف العظمة - بناء وزارة الشؤون الاجتماعية والعمل</span>
+                <span>دمشق، الجمهورية العربية السورية</span>
               </li>
               <li className="flex items-center gap-3 text-sm text-white/70">
                 <Phone className="w-4 h-4 text-secondary shrink-0" />
-                <span dir="ltr">+963 11 231 2311</span>
+                <span dir="ltr">0112314151 / 0112325221</span>
               </li>
               <li className="flex items-center gap-3 text-sm text-white/70">
                 <Mail className="w-4 h-4 text-secondary shrink-0" />
