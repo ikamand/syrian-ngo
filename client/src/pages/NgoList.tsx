@@ -245,13 +245,31 @@ export default function NgoList() {
     setVisibleCount(50); // Reset visible count when changing selection
   };
 
-  // NGOs to display in sidebar (filtered by governorate or all)
+  const filterByClassification = (list: typeof ngos) => {
+    if (!selectedClassification) return list || [];
+    return (list || []).filter(ngo => {
+      if (ngo.classifications && Array.isArray(ngo.classifications)) {
+        return (ngo.classifications as Array<{ type?: string; name?: string }>).some(
+          c => c.name === selectedClassification
+        );
+      }
+      return false;
+    });
+  };
+
+  // NGOs to display in sidebar (filtered by governorate, classification, and search)
   const sidebarNgos = useMemo(() => {
-    if (selectedGovernorate) {
-      return governorateNgos;
+    let result = selectedGovernorate ? governorateNgos : (ngos || []);
+    result = filterByClassification(result);
+    if (searchTerm) {
+      result = result.filter(ngo =>
+        (ngo.arabicName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+        (ngo.englishName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+        (ngo.city?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+      );
     }
-    return ngos || [];
-  }, [ngos, selectedGovernorate, governorateNgos]);
+    return result;
+  }, [ngos, selectedGovernorate, governorateNgos, selectedClassification, searchTerm]);
 
   const visibleNgos = sidebarNgos.slice(0, visibleCount);
   const hasMore = visibleCount < sidebarNgos.length;
@@ -354,6 +372,54 @@ export default function NgoList() {
           </TabsList>
 
           <TabsContent value="map" data-testid="content-map-view">
+            <div className="bg-white p-4 rounded-xl shadow-lg max-w-4xl mx-auto mb-8 flex flex-col sm:flex-row gap-3" dir="rtl">
+              <div className="flex-1 relative">
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  placeholder="ابحث عن اسم منظمة..."
+                  className="pr-10 border-gray-200"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  data-testid="input-search-ngo-map"
+                />
+              </div>
+              <div className="flex-1">
+                <Select
+                  value={selectedClassification || "all"}
+                  onValueChange={(val) => {
+                    setSelectedClassification(val === "all" ? null : val);
+                    setVisibleCount(50);
+                  }}
+                >
+                  <SelectTrigger data-testid="select-filter-classification-map">
+                    <SelectValue placeholder="تصنيف المنظمة" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">جميع التصنيفات</SelectItem>
+                    {CLASSIFICATION_OPTIONS.map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {(selectedClassification || searchTerm) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedClassification(null);
+                    setSearchTerm("");
+                    setVisibleCount(50);
+                  }}
+                  className="shrink-0"
+                  data-testid="button-clear-filters-map"
+                >
+                  <X className="w-4 h-4 ml-1" />
+                  مسح الفلاتر
+                </Button>
+              )}
+            </div>
+
             <div className="flex flex-col lg:flex-row gap-8 items-start">
               <Card className="p-0 flex-1 w-full overflow-hidden border-none shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] bg-white">
                 <div className="h-2 bg-primary/80" />
