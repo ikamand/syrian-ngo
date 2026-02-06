@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
-import { Search, Building2, Map, List, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Building2, Map, List, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
@@ -9,7 +9,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SyriaMapLeaflet } from "@/components/SyriaMapLeaflet";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import headerPattern from "@assets/header-pattern.svg";
+
+const CLASSIFICATION_OPTIONS = [
+  "تعليم وتمكين",
+  "البيئة",
+  "الأعمال الخيرية",
+  "التنمية والإسكان",
+  "الخدمات الاجتماعية",
+  "الثقافة والرياضة والتسلية والفنون",
+  "الترويج للعمل التطوعي",
+  "القانون والدفاع والحقوق",
+  "الصحة",
+];
 
 const ITEMS_PER_PAGE = 16;
 
@@ -25,6 +38,8 @@ export default function NgoList() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGovernorate, setSelectedGovernorate] = useState<string | null>(null);
+  const [selectedClassification, setSelectedClassification] = useState<string | null>(null);
+  const [selectedFilterGovernorate, setSelectedFilterGovernorate] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -177,9 +192,27 @@ export default function NgoList() {
         (ngo.city?.toLowerCase() || "").includes(searchTerm.toLowerCase())
       );
     }
+
+    if (selectedClassification) {
+      result = result.filter(ngo => {
+        if (ngo.classifications && Array.isArray(ngo.classifications)) {
+          return (ngo.classifications as Array<{ type?: string; name?: string }>).some(
+            c => c.name === selectedClassification
+          );
+        }
+        return false;
+      });
+    }
+
+    if (selectedFilterGovernorate) {
+      result = result.filter(ngo => {
+        const ngoGovs = getGovernoratesFromNgo(ngo);
+        return ngoGovs.includes(selectedFilterGovernorate);
+      });
+    }
     
     return result;
-  }, [ngos, searchTerm]);
+  }, [ngos, searchTerm, selectedClassification, selectedFilterGovernorate]);
 
   const totalPages = Math.ceil(filteredNgos.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -436,8 +469,8 @@ export default function NgoList() {
           </TabsContent>
 
           <TabsContent value="list" data-testid="content-list-view">
-            <div className="bg-white p-4 rounded-xl shadow-lg max-w-2xl mx-auto mb-10 flex gap-2">
-              <div className="relative flex-1">
+            <div className="bg-white p-4 rounded-xl shadow-lg max-w-4xl mx-auto mb-10 space-y-3" dir="rtl">
+              <div className="relative">
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input 
                   placeholder="ابحث عن اسم منظمة أو مدينة..." 
@@ -446,6 +479,62 @@ export default function NgoList() {
                   onChange={handleSearchChange}
                   data-testid="input-search-ngo"
                 />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1 relative">
+                  <Select
+                    value={selectedClassification || "all"}
+                    onValueChange={(val) => {
+                      setSelectedClassification(val === "all" ? null : val);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <SelectTrigger data-testid="select-filter-classification">
+                      <SelectValue placeholder="تصنيف المنظمة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">جميع التصنيفات</SelectItem>
+                      {CLASSIFICATION_OPTIONS.map((c) => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1 relative">
+                  <Select
+                    value={selectedFilterGovernorate || "all"}
+                    onValueChange={(val) => {
+                      setSelectedFilterGovernorate(val === "all" ? null : val);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <SelectTrigger data-testid="select-filter-governorate">
+                      <SelectValue placeholder="المحافظة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">جميع المحافظات</SelectItem>
+                      {VALID_GOVERNORATES.map((g) => (
+                        <SelectItem key={g} value={g}>{g}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {(selectedClassification || selectedFilterGovernorate) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedClassification(null);
+                      setSelectedFilterGovernorate(null);
+                      setCurrentPage(1);
+                    }}
+                    className="shrink-0"
+                    data-testid="button-clear-filters"
+                  >
+                    <X className="w-4 h-4 ml-1" />
+                    مسح الفلاتر
+                  </Button>
+                )}
               </div>
             </div>
 
