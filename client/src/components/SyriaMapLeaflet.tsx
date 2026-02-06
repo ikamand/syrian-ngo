@@ -180,7 +180,7 @@ export function SyriaMapLeaflet({ governoratesData, onGovernorateClick, selected
         center={[35.0, 38.5]}
         zoom={6.5}
         style={{ height: "500px", width: "100%", borderRadius: "0" }}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
         className="z-0"
         data-testid="leaflet-map-container"
       >
