@@ -353,7 +353,8 @@ export async function registerRoutes(
         governorate, 
         registrationNumber, 
         registrationDate,
-        status 
+        status,
+        username
       } = req.body;
       
       const targetUser = await storage.getUser(userId);
@@ -371,7 +372,21 @@ export async function registerRoutes(
         return res.status(403).json({ message: "لا يمكنك تعطيل حسابك الخاص" });
       }
       
-      const updatedUser = await storage.updateUser(userId, {
+      // Only super admins can change usernames
+      if (username && username !== targetUser.username) {
+        if (currentUser.role !== "super_admin") {
+          return res.status(403).json({ message: "فقط المشرف الأعلى يمكنه تغيير اسم المستخدم" });
+        }
+        if (username.trim().length < 3) {
+          return res.status(400).json({ message: "اسم المستخدم يجب أن يكون 3 أحرف على الأقل" });
+        }
+        const existingUser = await storage.getUserByUsername(username.trim());
+        if (existingUser && existingUser.id !== userId) {
+          return res.status(400).json({ message: "اسم المستخدم مستخدم مسبقاً" });
+        }
+      }
+      
+      const updateData: any = {
         firstName,
         lastName,
         email,
@@ -381,7 +396,13 @@ export async function registerRoutes(
         registrationNumber,
         registrationDate,
         status
-      });
+      };
+      
+      if (username && username !== targetUser.username && currentUser.role === "super_admin") {
+        updateData.username = username.trim();
+      }
+      
+      const updatedUser = await storage.updateUser(userId, updateData);
       
       res.json(updatedUser);
     } catch (err) {

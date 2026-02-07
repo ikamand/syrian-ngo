@@ -7,7 +7,7 @@ import { useAllSiteContent, useUpsertSiteContent } from "@/hooks/use-site-conten
 import { usePublicFooterLinks, useCreateFooterLink, useUpdateFooterLink, useDeleteFooterLink } from "@/hooks/use-footer-links";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Check, X, Trash2, Save, Plus, Users, UserPlus, Pencil, Upload, ImageIcon, Loader2 } from "lucide-react";
+import { Check, X, Trash2, Save, Plus, Users, UserPlus, Pencil, Upload, ImageIcon, Loader2, Key } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateUserDialog } from "@/components/CreateUserDialog";
 import { EditUserDialog } from "@/components/EditUserDialog";
@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { stripHtml } from "@/lib/sanitize";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -114,6 +114,45 @@ export default function AdminDashboard() {
   
   const [createUserOpen, setCreateUserOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+  
+  const [changePasswordData, setChangePasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+  const handleChangeOwnPassword = useCallback(async () => {
+    const { currentPassword, newPassword, confirmPassword } = changePasswordData;
+    if (!currentPassword || !newPassword) {
+      toast({ title: "خطأ", description: "جميع الحقول مطلوبة", variant: "destructive" });
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast({ title: "خطأ", description: "كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل", variant: "destructive" });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast({ title: "خطأ", description: "كلمة المرور الجديدة غير متطابقة", variant: "destructive" });
+      return;
+    }
+    setIsChangingPassword(true);
+    try {
+      const res = await fetch("/api/user/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "حدث خطأ");
+      toast({ title: "تم بنجاح", description: "تم تغيير كلمة المرور بنجاح" });
+      setChangePasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (err: any) {
+      toast({ title: "خطأ", description: err.message === "Current password is incorrect" ? "كلمة المرور الحالية غير صحيحة" : (err.message || "فشل تغيير كلمة المرور"), variant: "destructive" });
+    } finally {
+      setIsChangingPassword(false);
+    }
+  }, [changePasswordData, toast]);
   
   // Handle redirect in useEffect to avoid setState during render
   useEffect(() => {
@@ -1052,6 +1091,74 @@ export default function AdminDashboard() {
                   </Card>
                 )}
 
+                {isSuperAdmin && (
+                  <Card className="border-none shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)]" data-testid="card-change-password">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Key className="w-5 h-5" />
+                        تغيير كلمة المرور
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="currentPassword">كلمة المرور الحالية</Label>
+                          <Input
+                            id="currentPassword"
+                            type="password"
+                            value={changePasswordData.currentPassword}
+                            onChange={(e) => setChangePasswordData({ ...changePasswordData, currentPassword: e.target.value })}
+                            placeholder="أدخل كلمة المرور الحالية"
+                            className="text-left"
+                            dir="ltr"
+                            data-testid="input-current-password"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="newPassword">كلمة المرور الجديدة</Label>
+                          <Input
+                            id="newPassword"
+                            type="password"
+                            value={changePasswordData.newPassword}
+                            onChange={(e) => setChangePasswordData({ ...changePasswordData, newPassword: e.target.value })}
+                            placeholder="6 أحرف على الأقل"
+                            className="text-left"
+                            dir="ltr"
+                            data-testid="input-new-own-password"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="confirmPassword">تأكيد كلمة المرور</Label>
+                          <Input
+                            id="confirmPassword"
+                            type="password"
+                            value={changePasswordData.confirmPassword}
+                            onChange={(e) => setChangePasswordData({ ...changePasswordData, confirmPassword: e.target.value })}
+                            placeholder="أعد إدخال كلمة المرور"
+                            className="text-left"
+                            dir="ltr"
+                            data-testid="input-confirm-password"
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-4">
+                        <Button
+                          onClick={handleChangeOwnPassword}
+                          disabled={isChangingPassword || !changePasswordData.currentPassword || !changePasswordData.newPassword || !changePasswordData.confirmPassword}
+                          data-testid="button-change-own-password"
+                        >
+                          {isChangingPassword ? (
+                            <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                          ) : (
+                            <Key className="w-4 h-4 ml-2" />
+                          )}
+                          تغيير كلمة المرور
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
                 {isUsersLoading ? (
                   <div className="text-center py-12 text-muted-foreground">جاري التحميل...</div>
                 ) : (
@@ -1692,6 +1799,7 @@ export default function AdminDashboard() {
         onOpenChange={(open) => !open && !deleteUserMutation.isPending && setEditingUser(null)}
         user={editingUser}
         currentUserId={user?.id}
+        isSuperAdmin={isSuperAdmin}
         canDelete={isSuperAdmin && editingUser?.role !== "super_admin" && editingUser?.id !== user?.id}
         onDelete={(userId, username, role) => {
           if (role === "super_admin") {

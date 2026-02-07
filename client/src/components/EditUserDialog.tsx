@@ -33,6 +33,7 @@ interface EditUserDialogProps {
   canDelete?: boolean;
   onDelete?: (userId: number, username: string, role: string) => void;
   isDeleting?: boolean;
+  isSuperAdmin?: boolean;
 }
 
 const GOVERNORATES = [
@@ -52,7 +53,7 @@ const GOVERNORATES = [
   "الحسكة"
 ];
 
-export function EditUserDialog({ open, onOpenChange, user, currentUserId, canDelete, onDelete, isDeleting }: EditUserDialogProps) {
+export function EditUserDialog({ open, onOpenChange, user, currentUserId, canDelete, onDelete, isDeleting, isSuperAdmin = false }: EditUserDialogProps) {
   const isEditingSelf = user?.id === currentUserId;
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -125,6 +126,7 @@ export function EditUserDialog({ open, onOpenChange, user, currentUserId, canDel
   };
   
   const [formData, setFormData] = useState({
+    username: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -136,10 +138,10 @@ export function EditUserDialog({ open, onOpenChange, user, currentUserId, canDel
     status: "active"
   });
 
-  // Reset form and password state when dialog opens or user changes
   useEffect(() => {
     if (open && user) {
       setFormData({
+        username: user.username || "",
         firstName: user.firstName || "",
         lastName: user.lastName || "",
         email: user.email || "",
@@ -201,6 +203,21 @@ export function EditUserDialog({ open, onOpenChange, user, currentUserId, canDel
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {isSuperAdmin && (
+            <div className="space-y-2">
+              <Label htmlFor="username">اسم المستخدم</Label>
+              <Input
+                id="username"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                placeholder="اسم المستخدم"
+                className="text-left"
+                dir="ltr"
+                data-testid="input-edit-username"
+              />
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="firstName">الإسم</Label>
