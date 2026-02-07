@@ -1,9 +1,17 @@
-import { users, ngos, announcements, siteContent, notices, footerLinks, ngoNotes, type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent, type Notice, type InsertNotice, type FooterLink, type InsertFooterLink, type NgoNote, type InsertNgoNote } from "@shared/schema";
+import { type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent, type Notice, type InsertNotice, type FooterLink, type InsertFooterLink, type NgoNote, type InsertNgoNote } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import connectPgSimple from "connect-pg-simple";
-import { db, pool } from "./db";
-import { eq, desc, sql } from "drizzle-orm";
+import { pool } from "./db";
+
+import * as userRepo from "./repositories/userRepository";
+import * as membershipRepo from "./repositories/membershipRepository";
+import * as ngoRepo from "./repositories/ngoRepository";
+import * as announcementRepo from "./repositories/announcementRepository";
+import * as siteContentRepo from "./repositories/siteContentRepository";
+import * as noticeRepo from "./repositories/noticeRepository";
+import * as footerLinkRepo from "./repositories/footerLinkRepository";
+import * as ngoNoteRepo from "./repositories/ngoNoteRepository";
 
 const MemoryStore = createMemoryStore(session);
 const PgSession = connectPgSimple(session);
@@ -69,14 +77,12 @@ export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
 
   constructor() {
-    // Always use PostgreSQL session store when DATABASE_URL is available
-    // This ensures consistent behavior between development and production
     if (process.env.DATABASE_URL) {
       const pgStore = new PgSession({
         pool: pool as any,
         tableName: "session",
         createTableIfMissing: true,
-        pruneSessionInterval: 60, // Prune expired sessions every 60 seconds
+        pruneSessionInterval: 60,
       });
       
       pgStore.on('error', (error: Error) => {
@@ -94,61 +100,47 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    return userRepo.findById(id);
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user;
+    return userRepo.findByUsername(username);
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
-    return user;
+    return userRepo.createWithRole(insertUser);
   }
 
   async updateUserPassword(id: number, newPassword: string): Promise<User | undefined> {
-    const [user] = await db.update(users).set({ password: newPassword }).where(eq(users.id, id)).returning();
-    return user;
+    return userRepo.updatePassword(id, newPassword);
   }
 
   async updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined> {
-    const [user] = await db.update(users).set(updates).where(eq(users.id, id)).returning();
-    return user;
+    return userRepo.updateProfile(id, updates);
   }
 
   async getAllUsers(): Promise<User[]> {
-    return db.select().from(users);
+    return userRepo.findAllForAdmin();
   }
 
   async createNgo(insertNgo: InsertNgo & { createdBy: number }): Promise<Ngo> {
-    const [ngo] = await db.insert(ngos).values({
-      ...insertNgo,
-      status: "Pending" as const,
-    } as any).returning();
-    return ngo;
+    return ngoRepo.createForUser(insertNgo);
   }
 
   async getNgo(id: number): Promise<Ngo | undefined> {
-    const [ngo] = await db.select().from(ngos).where(eq(ngos.id, id));
-    return ngo;
+    return ngoRepo.findById(id);
   }
 
   async getNgos(): Promise<Ngo[]> {
-    return db.select().from(ngos).orderBy(desc(ngos.createdAt));
+    return ngoRepo.findAllForAdmin();
   }
 
   async getNgosByUserId(userId: number): Promise<Ngo[]> {
-    return db.select().from(ngos).where(eq(ngos.createdBy, userId)).orderBy(desc(ngos.createdAt));
+    return membershipRepo.findNgosByOwner(userId);
   }
 
   async updateNgoStatus(id: number, status: string): Promise<Ngo | undefined> {
-    const [updated] = await db.update(ngos)
-      .set({ status: status as "Pending" | "AdminApproved" | "Approved" | "Rejected" })
-      .where(eq(ngos.id, id))
-      .returning();
-    return updated;
+    return ngoRepo.updateStatus(id, status);
   }
 
   async updateNgoApproval(id: number, updates: {
@@ -161,172 +153,107 @@ export class DatabaseStorage implements IStorage {
     rejectedAt?: Date;
     rejectionReason?: string;
   }): Promise<Ngo | undefined> {
-    const [updated] = await db.update(ngos)
-      .set({
-        status: updates.status as "Pending" | "AdminApproved" | "Approved" | "Rejected",
-        approvedByAdminId: updates.approvedByAdminId,
-        approvedByAdminAt: updates.approvedByAdminAt,
-        approvedBySuperAdminId: updates.approvedBySuperAdminId,
-        approvedBySuperAdminAt: updates.approvedBySuperAdminAt,
-        rejectedById: updates.rejectedById,
-        rejectedAt: updates.rejectedAt,
-        rejectionReason: updates.rejectionReason
-      })
-      .where(eq(ngos.id, id))
-      .returning();
-    return updated;
+    return ngoRepo.updateApprovalStatus(id, updates);
   }
 
   async deleteUser(id: number): Promise<boolean> {
-    const result = await db.delete(users).where(eq(users.id, id));
-    return (result.rowCount ?? 0) > 0;
+    return userRepo.removeUserByAdmin(id);
   }
 
   async updateNgo(id: number, updates: Partial<InsertNgo>, resetStatus: boolean = true): Promise<Ngo | undefined> {
-    const setData = resetStatus 
-      ? { ...updates, status: "Pending" as const }
-      : updates;
-    const [updated] = await db.update(ngos)
-      .set(setData as any)
-      .where(eq(ngos.id, id))
-      .returning();
-    return updated;
+    return ngoRepo.updateFields(id, updates, resetStatus);
   }
 
   async deleteNgo(id: number): Promise<boolean> {
-    const result = await db.delete(ngos).where(eq(ngos.id, id));
-    return (result.rowCount ?? 0) > 0;
+    return ngoRepo.removeNgoByAdmin(id);
   }
 
   async createAnnouncement(insertAnnouncement: InsertAnnouncement & { createdBy: number }): Promise<Announcement> {
-    const [announcement] = await db.insert(announcements).values(insertAnnouncement).returning();
-    return announcement;
+    return announcementRepo.create(insertAnnouncement);
   }
 
   async getAnnouncement(id: number): Promise<Announcement | undefined> {
-    const [announcement] = await db.select().from(announcements).where(eq(announcements.id, id));
-    return announcement;
+    return announcementRepo.findById(id);
   }
 
   async getAnnouncements(): Promise<Announcement[]> {
-    return db.select().from(announcements).orderBy(desc(announcements.createdAt));
+    return announcementRepo.findAllForAdmin();
   }
 
   async getPublishedAnnouncements(): Promise<Announcement[]> {
-    return db.select().from(announcements).where(eq(announcements.published, true)).orderBy(desc(announcements.createdAt));
+    return announcementRepo.findPublished();
   }
 
   async updateAnnouncement(id: number, updates: Partial<InsertAnnouncement>): Promise<Announcement | undefined> {
-    const [updated] = await db.update(announcements)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(announcements.id, id))
-      .returning();
-    return updated;
+    return announcementRepo.update(id, updates);
   }
 
   async deleteAnnouncement(id: number): Promise<boolean> {
-    const result = await db.delete(announcements).where(eq(announcements.id, id));
-    return (result.rowCount ?? 0) > 0;
+    return announcementRepo.removeByAdmin(id);
   }
 
   async getSiteContent(key: string): Promise<SiteContent | undefined> {
-    const [content] = await db.select().from(siteContent).where(eq(siteContent.key, key));
-    return content;
+    return siteContentRepo.findByKey(key);
   }
 
   async getAllSiteContent(): Promise<SiteContent[]> {
-    return db.select().from(siteContent);
+    return siteContentRepo.findAllForAdmin();
   }
 
   async upsertSiteContent(key: string, content: Omit<InsertSiteContent, 'key'> & { updatedBy: number }): Promise<SiteContent> {
-    const existing = await this.getSiteContent(key);
-    
-    if (existing) {
-      const [updated] = await db.update(siteContent)
-        .set({ ...content, updatedAt: new Date() })
-        .where(eq(siteContent.key, key))
-        .returning();
-      return updated;
-    } else {
-      const [created] = await db.insert(siteContent)
-        .values({ key, ...content })
-        .returning();
-      return created;
-    }
+    return siteContentRepo.upsert(key, content);
   }
 
   async createNotice(notice: InsertNotice & { createdBy: number }): Promise<Notice> {
-    const [created] = await db.insert(notices).values(notice).returning();
-    return created;
+    return noticeRepo.create(notice);
   }
 
   async getNotice(id: number): Promise<Notice | undefined> {
-    const [notice] = await db.select().from(notices).where(eq(notices.id, id));
-    return notice;
+    return noticeRepo.findById(id);
   }
 
   async getNotices(): Promise<Notice[]> {
-    return db.select().from(notices).orderBy(desc(notices.createdAt));
+    return noticeRepo.findAllOrderedForAdmin();
   }
 
   async updateNotice(id: number, updates: Partial<InsertNotice>): Promise<Notice | undefined> {
-    const [updated] = await db.update(notices)
-      .set(updates)
-      .where(eq(notices.id, id))
-      .returning();
-    return updated;
+    return noticeRepo.update(id, updates);
   }
 
   async deleteNotice(id: number): Promise<boolean> {
-    const result = await db.delete(notices).where(eq(notices.id, id)).returning();
-    return result.length > 0;
+    return noticeRepo.removeByAdmin(id);
   }
 
   async createFooterLink(link: InsertFooterLink): Promise<FooterLink> {
-    const [created] = await db.insert(footerLinks).values(link).returning();
-    return created;
+    return footerLinkRepo.create(link);
   }
 
   async getFooterLink(id: number): Promise<FooterLink | undefined> {
-    const [link] = await db.select().from(footerLinks).where(eq(footerLinks.id, id));
-    return link;
+    return footerLinkRepo.findById(id);
   }
 
   async getFooterLinks(): Promise<FooterLink[]> {
-    return db.select().from(footerLinks).orderBy(footerLinks.sortOrder);
+    return footerLinkRepo.findAllSorted();
   }
 
   async updateFooterLink(id: number, updates: Partial<InsertFooterLink>): Promise<FooterLink | undefined> {
-    const [updated] = await db.update(footerLinks)
-      .set(updates)
-      .where(eq(footerLinks.id, id))
-      .returning();
-    return updated;
+    return footerLinkRepo.update(id, updates);
   }
 
   async deleteFooterLink(id: number): Promise<boolean> {
-    const result = await db.delete(footerLinks).where(eq(footerLinks.id, id)).returning();
-    return result.length > 0;
+    return footerLinkRepo.removeByAdmin(id);
   }
 
   async createNgoNote(note: InsertNgoNote & { authorId: number }): Promise<NgoNote> {
-    const [created] = await db.insert(ngoNotes).values(note).returning();
-    return created;
+    return ngoNoteRepo.createForNgo(note);
   }
 
   async getNgoNotes(ngoId: number): Promise<NgoNote[]> {
-    return db.select().from(ngoNotes).where(eq(ngoNotes.ngoId, ngoId)).orderBy(desc(ngoNotes.createdAt));
+    return ngoNoteRepo.findByNgoId(ngoId);
   }
 
   async getAllNgoNoteCounts(): Promise<{ ngoId: number; count: number }[]> {
-    const result = await db
-      .select({
-        ngoId: ngoNotes.ngoId,
-        count: sql<number>`count(*)::int`,
-      })
-      .from(ngoNotes)
-      .groupBy(ngoNotes.ngoId);
-    return result;
+    return ngoNoteRepo.countsByNgo();
   }
 }
 

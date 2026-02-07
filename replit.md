@@ -95,8 +95,17 @@ The announcements page uses an editorial news-style design:
 │       └── lib/          # Utilities and query client
 ├── server/           # Express backend
 │   ├── routes.ts     # API route handlers
-│   ├── storage.ts    # Data access layer (memory/database)
-│   └── db.ts         # Database connection
+│   ├── storage.ts    # Thin delegator to repositories (no Drizzle imports)
+│   ├── db.ts         # Database connection
+│   └── repositories/ # Per-entity database access layer
+│       ├── userRepository.ts
+│       ├── membershipRepository.ts
+│       ├── ngoRepository.ts
+│       ├── announcementRepository.ts
+│       ├── siteContentRepository.ts
+│       ├── noticeRepository.ts
+│       ├── footerLinkRepository.ts
+│       └── ngoNoteRepository.ts
 ├── shared/           # Shared code between client and server
 │   ├── schema.ts     # Drizzle database schema
 │   └── routes.ts     # API contract definitions with Zod
@@ -153,6 +162,20 @@ The authentication system uses secure password hashing with bcrypt and admin-onl
 - `esbuild`: Production server bundling
 
 ## Recent Changes
+
+### Repository Layer Refactoring (Feb 7, 2026)
+- Created `server/repositories/` directory with 8 security-encoded repository files:
+  - `userRepository.ts` — findById, findByUsername, createWithRole, updatePassword, updateProfile, findAllForAdmin, removeUserByAdmin
+  - `membershipRepository.ts` — verifyOwnership(userId, ngoId), findNgosByOwner(userId)
+  - `ngoRepository.ts` — findById, findAllForAdmin, createForUser, updateFields, updateStatus, updateApprovalStatus, removeNgoByAdmin
+  - `announcementRepository.ts` — findById, findAllForAdmin, findPublished, create, update, removeByAdmin
+  - `siteContentRepository.ts` — findByKey, findAllForAdmin, upsert
+  - `noticeRepository.ts` — findById, findAllOrderedForAdmin, create, update, removeByAdmin
+  - `footerLinkRepository.ts` — findById, findAllSorted, create, update, removeByAdmin
+  - `ngoNoteRepository.ts` — findByNgoId(ngoId), createForNgo, countsByNgo
+- `storage.ts` refactored to thin delegator: zero Drizzle imports, all methods delegate to repositories
+- No changes to routes.ts, schema.ts, migrations, or frontend files
+- Security assumptions: No generic getAll/deleteById; context-encoded API names; ngoNotes always require explicit ngoId; membership repo centralizes ownership checks
 
 ### Date Format Standardization (Feb 7, 2026)
 - Created shared `formatDate()` utility at `client/src/lib/date.ts` — formats all dates as YYYY-MM-DD
