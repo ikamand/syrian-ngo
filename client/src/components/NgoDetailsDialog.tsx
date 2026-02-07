@@ -8,6 +8,7 @@ import {
 import { StatusBadge } from "@/components/StatusBadge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/lib/date";
 import { Button } from "@/components/ui/button";
 import { Check, X, FileText, Download } from "lucide-react";
 import type { Ngo } from "@shared/schema";
@@ -88,7 +89,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showDocuments = fals
                       <Badge variant="default" className="bg-blue-100 text-blue-700 no-default-hover-elevate">موافقة أولية</Badge>
                       <span className="text-muted-foreground">
                         بواسطة المدير رقم #{ngo.approvedByAdminId}
-                        {ngo.approvedByAdminAt && ` - ${new Date(ngo.approvedByAdminAt).toLocaleDateString("ar-SY")}`}
+                        {ngo.approvedByAdminAt && ` - ${formatDate(ngo.approvedByAdminAt)}`}
                       </span>
                     </div>
                   )}
@@ -97,7 +98,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showDocuments = fals
                       <Badge variant="default" className="bg-green-100 text-green-700 no-default-hover-elevate">موافقة نهائية</Badge>
                       <span className="text-muted-foreground">
                         بواسطة المشرف الأعلى رقم #{ngo.approvedBySuperAdminId}
-                        {ngo.approvedBySuperAdminAt && ` - ${new Date(ngo.approvedBySuperAdminAt).toLocaleDateString("ar-SY")}`}
+                        {ngo.approvedBySuperAdminAt && ` - ${formatDate(ngo.approvedBySuperAdminAt)}`}
                       </span>
                     </div>
                   )}
@@ -108,7 +109,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showDocuments = fals
                         {ngo.rejectedById && (
                           <span className="text-muted-foreground text-xs">
                             بواسطة المسؤول رقم #{ngo.rejectedById}
-                            {ngo.rejectedAt && ` - ${new Date(ngo.rejectedAt).toLocaleDateString("ar-SY")}`}
+                            {ngo.rejectedAt && ` - ${formatDate(ngo.rejectedAt)}`}
                           </span>
                         )}
                       </div>
@@ -689,11 +690,7 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showDocuments = fals
                     <DetailItem label="رقم الهاتف" value={getFieldValue(ngo.phone)} />
                   </div>
                   <div className="mt-3 text-xs text-muted-foreground">
-                    تاريخ التقديم: {ngo.createdAt ? new Date(ngo.createdAt).toLocaleDateString("ar-SY", {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    }) : "غير محدد"}
+                    تاريخ التقديم: {formatDate(ngo.createdAt) || "غير محدد"}
                   </div>
                 </AccordionContent>
               </AccordionItem>

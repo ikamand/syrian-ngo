@@ -4,8 +4,7 @@ import { usePublishedAnnouncements } from "@/hooks/use-announcements";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar, Loader2, Megaphone, Newspaper, Search, ChevronRight, ChevronLeft } from "lucide-react";
-import { format } from "date-fns";
-import { ar } from "date-fns/locale";
+import { formatDate } from "@/lib/date";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
 import headerPattern from "@assets/header-pattern.svg";
@@ -135,9 +134,7 @@ export default function Announcements() {
                         <div className="flex items-center gap-2 text-sm text-white/80 mb-2">
                           <Calendar className="w-4 h-4" />
                           <span>
-                            {featuredArticle.createdAt 
-                              ? format(new Date(featuredArticle.createdAt), "d MMMM yyyy", { locale: ar })
-                              : ""}
+                            {formatDate(featuredArticle.createdAt)}
                           </span>
                         </div>
                         <h2 className="text-xl md:text-2xl font-bold mb-3 leading-tight group-hover:text-secondary transition-colors">
@@ -180,9 +177,7 @@ export default function Announcements() {
                               <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
                                 <Calendar className="w-3 h-3" />
                                 <span>
-                                  {article.createdAt 
-                                    ? format(new Date(article.createdAt), "d MMMM yyyy", { locale: ar })
-                                    : ""}
+                                  {formatDate(article.createdAt)}
                                 </span>
                               </div>
                               
@@ -230,9 +225,7 @@ export default function Announcements() {
                           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
                             <Calendar className="w-3 h-3" />
                             <span>
-                              {article.createdAt 
-                                ? format(new Date(article.createdAt), "d MMMM yyyy", { locale: ar })
-                                : ""}
+                              {formatDate(article.createdAt)}
                             </span>
                           </div>
                           

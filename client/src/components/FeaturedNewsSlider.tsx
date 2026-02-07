@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "wouter";
 import { ChevronLeft, ChevronRight, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/date";
 import { sanitizeHtml } from "@/lib/sanitize";
 import type { Announcement } from "@shared/schema";
 
@@ -95,11 +96,7 @@ export function FeaturedNewsSlider() {
                   </div>
                   <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-center text-right" dir="rtl">
                     <span className="text-sm text-muted-foreground mb-2">
-                      {news.createdAt ? new Date(news.createdAt).toLocaleDateString('ar-SY', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      }) : ''}
+                      {formatDate(news.createdAt)}
                     </span>
                     <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4 line-clamp-2">
                       {news.title}

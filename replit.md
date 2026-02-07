@@ -154,6 +154,12 @@ The authentication system uses secure password hashing with bcrypt and admin-onl
 
 ## Recent Changes
 
+### Date Format Standardization (Feb 7, 2026)
+- Created shared `formatDate()` utility at `client/src/lib/date.ts` — formats all dates as YYYY-MM-DD
+- Updated 7 files to use the shared utility: AdminDashboard, Announcements, AnnouncementDetail, FeaturedNewsSlider, NgoDetailsDialog, NgoInternalNotes, Dashboard
+- Removed `date-fns` dependency (no longer needed)
+- User preference: All dates across the platform should be formatted as YYYY-MM-DD (2026-01-01)
+
 ### Code Cleanup (Feb 7, 2026)
 - Deleted 24 unused shadcn UI component files (kept only actively used components)
 - Removed 22 unused NPM dependencies (axios, framer-motion, next-themes, sonner, @uppy/*, etc.)

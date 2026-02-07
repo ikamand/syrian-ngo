@@ -45,8 +45,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { format } from "date-fns";
-import { ar } from "date-fns/locale";
+import { formatDate } from "@/lib/date";
 import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
 import { NgoInternalNotesDialog } from "@/components/NgoInternalNotesDialog";
 import { RejectNgoDialog } from "@/components/RejectNgoDialog";
@@ -919,7 +918,7 @@ export default function AdminDashboard() {
                                 <CardTitle className="text-lg">{announcement.title}</CardTitle>
                                 <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
                                   {announcement.createdAt && (
-                                    <span>{format(new Date(announcement.createdAt), "d MMMM yyyy", { locale: ar })}</span>
+                                    <span>{formatDate(announcement.createdAt)}</span>
                                   )}
                                   {announcement.published ? (
                                     <Badge variant="default" className="bg-green-600">منشور</Badge>

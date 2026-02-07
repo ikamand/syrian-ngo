@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { StatusBadge } from "@/components/StatusBadge";
+import { formatDate } from "@/lib/date";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { NgoDetailsDialog } from "@/components/NgoDetailsDialog";
@@ -123,7 +124,7 @@ export default function Dashboard() {
                       <span>•</span>
                       <span>النطاق: {ngo.scope || "غير محدد"}</span>
                       <span>•</span>
-                      <span>تاريخ التقديم: {ngo.createdAt ? new Date(ngo.createdAt).toLocaleDateString("ar-SY") : "غير محدد"}</span>
+                      <span>تاريخ التقديم: {formatDate(ngo.createdAt) || "غير محدد"}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

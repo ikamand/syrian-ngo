@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageSquarePlus, StickyNote, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { formatDate } from "@/lib/date";
 
 interface NgoNote {
   id: number;
@@ -67,16 +68,6 @@ export function NgoInternalNotes({ ngoId }: NgoInternalNotesProps) {
     addNoteMutation.mutate(newNote.trim());
   };
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
 
   return (
     <div className="space-y-4">

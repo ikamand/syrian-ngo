@@ -2,8 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { useAnnouncement } from "@/hooks/use-announcements";
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight, Loader2, Newspaper, Share2 } from "lucide-react";
-import { format } from "date-fns";
-import { ar } from "date-fns/locale";
+import { formatDate } from "@/lib/date";
 import { useRoute, Link } from "wouter";
 import { sanitizeHtml } from "@/lib/sanitize";
 
@@ -79,9 +78,7 @@ export default function AnnouncementDetail() {
                     <Calendar className="w-4 h-4" />
                     <span>تاريخ النشر:</span>
                     <time dateTime={announcement.createdAt?.toString()} className="font-medium text-gray-700">
-                      {announcement.createdAt
-                        ? format(new Date(announcement.createdAt), "d MMMM yyyy", { locale: ar })
-                        : ""}
+                      {formatDate(announcement.createdAt)}
                     </time>
                   </div>
                   
