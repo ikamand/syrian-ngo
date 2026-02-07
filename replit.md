@@ -151,3 +151,12 @@ The authentication system uses secure password hashing with bcrypt and admin-onl
 - `vite`: Frontend build tool with HMR
 - `tsx`: TypeScript execution for server
 - `esbuild`: Production server bundling
+
+## Recent Changes
+
+### Code Cleanup (Feb 7, 2026)
+- Deleted 24 unused shadcn UI component files (kept only actively used components)
+- Removed 22 unused NPM dependencies (axios, framer-motion, next-themes, sonner, @uppy/*, etc.)
+- Cleaned up debug console.log statements from server/routes.ts
+- Added global scroll-to-top on route navigation
+- No behavioral changes — cleanup only
