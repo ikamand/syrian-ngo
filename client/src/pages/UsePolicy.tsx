@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShieldCheck, Ban, LogOut, Link2, Copyright, Gavel, AlertTriangle, Scale, FileWarning, HandshakeIcon, MessageSquare } from "lucide-react";
@@ -28,10 +27,6 @@ function PolicySection({ icon, title, children }: PolicySectionProps) {
 }
 
 export default function UsePolicy() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-50/50">
       <Navbar />
