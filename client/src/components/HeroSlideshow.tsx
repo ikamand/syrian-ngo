@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroCommunity from "@/assets/images/hero-community.png";
+import heroDamascus from "@assets/122ds21d_1770574150271.png";
 
 interface Slide {
   image: string;
@@ -11,7 +12,7 @@ interface Slide {
 
 const slides: Slide[] = [
   {
-    image: "https://images.unsplash.com/photo-1577495508048-b635879837f1?q=80&w=2074&auto=format&fit=crop",
+    image: heroDamascus,
     title: "منصة إدارة المنظمات غير الحكومية",
     subtitle: "النظام الموحد لتسجيل ومتابعة المنظمات والجمعيات الأهلية في الجمهورية العربية السورية"
   },
