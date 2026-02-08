@@ -429,8 +429,7 @@ export async function registerRoutes(
         return res.status(400).json({ message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" });
       }
 
-      // Only allow creating admin accounts (not super_admin)
-      const userRole = "admin";
+      const userRole = (role === "admin" || role === "super_admin") ? role : "admin";
       
       const existing = await storage.getUserByUsername(username);
       if (existing) {

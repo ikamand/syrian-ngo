@@ -241,17 +241,27 @@ export function CreateUserDialog({ open, onOpenChange, isSuperAdmin = false }: C
           {/* Role selector - always visible to allow creating super_admin */}
           <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
             <Label htmlFor="role">نوع الحساب</Label>
-            <Select value={selectedRole} onValueChange={(value: "user" | "admin" | "super_admin") => setSelectedRole(value)}>
+            <Select value={selectedRole} onValueChange={(value: "user" | "admin" | "super_admin") => {
+              setSelectedRole(value);
+              if (value !== "user") {
+                setFormData(prev => ({ ...prev, organizationName: "", governorate: "", registrationNumber: "", registrationDate: "" }));
+              }
+            }}>
               <SelectTrigger id="role" data-testid="select-user-role">
                 <SelectValue placeholder="اختر نوع الحساب" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="user">مستخدم عادي</SelectItem>
                 <SelectItem value="admin">مدير (Admin)</SelectItem>
+                {isSuperAdmin && (
+                  <SelectItem value="super_admin">مشرف أعلى (Super Admin)</SelectItem>
+                )}
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">
-              {selectedRole === "admin" 
+              {selectedRole === "super_admin"
+                ? "المشرف الأعلى يمكنه إدارة النظام بالكامل وإنشاء حسابات المديرين"
+                : selectedRole === "admin" 
                 ? "المدير يمكنه الموافقة على المنظمات ومراجعة الطلبات" 
                 : "المستخدم العادي يمكنه تسجيل منظمة وإدارتها"}
             </p>
@@ -366,58 +376,62 @@ export function CreateUserDialog({ open, onOpenChange, isSuperAdmin = false }: C
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="organizationName">اسم المنظمة</Label>
-            <Input
-              id="organizationName"
-              value={formData.organizationName}
-              onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
-              placeholder="اسم المنظمة أو الجمعية"
-              data-testid="input-organization-name"
-            />
-          </div>
+          {selectedRole === "user" && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="organizationName">اسم المنظمة</Label>
+                <Input
+                  id="organizationName"
+                  value={formData.organizationName}
+                  onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
+                  placeholder="اسم المنظمة أو الجمعية"
+                  data-testid="input-organization-name"
+                />
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="governorate">المحافظة</Label>
-              <Select
-                value={formData.governorate}
-                onValueChange={(value) => setFormData({ ...formData, governorate: value })}
-              >
-                <SelectTrigger data-testid="select-governorate">
-                  <SelectValue placeholder="اختر المحافظة" />
-                </SelectTrigger>
-                <SelectContent>
-                  {GOVERNORATES.map((gov) => (
-                    <SelectItem key={gov} value={gov}>{gov}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="registrationNumber">رقم الإشهار</Label>
-              <Input
-                id="registrationNumber"
-                value={formData.registrationNumber}
-                onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
-                placeholder="رقم الإشهار"
-                data-testid="input-registration-number"
-              />
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="governorate">المحافظة</Label>
+                  <Select
+                    value={formData.governorate}
+                    onValueChange={(value) => setFormData({ ...formData, governorate: value })}
+                  >
+                    <SelectTrigger data-testid="select-governorate">
+                      <SelectValue placeholder="اختر المحافظة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {GOVERNORATES.map((gov) => (
+                        <SelectItem key={gov} value={gov}>{gov}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="registrationNumber">رقم الإشهار</Label>
+                  <Input
+                    id="registrationNumber"
+                    value={formData.registrationNumber}
+                    onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
+                    placeholder="رقم الإشهار"
+                    data-testid="input-registration-number"
+                  />
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="registrationDate">تاريخ الإشهار</Label>
-            <Input
-              id="registrationDate"
-              type="date"
-              value={formData.registrationDate}
-              onChange={(e) => setFormData({ ...formData, registrationDate: e.target.value })}
-              className="text-left"
-              dir="ltr"
-              data-testid="input-registration-date"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="registrationDate">تاريخ الإشهار</Label>
+                <Input
+                  id="registrationDate"
+                  type="date"
+                  value={formData.registrationDate}
+                  onChange={(e) => setFormData({ ...formData, registrationDate: e.target.value })}
+                  className="text-left"
+                  dir="ltr"
+                  data-testid="input-registration-date"
+                />
+              </div>
+            </>
+          )}
 
           <DialogFooter className="gap-2 pt-4">
             <Button type="button" variant="outline" onClick={handleClose}>
