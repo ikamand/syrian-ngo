@@ -8,3 +8,4 @@ vite.config.ts.*
 node_global/
 .replit
 replit.md
+attached_assets/
