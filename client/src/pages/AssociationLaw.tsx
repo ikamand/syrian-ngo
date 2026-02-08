@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useSiteContent } from "@/hooks/use-site-content";
 import { sanitizeHtml } from "@/lib/sanitize";
-import headerPattern from "@assets/header-pattern.svg";
+import headerPattern from "@/assets/images/header-pattern.svg";
 
 interface CollapsibleSectionProps {
   title: string;

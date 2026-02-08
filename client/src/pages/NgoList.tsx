@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SyriaMapLeaflet } from "@/components/SyriaMapLeaflet";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import headerPattern from "@assets/header-pattern.svg";
+import headerPattern from "@/assets/images/header-pattern.svg";
 
 const CLASSIFICATION_OPTIONS = [
   "تعليم وتمكين",

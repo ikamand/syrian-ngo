@@ -2,7 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, ListChecks, Scale, Table2, CheckCircle2, AlertCircle } from "lucide-react";
-import headerPattern from "@assets/header-pattern.svg";
+import headerPattern from "@/assets/images/header-pattern.svg";
 
 export default function NgoRegistrationInfo() {
   return (

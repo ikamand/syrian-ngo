@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Construction } from "lucide-react";
-import headerPattern from "@assets/header-pattern.svg";
+import headerPattern from "@/assets/images/header-pattern.svg";
 
 export default function Events() {
   return (

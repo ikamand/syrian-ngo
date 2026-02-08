@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Briefcase, Users, Search, MapPin, Building2, Calendar, Loader2, Filter, Clock, ArrowLeft } from "lucide-react";
-import headerPattern from "@assets/header-pattern.svg";
+import headerPattern from "@/assets/images/header-pattern.svg";
 
 interface Opportunity {
   id: string;

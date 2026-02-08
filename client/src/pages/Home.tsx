@@ -8,7 +8,7 @@ import { FeaturedNewsSlider } from "@/components/FeaturedNewsSlider";
 import { usePublicFooterLinks } from "@/hooks/use-footer-links";
 
 import emblemUrl from "@/assets/images/emblem-of-syria.png";
-import headerPattern from "@assets/header-pattern.svg";
+import headerPattern from "@/assets/images/header-pattern.svg";
 
 interface QuickLinkCardProps {
   title: string;

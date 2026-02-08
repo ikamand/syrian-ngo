@@ -7,7 +7,7 @@ import { Calendar, Loader2, Megaphone, Newspaper, Search, ChevronRight, ChevronL
 import { formatDate } from "@/lib/date";
 import { Link } from "wouter";
 import { stripHtml } from "@/lib/sanitize";
-import headerPattern from "@assets/header-pattern.svg";
+import headerPattern from "@/assets/images/header-pattern.svg";
 
 const ITEMS_PER_PAGE = 12;
 

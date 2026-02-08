@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Scale, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import headerPattern from "@assets/header-pattern.svg";
+import headerPattern from "@/assets/images/header-pattern.svg";
 
 interface CollapsibleSectionProps {
   title: string;

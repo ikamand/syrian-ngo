@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroCommunity from "@/assets/images/hero-community.png";
-import heroDamascus from "@assets/122ds21d_1770574150271.png";
+import heroDamascus from "@/assets/images/hero-damascus.png";
 
 interface Slide {
   image: string;
