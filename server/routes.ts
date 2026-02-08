@@ -767,6 +767,7 @@ export async function registerRoutes(
     try {
       const input = api.ngos.create.input.parse(req.body);
       const ngo = await storage.createNgo({ ...input, createdBy: req.session.userId! });
+      storage.createAuditLog({ ngoId: ngo.id, userId: req.session.userId!, action: "created", details: { arabicName: ngo.arabicName } }).catch(() => {});
       res.status(201).json(ngo);
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -804,12 +805,12 @@ export async function registerRoutes(
             status: targetStatus,
             approvedByAdminId: user.id,
             approvedByAdminAt: new Date(),
-            // If admin is giving final approval, also set super admin fields
             ...(adminCanFinalApprove && {
               approvedBySuperAdminId: user.id,
               approvedBySuperAdminAt: new Date()
             })
           });
+          storage.createAuditLog({ ngoId: id, userId: user.id, action: "approved", details: { from: ngo.status, to: targetStatus, role: "admin" } }).catch(() => {});
           return res.json(updated);
         } else if (status === "Rejected") {
           if (!rejectionReason) {
@@ -821,10 +822,10 @@ export async function registerRoutes(
             rejectedAt: new Date(),
             rejectionReason
           });
+          storage.createAuditLog({ ngoId: id, userId: user.id, action: "rejected", details: { from: ngo.status, reason: rejectionReason, role: "admin" } }).catch(() => {});
           return res.json(updated);
         }
       } else if (user.role === "super_admin") {
-        // Super admin can only act on AdminApproved NGOs (after admin approval)
         if (ngo.status === "Pending") {
           return res.status(400).json({ message: "يجب أن يوافق المشرف العادي على المنظمة أولاً قبل أن تتمكن من اتخاذ إجراء" });
         }
@@ -838,6 +839,7 @@ export async function registerRoutes(
             approvedBySuperAdminId: user.id,
             approvedBySuperAdminAt: new Date()
           });
+          storage.createAuditLog({ ngoId: id, userId: user.id, action: "approved", details: { from: ngo.status, to: "Approved", role: "super_admin" } }).catch(() => {});
           return res.json(updated);
         } else if (status === "Rejected") {
           if (ngo.status !== "AdminApproved") {
@@ -852,6 +854,7 @@ export async function registerRoutes(
             rejectedAt: new Date(),
             rejectionReason
           });
+          storage.createAuditLog({ ngoId: id, userId: user.id, action: "rejected", details: { from: ngo.status, reason: rejectionReason, role: "super_admin" } }).catch(() => {});
           return res.json(updated);
         }
       }
@@ -910,7 +913,16 @@ export async function registerRoutes(
       // Don't reset status if only operational fields changed
       const resetStatus = !hasOnlyOperationalChanges;
       
+      const changedFields = Object.keys(input).filter(key => {
+        const oldVal = (ngo as any)[key];
+        const newVal = (input as any)[key];
+        return JSON.stringify(oldVal) !== JSON.stringify(newVal);
+      });
+
       const updated = await storage.updateNgo(id, input, resetStatus);
+      if (changedFields.length > 0) {
+        storage.createAuditLog({ ngoId: id, userId: user.id, action: "edited", details: { changedFields, resetStatus } }).catch(() => {});
+      }
       res.json(updated);
     } catch (err) {
       res.status(400).json({ message: "Invalid request" });
@@ -919,8 +931,10 @@ export async function registerRoutes(
 
   app.delete(api.ngos.delete.path, requireAdmin, async (req, res) => {
     const id = parseInt(req.params.id as string);
+    const ngo = await storage.getNgo(id);
     const success = await storage.deleteNgo(id);
     if (!success) return res.status(404).json({ message: "NGO not found" });
+    storage.createAuditLog({ ngoId: id, userId: req.user!.id, action: "deleted", details: { arabicName: ngo?.arabicName } }).catch(() => {});
     res.json({ success: true });
   });
 
@@ -1196,6 +1210,34 @@ export async function registerRoutes(
       res.json(counts);
     } catch (err) {
       console.error("[get-ngo-note-counts] Error:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // --- NGO Audit Logs ---
+  app.get("/api/admin/ngos/:id/audit-logs", requireAdmin, async (req, res) => {
+    try {
+      const ngoId = parseInt(req.params.id);
+      if (isNaN(ngoId)) {
+        return res.status(400).json({ message: "Invalid NGO ID" });
+      }
+
+      const logs = await storage.getAuditLogs(ngoId);
+
+      const enrichedLogs = await Promise.all(
+        logs.map(async (log) => {
+          const user = await storage.getUser(log.userId);
+          return {
+            ...log,
+            userName: user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username : 'مستخدم محذوف',
+            userRole: user?.role || 'unknown'
+          };
+        })
+      );
+
+      res.json(enrichedLogs);
+    } catch (err) {
+      console.error("[get-ngo-audit-logs] Error:", err);
       res.status(500).json({ message: "Internal server error" });
     }
   });

@@ -10,18 +10,60 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/date";
 import { Button } from "@/components/ui/button";
-import { Check, X, FileText, Download } from "lucide-react";
-import type { Ngo } from "@shared/schema";
+import { Check, X, FileText, Download, History, Plus, Pencil, CheckCircle, XCircle, Trash2, RefreshCw } from "lucide-react";
+import type { Ngo, AuditLog } from "@shared/schema";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { useQuery } from "@tanstack/react-query";
 
 interface NgoDetailsDialogProps {
   ngo: Ngo | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   showDocuments?: boolean;
+  showAuditLog?: boolean;
 }
 
-export function NgoDetailsDialog({ ngo, open, onOpenChange, showDocuments = false }: NgoDetailsDialogProps) {
+const ACTION_LABELS: Record<string, { label: string; icon: typeof Plus; color: string }> = {
+  created: { label: "تم إنشاء المنظمة", icon: Plus, color: "text-green-600" },
+  edited: { label: "تم تعديل البيانات", icon: Pencil, color: "text-blue-600" },
+  approved: { label: "تمت الموافقة", icon: CheckCircle, color: "text-green-700" },
+  rejected: { label: "تم الرفض", icon: XCircle, color: "text-red-600" },
+  deleted: { label: "تم الحذف", icon: Trash2, color: "text-red-700" },
+  status_changed: { label: "تم تغيير الحالة", icon: RefreshCw, color: "text-orange-600" },
+};
+
+const FIELD_LABELS: Record<string, string> = {
+  arabicName: "الاسم بالعربية",
+  englishName: "الاسم بالإنجليزية",
+  legalForm: "الشكل القانوني",
+  scope: "النطاق",
+  orgIdentifier: "المعرف",
+  publicationNumber: "رقم الإشهار",
+  publicationDate: "تاريخ الإشهار",
+  headquartersGovernorate: "المحافظة",
+  description: "النبذة",
+  contactMethods: "وسائل التواصل",
+  programs: "البرامج",
+  activities: "الأنشطة",
+  employees: "الموظفين",
+  volunteers: "المتطوعين",
+  bankAccounts: "الحسابات البنكية",
+  jobOpportunities: "فرص العمل",
+  volunteerOpportunities: "فرص التطوع",
+  events: "الفعاليات",
+  donationCampaigns: "حملات التبرع",
+  statistics: "الإحصائيات",
+  networking: "التشبيك",
+  logo: "الشعار",
+};
+
+const ROLE_LABELS: Record<string, string> = {
+  admin: "مشرف",
+  super_admin: "مشرف عام",
+  user: "مستخدم",
+};
+
+export function NgoDetailsDialog({ ngo, open, onOpenChange, showDocuments = false, showAuditLog = false }: NgoDetailsDialogProps) {
   const getFieldValue = (value: string | null | undefined, fallback: string = "غير محدد") => {
     return value && value.trim() ? value : fallback;
   };
@@ -694,6 +736,20 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showDocuments = fals
                   </div>
                 </AccordionContent>
               </AccordionItem>
+
+              {showAuditLog && (
+                <AccordionItem value="section-audit-log">
+                  <AccordionTrigger className="text-base font-semibold text-primary hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <History className="w-4 h-4" />
+                      سجل النشاط
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <AuditLogTimeline ngoId={ngo.id} />
+                  </AccordionContent>
+                </AccordionItem>
+              )}
             </Accordion>
 
           </>
@@ -708,6 +764,91 @@ export function NgoDetailsDialog({ ngo, open, onOpenChange, showDocuments = fals
         )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+function AuditLogTimeline({ ngoId }: { ngoId: number }) {
+  const { data: logs, isLoading } = useQuery<(AuditLog & { userName: string; userRole: string })[]>({
+    queryKey: ['/api/admin/ngos', ngoId, 'audit-logs'],
+    queryFn: async () => {
+      const res = await fetch(`/api/admin/ngos/${ngoId}/audit-logs`);
+      if (!res.ok) throw new Error("Failed to fetch audit logs");
+      return res.json();
+    },
+    enabled: !!ngoId,
+  });
+
+  if (isLoading) {
+    return <div className="text-center py-6 text-muted-foreground text-sm">جاري التحميل...</div>;
+  }
+
+  if (!logs || logs.length === 0) {
+    return (
+      <div className="bg-muted/20 rounded-lg p-6 text-center text-sm text-muted-foreground border border-dashed" data-testid="empty-audit-log">
+        <History className="w-8 h-8 mx-auto mb-2 opacity-50" />
+        لا يوجد سجل نشاط لهذه المنظمة بعد
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-0" data-testid="audit-log-timeline">
+      {logs.map((log, index) => {
+        const actionConfig = ACTION_LABELS[log.action] || ACTION_LABELS.status_changed;
+        const ActionIcon = actionConfig.icon;
+        const details = log.details as Record<string, any> | null;
+
+        return (
+          <div key={log.id} className="flex gap-3 relative" data-testid={`audit-log-entry-${log.id}`}>
+            <div className="flex flex-col items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-muted/40 ${actionConfig.color}`}>
+                <ActionIcon className="w-4 h-4" />
+              </div>
+              {index < logs.length - 1 && (
+                <div className="w-px h-full bg-border min-h-[24px]" />
+              )}
+            </div>
+            <div className="pb-4 flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className={`text-sm font-medium ${actionConfig.color}`}>
+                  {actionConfig.label}
+                </span>
+                <Badge variant="secondary" className="text-xs no-default-hover-elevate">
+                  {ROLE_LABELS[log.userRole] || log.userRole}
+                </Badge>
+              </div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {log.userName} · {formatDate(log.createdAt)}
+              </div>
+              {details && (
+                <div className="mt-1.5 text-xs text-muted-foreground bg-muted/20 rounded-md p-2 border border-dashed">
+                  {log.action === "edited" && details.changedFields && (
+                    <div>
+                      <span className="font-medium">الحقول المعدّلة: </span>
+                      {(details.changedFields as string[]).map(f => FIELD_LABELS[f] || f).join("، ")}
+                      {details.resetStatus && (
+                        <span className="text-orange-600 mr-2">(تتطلب إعادة موافقة)</span>
+                      )}
+                    </div>
+                  )}
+                  {log.action === "approved" && (
+                    <div>
+                      من <Badge variant="secondary" className="text-xs no-default-hover-elevate mx-1">{details.from}</Badge>
+                      إلى <Badge variant="default" className="text-xs bg-green-100 text-green-700 no-default-hover-elevate mx-1">{details.to}</Badge>
+                    </div>
+                  )}
+                  {log.action === "rejected" && details.reason && (
+                    <div>
+                      <span className="font-medium">السبب: </span>{details.reason}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

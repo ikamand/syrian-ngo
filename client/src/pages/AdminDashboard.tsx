@@ -1699,6 +1699,7 @@ export default function AdminDashboard() {
         open={!!viewingNgo} 
         onOpenChange={(open) => !open && setViewingNgo(null)}
         showDocuments={true}
+        showAuditLog={true}
       />
       {/* NGO Internal Notes Dialog */}
       <NgoInternalNotesDialog 

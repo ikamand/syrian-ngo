@@ -183,6 +183,16 @@ The authentication system uses secure password hashing with bcrypt and admin-onl
 - Removed `date-fns` dependency (no longer needed)
 - User preference: All dates across the platform should be formatted as YYYY-MM-DD (2026-01-01)
 
+### Audit Logging System (Feb 8, 2026)
+- Created `audit_logs` table in schema: ngoId, userId, action (created/edited/approved/rejected/deleted/status_changed), details (jsonb), createdAt
+- Created `server/repositories/auditLogRepository.ts` — findByNgoId, createForNgo
+- Updated `storage.ts` with createAuditLog and getAuditLogs methods
+- All NGO routes now emit audit log entries: creation, edits (with changed field names + resetStatus flag), approval/rejection (with from/to status, reason, role), deletion
+- Audit logs are fire-and-forget (`.catch(() => {})`) so they never block the main operation
+- API endpoint: GET `/api/admin/ngos/:id/audit-logs` (admin-only) returns enriched logs with userName and userRole
+- NgoDetailsDialog updated with `showAuditLog` prop and `AuditLogTimeline` component showing vertical timeline with action-specific icons, Arabic labels, role badges, field change details
+- AdminDashboard passes `showAuditLog={true}` to NgoDetailsDialog
+
 ### Code Cleanup (Feb 7, 2026)
 - Deleted 24 unused shadcn UI component files (kept only actively used components)
 - Removed 22 unused NPM dependencies (axios, framer-motion, next-themes, sonner, @uppy/*, etc.)

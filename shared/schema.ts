@@ -358,6 +358,15 @@ export const footerLinks = pgTable("footer_links", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const auditLogs = pgTable("audit_logs", {
+  id: serial("id").primaryKey(),
+  ngoId: integer("ngo_id").notNull(),
+  userId: integer("user_id").notNull(),
+  action: text("action", { enum: ["created", "edited", "approved", "rejected", "deleted", "status_changed"] }).notNull(),
+  details: jsonb("details"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const ngoNotes = pgTable("ngo_notes", {
   id: serial("id").primaryKey(),
   ngoId: integer("ngo_id").notNull(),
@@ -394,3 +403,5 @@ export type InsertFooterLink = z.infer<typeof insertFooterLinkSchema>;
 
 export type NgoNote = typeof ngoNotes.$inferSelect;
 export type InsertNgoNote = z.infer<typeof insertNgoNoteSchema>;
+
+export type AuditLog = typeof auditLogs.$inferSelect;

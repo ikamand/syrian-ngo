@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent, type Notice, type InsertNotice, type FooterLink, type InsertFooterLink, type NgoNote, type InsertNgoNote } from "@shared/schema";
+import { type User, type InsertUser, type Ngo, type InsertNgo, type Announcement, type InsertAnnouncement, type SiteContent, type InsertSiteContent, type Notice, type InsertNotice, type FooterLink, type InsertFooterLink, type NgoNote, type InsertNgoNote, type AuditLog } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import connectPgSimple from "connect-pg-simple";
@@ -12,6 +12,7 @@ import * as siteContentRepo from "./repositories/siteContentRepository";
 import * as noticeRepo from "./repositories/noticeRepository";
 import * as footerLinkRepo from "./repositories/footerLinkRepository";
 import * as ngoNoteRepo from "./repositories/ngoNoteRepository";
+import * as auditLogRepo from "./repositories/auditLogRepository";
 
 const MemoryStore = createMemoryStore(session);
 const PgSession = connectPgSimple(session);
@@ -69,6 +70,9 @@ export interface IStorage {
   createNgoNote(note: InsertNgoNote & { authorId: number }): Promise<NgoNote>;
   getNgoNotes(ngoId: number): Promise<NgoNote[]>;
   getAllNgoNoteCounts(): Promise<{ ngoId: number; count: number }[]>;
+
+  createAuditLog(entry: { ngoId: number; userId: number; action: "created" | "edited" | "approved" | "rejected" | "deleted" | "status_changed"; details?: Record<string, any> }): Promise<AuditLog>;
+  getAuditLogs(ngoId: number): Promise<AuditLog[]>;
 
   sessionStore: session.Store;
 }
@@ -254,6 +258,14 @@ export class DatabaseStorage implements IStorage {
 
   async getAllNgoNoteCounts(): Promise<{ ngoId: number; count: number }[]> {
     return ngoNoteRepo.countsByNgo();
+  }
+
+  async createAuditLog(entry: { ngoId: number; userId: number; action: "created" | "edited" | "approved" | "rejected" | "deleted" | "status_changed"; details?: Record<string, any> }): Promise<AuditLog> {
+    return auditLogRepo.createForNgo(entry);
+  }
+
+  async getAuditLogs(ngoId: number): Promise<AuditLog[]> {
+    return auditLogRepo.findByNgoId(ngoId);
   }
 }
 
